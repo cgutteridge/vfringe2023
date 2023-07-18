@@ -1,0 +1,31 @@
+
+
+ { "GEO":[ 50.59949,-1.18142], "ICON":"walk.png", "NAME":"Bonchurch Pottery", "VENUES":["Bonchurch Pottery"]},
+ { "GEO":[ 50.59266,-1.21524], "ICON":"walk.png", "NAME":"Fringe Village Box Office", "VENUES":["Parkside"]},
+ { "GEO":[ 50.59359,-1.20411], "ICON":"walk.png", "NAME":"Ventnor Winter Gardens", "VENUES":["Ventnor Winter Gardens"]},
+
+
+
+
+{ "GEO":[ 50.59319,-1.2048 ], "ICON":"popup.png", "NAME":"Paddling Pool", "VENUES":["Paddling Pool"]},
+{ "GEO":[ 50.596,-1.20212  ], "ICON":"popup.png", "NAME":"Workshop 97", "VENUES":["Workshop 97"]},
+{ "GEO":[ 50.59232,-1.21587], "ICON":"popup.png", "NAME":"Bandstand", "VENUES":["Fringe Village Bandstand"]},
+{ "GEO":[ 50.59659,-1.20079], "ICON":"popup.png", "NAME":"Royal British Legion", "VENUES":["Ventnor Royal British Legion (Social Club)"]},
+{ "GEO":[ 50.59479,-1.2054 ], "ICON":"popup.png", "NAME":"Blue Labelle", "VENUES":["Blue Labelle"]},
+{ "GEO":[ 50.59328,-1.20817], "ICON":"popup.png", "NAME":"Blakes Hut", "VENUES":["Blakes Hut (Ventnor Beach)"]},
+{ "GEO":[ 50.59438,-1.20477], "ICON":"popup.png", "NAME":"Lesleys Nutshell", "VENUES":["Lesleys Nutshell"]},
+{ "GEO":[ 50.59555,-1.20328], "ICON":"popup.png", "NAME":"Carnaby Tea Room", "VENUES":["Carnaby Tea Room"]},
+{ "GEO":[ 50.58927,-1.2279 ], "ICON":"popup.png", "NAME":"Edulis", "VENUES":["Edulis (Ventnor Botanic Garden)"]},
+{ "GEO":[ 50.59283,-1.2145 ], "ICON":"popup.png", "NAME":"The Fringe Village", "VENUES":["The Fringe Village (Ventnor Putting Green)"]},
+{ "GEO":[ 50.59492,-1.20618], "ICON":"popup.png", "NAME":"KU", "VENUES":["KU"]},
+{ "GEO":[ 50.59483,-1.20546], "ICON":"popup.png", "NAME":"Reggies Retro", "VENUES":["Reggies Retro"]},
+{ "GEO":[ 50.59396,-1.20266], "ICON":"popup.png", "NAME":"The Green Room", "VENUES":["The Green Room"]},
+
+{ "GEO":[ 50.59614,-1.20207], "ICON":"popup.png", "NAME":"Ventnor Giant Mural", "VENUES":[]},
+{ "GEO":[ 50.59534,-1.20584], "ICON":"popup.png", "NAME":"The Blenheim", "VENUES":["The Blenheim"]},
+{ "GEO":[ 50.5942,-1.20696],  "ICON":"popup.png", "NAME":"The REX Piano Bar", "VENUES":["The REX Piano Bar"]},
+{ "GEO":[ 50.59534,-1.20584], "ICON":"popup.png", "NAME":"The Crab and Lobster Tap", "VENUES":["The Crab and Lobster Tap"]},
+
+
+]
+

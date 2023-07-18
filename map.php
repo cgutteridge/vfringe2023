@@ -103,7 +103,7 @@ jQuery( document ).ready( function() {
   foreach( $words as $word ) {
     $js .= "
      {
-        let myIcon = L.divIcon({className: 'map-word', html:'".$word[0]."'});
+        let myIcon = L.divIcon({className: 'map-word-outer', html:'<div class=\'map-word\'>".$word[0]."</div>'});
 	let marker = L.marker(".json_encode( [$word[1],$word[2]] ).", { icon: myIcon, draggable: true });
         words_layer.addLayer( marker );
      }
@@ -111,7 +111,7 @@ jQuery( document ).ready( function() {
   }
   $js .="
     let old_mapzoom_class ='';
-    map.on('zoomend', function() {
+    map.on('zoomend', ()=> {
       var zoomlevel = map.getZoom();
       if (zoomlevel  <17){
           if (map.hasLayer(words_layer)) {
@@ -222,17 +222,22 @@ $js.="
   $h.= "<style>\n";
   $h.= "
 .map-word {
-  background-color: #333;
-  border-top: solid 3px #666;
-  border-right: solid 3px #666;
-  border-bottom: solid 3px #000;
-  border-left: solid 3px #000;
+  background-color: #999;
+  border-style: solid;
+  border-top-color: #fff;
+  border-right-color: #fff;
+  border-bottom-color: #000;
+  border-left-color: #000;
   color: #fff;
   width: auto !important;
   height: auto !important;
+  display: inline-block;
+  transform:translate(-50%, -50%);
+  padding: 0px 0.3em;
 }
-.mapzoom_17 .map-word { font-size: 50% !important; }
-.mapzoom_19 .map-word { font-size: 200%; !important }
+.mapzoom_17 .map-word { font-size:  50% !important; border-width:1px; opacity: 70%;}
+.mapzoom_18 .map-word { font-size: 100% !important; border-width:2px; }
+.mapzoom_19 .map-word { font-size: 200% !important; border-width:4px; }
 ";
   $h.= "</style>\n";
 
