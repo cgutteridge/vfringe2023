@@ -1,0 +1,54 @@
+[
+ { "GEO":[ 50.59461,-1.20613], "ICON":"https://vfringe.co.uk/wp-content/uploads/sites/2/2017/08/ExchangeIcon.png", "ICON_SIZE":"40,47","ICON_ANCHOR":"20,23", "NAME":"Ventnor Exchange", "VENUES":["Ventnor Exchange"]},
+ { "GEO":[ 50.59471,-1.20677], "ICON":"number_2.png",  "NAME":"St. Catherine's Church", "VENUES":["St. Catherine's Church"]},
+ { "GEO":[ 50.59453,-1.20699], "ICON":"number_3.png",  "NAME":"The Book Bus", "VENUES":["The Book Bus"]},
+ { "GEO":[ 50.59543,-1.20549], "ICON":"number_4.png",  "NAME":"Ventnor Arts Club", "VENUES":["Ventnor Arts Club"]},
+ { "GEO":[ 50.59412,-1.20497], "ICON":"number_5.png",  "NAME":"Pier St. Playhouse", "VENUES":["Pier St. Playhouse"]},
+ { "GEO":[ 50.59652,-1.20011], "ICON":"number_7.png",  "NAME":"Ventnor Library", "VENUES":["Ventnor Library"]},
+ { "GEO":[ 50.59904,-1.18490], "ICON":"number_8.png",  "NAME":"St. Boniface Old Church", "VENUES":["St. Boniface Old Church"]},
+ { "GEO":[ 50.59225,-1.21669], "ICON":"number_11.png",  "NAME":"The Nest", "VENUES":["The Nest"]},
+ { "GEO":[ 50.59294,-1.2143 ], "ICON":"number_9.png",  "NAME":"The Magpie", "VENUES":["The Magpie"]},
+ { "GEO":[ 50.59063,-1.21827], "ICON":"number_12.png",  "NAME":"The Big Top", "VENUES":["The Big Top"]},
+ { "GEO":[ 50.58999,-1.22658], "ICON":"number_14.png", "NAME":"Ventnor Botanic Garden", "VENUES":["Ventnor Botanic Garden"]},
+
+ { "GEO":[ 50.59949,-1.18142], "ICON":"walk.png", "NAME":"Bonchurch Pottery", "VENUES":["Bonchurch Pottery"]},
+ { "GEO":[ 50.59266,-1.21524], "ICON":"walk.png", "NAME":"Fringe Village Box Office", "VENUES":["Parkside"]},
+ { "GEO":[ 50.59359,-1.20411], "ICON":"walk.png", "NAME":"Ventnor Winter Gardens", "VENUES":["Ventnor Winter Gardens"]},
+
+ { "GEO":[ 50.59212,-1.21638], "ICON":"number_10.png", "NAME":"Parkside Bar", "VENUES":[""]},
+ { "GEO":[ 50.59085,-1.21882], "ICON":"number_13.png",  "NAME":"Big Top Bar", "VENUES":["Big Top Bar"]},
+
+
+
+{ "GEO":[ 50.59319,-1.2048 ], "ICON":"popup.png", "NAME":"Paddling Pool", "VENUES":["Paddling Pool"]},
+{ "GEO":[ 50.596,-1.20212  ], "ICON":"popup.png", "NAME":"Workshop 97", "VENUES":["Workshop 97"]},
+{ "GEO":[ 50.59678,-1.19446], "ICON":"popup.png", "NAME":"art_house_life", "VENUES":["art_house_life @ 35 Madeira Road"]},
+{ "GEO":[ 50.59232,-1.21587], "ICON":"popup.png", "NAME":"Bandstand", "VENUES":["Fringe Village Bandstand"]},
+{ "GEO":[ 50.59659,-1.20079], "ICON":"popup.png", "NAME":"Royal British Legion", "VENUES":["Ventnor Royal British Legion (Social Club)"]},
+{ "GEO":[ 50.59479,-1.2054 ], "ICON":"popup.png", "NAME":"Blue Labelle", "VENUES":["Blue Labelle"]},
+{ "GEO":[ 50.59328,-1.20817], "ICON":"popup.png", "NAME":"Blakes Hut", "VENUES":["Blakes Hut (Ventnor Beach)"]},
+{ "GEO":[ 50.59438,-1.20477], "ICON":"popup.png", "NAME":"Lesleys Nutshell", "VENUES":["Lesleys Nutshell"]},
+{ "GEO":[ 50.59555,-1.20328], "ICON":"popup.png", "NAME":"Carnaby Tea Room", "VENUES":["Carnaby Tea Room"]},
+{ "GEO":[ 50.58927,-1.2279 ], "ICON":"popup.png", "NAME":"Edulis", "VENUES":["Edulis (Ventnor Botanic Garden)"]},
+{ "GEO":[ 50.59283,-1.2145 ], "ICON":"popup.png", "NAME":"The Fringe Village", "VENUES":["The Fringe Village (Ventnor Putting Green)"]},
+{ "GEO":[ 50.59551,-1.2035 ], "ICON":"popup.png", "NAME":"Better Days Cafe", "VENUES":["Better Days Cafe"]},
+{ "GEO":[ 50.59492,-1.20618], "ICON":"popup.png", "NAME":"KU", "VENUES":["KU"]},
+{ "GEO":[ 50.59483,-1.20546], "ICON":"popup.png", "NAME":"Reggies Retro", "VENUES":["Reggies Retro"]},
+{ "GEO":[ 50.59396,-1.20266], "ICON":"popup.png", "NAME":"The Green Room", "VENUES":["The Green Room"]},
+
+{ "GEO":[ 50.59614,-1.20207], "ICON":"popup.png", "NAME":"Ventnor Giant Mural", "VENUES":[]},
+{ "GEO":[ 50.59534,-1.20584], "ICON":"popup.png", "NAME":"The Blenheim", "VENUES":["The Blenheim"]},
+{ "GEO":[ 50.5942,-1.20696],  "ICON":"popup.png", "NAME":"The REX Piano Bar", "VENUES":["The REX Piano Bar"]},
+{ "GEO":[ 50.59534,-1.20584], "ICON":"popup.png", "NAME":"The Crab and Lobster Tap", "VENUES":["The Crab and Lobster Tap"]},
+
+
+{ "GEO":[ 50.59488,-1.20555], "ICON":"atm.png", "NAME":"Cash Point", "DESC":"Inside CO-OP. Free, but only available when the shop is open.", "VENUES":[]},
+{ "GEO":[ 50.59549,-1.20376], "ICON":"atm.png", "NAME":"Cash Point", "VENUES":[]},
+{ "GEO":[ 50.59329,-1.20503], "ICON":"poo.png", "NAME":"Public Toilets", "VENUES":[]},
+{ "GEO":[ 50.59549,-1.20613], "ICON":"poo.png", "NAME":"Public Toilets", "VENUES":[]},
+{ "GEO":[ 50.59078,-1.21862], "ICON":"poo.png", "NAME":"Festival Toilets", "VENUES":[]},
+{ "GEO":[ 50.59247,-1.21532], "ICON":"poo.png", "NAME":"Public Toilets", "VENUES":[]}
+
+
+]
+

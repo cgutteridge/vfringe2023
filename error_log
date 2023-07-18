@@ -1,0 +1,4 @@
+[13-Mar-2023 08:22:19 Europe/London] PHP Fatal error:  Uncaught Error: Call to undefined function add_shortcode() in /home/ventnore/public_html/wp-content/plugins/chrisvf/chrisvf.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/ventnore/public_html/wp-content/plugins/chrisvf/chrisvf.php on line 17
