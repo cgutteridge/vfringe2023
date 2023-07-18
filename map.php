@@ -5,6 +5,7 @@ add_shortcode('chrisvf_map', 'chrisvf_render_map');
 
 add_action( 'wp_enqueue_scripts', 'chrisvf_add_map_scripts' );
 function chrisvf_add_map_scripts() {
+    # register them here, but only enqueue if we need them
     wp_register_script( 'chrisvf-leaflet', plugins_url('leaflet.js', __FILE__) );
     wp_register_style( 'chrisvf-leaflet', plugins_url('leaflet.css', __FILE__) );
 }
@@ -23,7 +24,6 @@ function chrisvf_render_map() {
   $places = json_decode( $places_raw, true );
   $words_raw = file_get_contents( dirname(__FILE__)."/words.json" );
   $words = json_decode( $words_raw, true );
-print_r($words);exit;
 
   $venueToPOI = [];
   for( $i=0;$i<sizeof($places);++$i) {
@@ -90,64 +90,53 @@ print_r($words);exit;
   $js = "";
   $js.="
 jQuery( document ).ready( function() {
-var map;
-var bounds = L.latLngBounds([]);
-(function(mapid){
-  map = L.map(mapid,{scrollWheelZoom: true});
-  var icon;
-  var marker;
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{ attribution: 'Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>', maxZoom: 19 }).addTo(map);
-
-    
-/* eggs offline
-  // eggs
-
-  var eggs_layer = L.featureGroup();
-  var eggpath = '/wp-content/plugins/chrisvf/eggs/';
-
-  var time_t = new Date().getTime();
-  jQuery.getJSON( '/wp-content/plugins/chrisvf/eggs.json?'+time_t, function( data ) {
-    jQuery.each( data, function( key, val ) {
-      if( val[1] != '' ) {
-        var ll = val[1].split( /,/ );
-console.log( val[0], ll );
-        var popup = L.popup();
-        popup.setContent( '<div style=\"max-height: 300px; overflow:auto\">Well done, you have found a '+val[0]+'!<br /><br /><div style=\"font-size: 70%;\">'+val[2]+'</div></div>' );
-        var marker = L.marker(ll, {
-             icon: L.icon( { iconUrl: eggpath+val[0]+'.png', iconSize: [60,60], iconAnchor: [30,30], labelAnchor: [30, 30], popupAnchor: [ 0,-30 ] } )
-           });
-        marker.bindPopup(popup);
-        eggs_layer.addLayer( marker );
-      }
-    });
-  }); 
-
-  map.on('zoomend', function() {
-    var zoomlevel = map.getZoom();
-    if (zoomlevel  <16){
-        if (map.hasLayer(eggs_layer)) {
-            map.removeLayer(eggs_layer);
-        }
-    }
-    if (zoomlevel >= 16){
-        if (!map.hasLayer(eggs_layer)){
-            map.addLayer(eggs_layer);
-        }
-    }
-  });
-*/
-
-
-
- }('$id'));
-
+  var map;
+  var bounds = L.latLngBounds([]);
+  (function(mapid){
+    map = L.map(mapid,{scrollWheelZoom: true});
+    var words_layer = L.featureGroup();
+    map.addLayer(words_layer);
+    var icon;
+    var marker;
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{ attribution: 'Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>', maxZoom: 19 }).addTo(map);
 ";
+  foreach( $words as $word ) {
+    $js .= "
+     {
+        let myIcon = L.divIcon({className: 'map-word', html:'".$word[0]."'});
+	let marker = L.marker(".json_encode( [$word[1],$word[2]] ).", { icon: myIcon, draggable: true });
+        words_layer.addLayer( marker );
+     }
+    ";
+  }
+  $js .="
+    let old_mapzoom_class ='';
+    map.on('zoomend', function() {
+      var zoomlevel = map.getZoom();
+      if (zoomlevel  <17){
+          if (map.hasLayer(words_layer)) {
+              map.removeLayer(words_layer);
+          }
+      }
+      if (zoomlevel >= 17){
+        if (!map.hasLayer(words_layer)){
+            map.addLayer(words_layer);
+        }
+      }
+      jQuery('#'+mapid).removeClass( old_mapzoom_class );
+      jQuery('#'+mapid).addClass( 'mapzoom_'+zoomlevel );
+      old_mapzoom_class = 'mapzoom_'+zoomlevel;
+    });
+  ";
 
- 
+	
 
-#  var imageUrl = 'https://vfringe.co.uk/wp-content/uploads/sites/2/2017/08/mapfish.png';
-#  var imageBounds = [[ 50.59295,-1.20932 ] ,[ 50.59242,-1.20795 ] ];
-#  L.imageOverlay(imageUrl, imageBounds).addTo(map);
+$js.="
+  }('$id'));
+";
+    
+
+
   foreach( $places as $place ) {
     $lat_long = join( ",",$place["GEO"]);
     if( empty($lat_long) ) { continue; }
@@ -230,6 +219,22 @@ console.log( val[0], ll );
   $h.= "<script>\n";
   $h.= $js;
   $h.= "</script>\n";
+  $h.= "<style>\n";
+  $h.= "
+.map-word {
+  background-color: #333;
+  border-top: solid 3px #666;
+  border-right: solid 3px #666;
+  border-bottom: solid 3px #000;
+  border-left: solid 3px #000;
+  color: #fff;
+  width: auto !important;
+  height: auto !important;
+}
+.mapzoom_17 .map-word { font-size: 50% !important; }
+.mapzoom_19 .map-word { font-size: 200%; !important }
+";
+  $h.= "</style>\n";
 
   return $h;
 }
