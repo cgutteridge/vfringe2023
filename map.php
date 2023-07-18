@@ -90,29 +90,55 @@ function chrisvf_render_map() {
   $js = "";
   $js.="
 jQuery( document ).ready( function() {
-  var map;
-  var bounds = L.latLngBounds([]);
+
+  let word_pos = {};
+  document.cookie.split( /; / ).forEach( (v)=>{
+    let kv = v.split(/=/);
+    if( kv[0] == 'vfwords' ) {
+      try {
+	const obj = JSON.parse(kv[1]);
+	word_pos = obj;
+      } catch (e) {
+        console.error(e); 
+      }
+    }
+  });
+  
+  let map;
+  let bounds = L.latLngBounds([]);
   (function(mapid){
     map = L.map(mapid,{scrollWheelZoom: true});
-    var words_layer = L.featureGroup();
+    let words_layer = L.featureGroup();
     map.addLayer(words_layer);
-    var icon;
-    var marker;
+    let icon;
+    let marker;
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{ attribution: 'Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>', maxZoom: 19 }).addTo(map);
 ";
-  foreach( $words as $word ) {
+  # add each word to the map, and when it's dragged, log the new position but only to 5 decimal places
+  for( $i=0; $i<count($words); $i++ ) {
+    $word = $words[$i];
     $js .= "
      {
-        let myIcon = L.divIcon({className: 'map-word-outer', html:'<div class=\'map-word\'>".$word[0]."</div>'});
-	let marker = L.marker(".json_encode( [$word[1],$word[2]] ).", { icon: myIcon, draggable: true });
+	let myIcon = L.divIcon({className: 'map-word-outer', html:'<div class=\'map-word\'>".$word[0]."</div>'});
+	let ll = ".json_encode( [$word[1],$word[2]] ).";
+        if( word_pos[".$i."] ) {
+	  ll = word_pos[".$i."];
+        }
+	let marker = L.marker(ll, { icon: myIcon, draggable: true, autoPan: true });
+	marker.on( 'moveend', (e)=>{
+	  let ll = marker.getLatLng();
+	  word_pos[$i] = [ Math.round(ll.lat * 100000) / 100000, Math.round(ll.lng * 100000) / 100000 ];
+          document.cookie = 'vfwords='+JSON.stringify(word_pos)+'; expires=Mon, 1 Jul 2024 12:00:00 UTC';
+	});
         words_layer.addLayer( marker );
      }
     ";
   }
+
   $js .="
     let old_mapzoom_class ='';
     map.on('zoomend', ()=> {
-      var zoomlevel = map.getZoom();
+      let zoomlevel = map.getZoom();
       if (zoomlevel  <17){
           if (map.hasLayer(words_layer)) {
               map.removeLayer(words_layer);
@@ -199,12 +225,12 @@ $js.="
   $js.="
   (function(lat_long,icon_url,icon_size,icon_anchor, name, popupText,nowText){
     icon = L.icon( { iconUrl: icon_url, iconSize: icon_size, iconAnchor: icon_anchor, labelAnchor: [16, -18], popupAnchor: [ 0,-40 ] } );
-    var label = \"<strong>\"+name+\"</strong>\";
-    var markerOpts = { icon:icon };
+    let label = \"<strong>\"+name+\"</strong>\";
+    let markerOpts = { icon:icon };
     markerOpts.riseOnHover = true;
-    var popup = L.popup();
+    let popup = L.popup();
     popup.setContent( '<div style=\"max-height: 300px; overflow:auto\">'+popupText+'</div>' );
-    var marker = L.marker(lat_long, markerOpts ).bindPopup(popup).addTo(map);
+    let marker = L.marker(lat_long, markerOpts ).bindPopup(popup).addTo(map);
     if( nowText ) {
       marker.bindTooltip(nowText, { offset: [ -16, -20], permanent: true, direction: '$ldir' } );
     }
