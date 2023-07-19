@@ -6,26 +6,36 @@
  { "GEO":[ 50.5983,-1.19792 ], "ICON":"number_5.png",  "NAME":"Boniface Studios", "VENUES":["Boniface Studios (The Hall)","Boniface Studios (The Studio)"]},
  { "GEO":[ 50.59759,-1.19674], "ICON":"number_6.png",  "NAME":"Holy Trinity Church", "VENUES":["Holy Trinity Church"]},
  { "GEO":[ 50.59652,-1.20011], "ICON":"number_7.png",  "NAME":"Ventnor Library", "VENUES":["Ventnor Library"]},
- { "GEO":[ 50.59904,-1.18490], "ICON":"number_8.png",  "NAME":"St. Boniface Old Church", "VENUES":["St. Boniface Old Church"]},
  { "GEO":[ 50.59294,-1.2143 ], "ICON":"number_9.png",  "NAME":"The Magpie", "VENUES":["The Magpie"]},
  { "GEO":[ 50.59212,-1.21638], "ICON":"number_10.png", "NAME":"Parkside Bar", "VENUES":["Parkside Bar"]},
  { "GEO":[ 50.59225,-1.21669], "ICON":"number_11.png", "NAME":"The Nest", "VENUES":["The Nest"]},
  { "GEO":[ 50.59063,-1.21827], "ICON":"number_12.png", "NAME":"The Big Top", "VENUES":["The Big Top"]},
- { "GEO":[ 50.59085,-1.21882], "ICON":"number_13.png", "NAME":"Big Top Bar", "VENUES":["The Big Top Bar"]},
+ { "GEO":[ 50.59085,-1.21882], "ICON":"bar.png", "NAME":"Big Top Bar", "VENUES":["The Big Top Bar"]},
  { "GEO":[ 50.58999,-1.22658], "ICON":"number_14.png", "NAME":"Ventnor Botanic Garden", "VENUES":["Ventnor Botanic Garden","The Canna Room (Ventnor Botanic Garden)"]},
  { "GEO":[ 50.59678,-1.19446], "ICON":"number_15.png", "NAME":"art_house_life", "VENUES":["art_house_life @ 35 Madeira Road"]},
  { "GEO":[ 50.59551,-1.2035 ], "ICON":"number_16.png", "NAME":"Better Days Cafe", "VENUES":["Better Days Cafe"]},
- { "GEO":[ 50.59412,-1.20497], "ICON":"number_17.png", "NAME":"Peer Studios", "VENUES":["Peer Studios"]},
+ { "GEO":[ 50.59426,-1.20465], "ICON":"number_17.png", "NAME":"Peer Studios", "VENUES":["Peer Studios"]},
  { "GEO":[ 50.59268,-1.21116], "ICON":"number_18.png", "NAME":"La Falaise Carpark Shelter", "VENUES":["La Falaise Carpark Shelter"]},
- { "GEO":[ 50.59263,-1.21695], "ICON":"number_19.png", "NAME":"Gianpaolo Mario Photo Gallery", "VENUES":["Gianpaolo Mario Photo Gallery"]},
+ { "GEO":[ 50.59263,-1.21695], "ICON":"number_19.png", "NAME":"Gianpaolo Mario Photo Gallery", "VENUES":["Park View Studio"]},
+
+ { "GEO":[ 50.59231,-1.21587 ], "ICON":"music.png", "NAME":"Fringe Village Bandstand","VENUES":["Fringe Village Bandstand"]},
+ { "GEO":[ 50.59236,-1.21635 ], "ICON":"bar.png", "NAME":"The Fringe Village","VENUES":["The Fringe Village"]},
+
+ { "GEO":[ 50.59719,-1.20842 ], "ICON":"walk.png", "NAME":"Top of Grove Road", "VENUES":["Top of Grove Road"]},
+ { "GEO":[ 50.61696,-1.23363 ], "ICON":"popup.png", "NAME":"Appuldurcombe House", "VENUES":["Appuldurcombe House"]},
+ { "GEO":[ 50.58172,-1.25758 ], "ICON":"popup.png", "NAME":"Binnel Studios ", "VENUES":["Binnel Studios"]},
+ { "GEO":[ 50.59911,-1.18999 ], "ICON":"walk.png", "NAME":"Bonchurch Pond", "VENUES":["Bonchurch Pond"]},
+ { "GEO":[ 50.6024,-1.18295 ], "ICON":"walk.png", "NAME":"Bonchurch Shute", "VENUES":["Bonchurch Shute"]},
+ { "GEO":[ 50.59397,-1.20266 ], "ICON":"popup.png", "NAME":"Ventnor Town Council", "VENUES":["Ventnor Town Council"]},
+ { "GEO":[ 50.59283,-1.2056 ], "ICON":"popup.png", "NAME":"Ventnor Harbour Bandstand", "VENUES":["Ventnor Harbour Bandstand"]},
+ { "GEO":[ 50.59484,-1.2058 ], "ICON":"popup.png", "NAME":"Drunken Lobster", "VENUES":["Drunken Lobster"]},
+ { "GEO":[ 50.59483,-1.20596 ], "ICON":"popup.png", "NAME":"Honeybourne Jewellery", "VENUES":["Honeybourne Jewellery"]},
 
  { "GEO":[ 50.59488,-1.20555], "ICON":"atm.png", "NAME":"Cash Point", "DESC":"Inside CO-OP. Free, but only available when the shop is open.", "VENUES":[]},
  { "GEO":[ 50.59549,-1.20376], "ICON":"atm.png", "NAME":"Cash Point", "VENUES":[]},
  { "GEO":[ 50.59329,-1.20503], "ICON":"poo.png", "NAME":"Public Toilets", "VENUES":[]},
- { "GEO":[ 50.59549,-1.20613], "ICON":"poo.png", "NAME":"Public Toilets", "VENUES":[]},
+ { "GEO":[ 50.59574,-1.20392], "ICON":"poo.png", "NAME":"Public Toilets", "VENUES":[]},
  { "GEO":[ 50.59078,-1.21862], "ICON":"poo.png", "NAME":"Festival Toilets", "VENUES":[]},
  { "GEO":[ 50.59247,-1.21532], "ICON":"poo.png", "NAME":"Public Toilets", "VENUES":[]}
-
-
 
 ]
