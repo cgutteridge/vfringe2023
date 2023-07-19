@@ -248,18 +248,21 @@ $js.="
   $h.= "<style>\n";
   $h.= "
 .map-word {
-  background-color: #999;
+  font-family: Times New Roman, Serif;
+  background-color: #eee;
   border-style: solid;
   border-top-color: #fff;
   border-right-color: #fff;
-  border-bottom-color: #000;
-  border-left-color: #000;
-  color: #fff;
+  border-bottom-color: #ccc;
+  border-left-color: #ccc;
+  color: #000;
   width: auto !important;
   height: auto !important;
   display: inline-block;
   transform:translate(-50%, -50%);
   padding: 0px 0.3em;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.8);
+
 }
 .mapzoom_17 .map-word { font-size:  50% !important; border-width:1px; opacity: 70%;}
 .mapzoom_18 .map-word { font-size: 100% !important; border-width:2px; }
