@@ -73,7 +73,7 @@ function chrisvf_get_info() {
 function chrisvf_wp_venues() {
 	$tax_meta  = get_option( "evo_tax_meta" );
 	$locations = get_terms( "event_location" );
-
+    $venues = [];
 	foreach( $locations as $location ) {
 		$venue = [
 			"name"     => $location->name,
@@ -201,9 +201,8 @@ function chrisvf_wp_events() {
 				$item["IMAGE"] = $image[0];
 			}
 
-  			$item["SORTCODE"] = "100".$item["LOCATION"];
-			if( $item["LOCATION"] == "Ventnor Exchange" ) { $item["SORTCODE"] = "001"; }
-      			$ical[$item["UID"]]= $item;
+			$item["SORTCODE"] = chrisvf_location_sortcode($item["LOCATION"]);
+			$ical[$item["UID"]]= $item;
 		}
 	}
 
@@ -230,12 +229,31 @@ function chrisvf_wp_events() {
 			"DESCRIPTION"=>"",
 			"URL"=>$record["Event"],
 			"LOCATION"=>$record["Venue"],
-			"SORTCODE"=>"100".$record["Venue"],
+			"SORTCODE"=>chrisvf_location_sortcode($record["Venue"]),
 		];
 		$ical[ $UID ] = $item;
 	}	
 	return $ical;
 }
+
+function chrisvf_location_sortcode( $loc ) {
+	switch( $loc ) {
+		case "Ventnor Exchange": 	return "001"; 
+		case "The Fringe Square": 	return "002"; 
+		case "St. Catherine's Church":	return "003"; 
+		case "The Book Bus": 		return "004"; 
+
+		case "The Fringe Village": 	return "011"; 
+		case "Fringe Village Bandstand": return "012"; 
+		case "The Nest": 		return "013"; 
+		case "The Magpie": 		return "014"; 
+
+		case "The Big Top": 		return "021"; 
+		case "The Big Top Bar": 	return "022"; 
+	}
+	return "100".$loc;
+}
+
 /*********************************************************************************
  end of DATA FUNCTIONS
  *********************************************************************************/

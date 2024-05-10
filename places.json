@@ -31,6 +31,18 @@
  { "GEO":[ 50.59484,-1.2058 ], "ICON":"popup.png", "NAME":"Drunken Lobster", "VENUES":["Drunken Lobster"]},
  { "GEO":[ 50.59483,-1.20596 ], "ICON":"popup.png", "NAME":"Honeybourne Jewellery", "VENUES":["Honeybourne Jewellery"]},
 
+
+ { "GEO":[ 50.59507,-1.20316 ],"ICON":"popup.png", "NAME":"Carnaby's", "VENUES":["Carnaby Tea Room"]},
+ { "GEO":[ 50.59463,-1.20507 ],"ICON":"popup.png", "NAME":"The Athanor", "VENUES":["The Athanor"]},
+ { "GEO":[ 50.59526,-1.20471 ],"ICON":"popup.png", "NAME":"Luchelle Boutique", "VENUES":["Luchelle Boutique"]},
+ { "GEO":[ 50.59484,-1.20544 ],"ICON":"popup.png", "NAME":"Reggie's Retro", "VENUES":["Reggie's Retro"]},
+ { "GEO":[ 50.59479,-1.2054  ],"ICON":"popup.png", "NAME":"Blue Labelle", "VENUES":["Blue Labelle"]},
+ { "GEO":[ 50.59438,-1.20478 ],"ICON":"popup.png", "NAME":"Lesley's", "VENUES":["Lesleys Nutshell"]},
+ { "GEO":[ 50.59498,-1.20608 ],"ICON":"popup.png", "NAME":"Scott's Hair Saloon", "VENUES":["Scott's Hair Saloon"]},
+ { "GEO":[ 50.59659,-1.20079 ],"ICON":"popup.png", "NAME":"Royal British Legion", "VENUES":["Ventnor Royal British Legion (Social Club)"]},
+ { "GEO":[ 50.59757,-1.21483 ],"ICON":"popup.png", "NAME":"Social Club", "VENUES":["Social Club"]},
+ { "GEO":[ 50.59534,-1.20583 ],"ICON":"popup.png", "NAME":"The Blenheim", "VENUES":["The Blenheim"]},
+
  { "GEO":[ 50.59488,-1.20555], "ICON":"atm.png", "NAME":"Cash Point", "DESC":"Inside CO-OP. Free, but only available when the shop is open.", "VENUES":[]},
  { "GEO":[ 50.59549,-1.20376], "ICON":"atm.png", "NAME":"Cash Point", "VENUES":[]},
  { "GEO":[ 50.59329,-1.20503], "ICON":"poo.png", "NAME":"Public Toilets", "VENUES":[]},

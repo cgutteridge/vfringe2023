@@ -42,7 +42,6 @@ th.vf_grid_venue {
   background-color: #eea;
   vertical-align: top;
   text-align: center;
-  cursor: pointer;
 }
 .vf_grid_now {
   background-color: yellow;
@@ -166,3 +165,81 @@ th.vf_grid_venue {
 .vf_grid_infobox_bottom {
   bottom: 3%;
 }
+
+
+
+/* pink */
+
+.vf_grid_venue_thebigtopbar.vf_grid_freecell, 
+.vf_grid_venue_thebigtop.vf_grid_freecell {
+  background-color: #fff8f8 !important;
+}
+.vf_grid_row_hour_even .vf_grid_venue_thebigtopbar.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_venue_thebigtop.vf_grid_freecell { 
+  background-color: #ffe9e9 !important;
+}
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thebigtopbar.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thebigtop.vf_grid_freecell { 
+  background-color: #fff8f8 !important;
+}
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thebigtopbar.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thebigtop.vf_grid_freecell { 
+  background-color: #ffd8d8 !important;
+}
+
+/* blue */
+
+.vf_grid_venue_ventnorexchange.vf_grid_freecell, 
+.vf_grid_venue_thefringesquare.vf_grid_freecell, 
+.vf_grid_venue_thebookbus.vf_grid_freecell, 
+.vf_grid_venue_stcatherineschurch.vf_grid_freecell {
+  background-color: #f8f8ff !important;
+}
+.vf_grid_row_hour_even .vf_grid_venue_ventnorexchange.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_venue_thefringesquare.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_venue_thebookbus.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_venue_stcatherineschurch.vf_grid_freecell { 
+  background-color: #e9e9ff !important;
+}
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_ventnorexchange.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thefringesquare.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thebookbus.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_stcatherineschurch.vf_grid_freecell { 
+  background-color: #f8f8ff !important;
+}
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_ventnorexchange.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thefringesquare.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thebookbus.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_stcatherineschurch.vf_grid_freecell { 
+  background-color: #d8d8ff !important;
+}
+
+
+/* green */
+
+.vf_grid_venue_thefringevillage.vf_grid_freecell, 
+.vf_grid_venue_fringevillagebandstand.vf_grid_freecell, 
+.vf_grid_venue_thenest.vf_grid_freecell, 
+.vf_grid_venue_themagpie.vf_grid_freecell {
+  background-color: #f8fff8 !important;
+}
+.vf_grid_row_hour_even .vf_grid_venue_thefringevillage.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_venue_fringevillagebandstand.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_venue_thenest.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_venue_themagpie.vf_grid_freecell { 
+  background-color: #e9ffe9 !important;
+}
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thefringevillage.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_fringevillagebandstand.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thenest.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_themagpie.vf_grid_freecell { 
+  background-color: #f8fff8 !important;
+}
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thefringevillage.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_fringevillagebandstand.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thenest.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_themagpie.vf_grid_freecell { 
+  background-color: #d8ffd8 !important;
+}
+
+

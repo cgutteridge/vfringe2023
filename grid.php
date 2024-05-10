@@ -138,6 +138,7 @@ function chrisvf_render_grid_day( $attr ) {
   // work out timeslots
   $times = array();
   foreach( $events as $event ) {
+    if( $event["ALLDAY"] ) { continue; }
     $ev_time = chrisvf_event_time($event);
     if( $ev_time['start'] >= $end_t ) { continue; } // starts after our window
     if( $ev_time['end'] <= $start_t ) { continue; } // ends before our window
@@ -169,6 +170,7 @@ function chrisvf_render_grid_day( $attr ) {
   // build up grid
   $grid = array(); # venue=>list of columns for venu
   foreach( $events as $event ) {
+    if( $event["ALLDAY"] ) { continue; }
     $ev_time =chrisvf_event_time($event);
 
 
@@ -305,7 +307,7 @@ function chrisvf_render_grid_day( $attr ) {
         if( $col_id==sizeof($grid[$venue_id])-1 ) {
           $classes .= " vf_grid_col_vlast"; // last column for this venue
         }
-        #$classes.= " vf_grid_venue_".preg_replace( "/[^a-z]/i", "", $vf_venues[$venue_id]->name );
+        $classes.= " vf_grid_venue_".preg_replace( "/[^a-z0-9]/i", "", strtolower($venue_id) );
 
         if( @$cell['event'] ) {
           $url= $cell["event"]["URL"];
@@ -320,8 +322,8 @@ function chrisvf_render_grid_day( $attr ) {
             $classes.=' vf_grid_event_noend';
           }
           $id = "g".preg_replace( '/-/','_',$cell['event']['UID'] );
-          $data =
-          $h[]= "<td id='$id' data-code='".$cell['event']['UID']."' class='$classes' colspan='".$cell['width']."' rowspan='$height' ".(empty($url)?"":"data-url='".$url."'").">";
+	  $h[]= "<td id='$id' data-code='".$cell['event']['UID']."' class='$classes' colspan='".$cell['width']."' rowspan='$height' ".(empty($url)?"":"data-url='".$url."'").">";
+          if( !empty($url) ) { $h[]="<a href='$url'>"; }
 /*
           if( $cell['event']["start"]<=chrisvf_now() && $cell['event']["end"]>=chrisvf_now() ) {
             $h[]="<div class='vf_grid_now'>NOW</div>";
@@ -352,6 +354,7 @@ function chrisvf_render_grid_day( $attr ) {
           }
           $h[]= "</div>"; # event inner
           $h[]= "</div>"; # event middle
+          if( !empty($url) ) { $h[]="</a>"; }
           $h[]= "</td>";
         } else if( $cell["used"] ) {
           $h[]= "";

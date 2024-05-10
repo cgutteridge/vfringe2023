@@ -10,7 +10,6 @@ add_shortcode('chrisvf_itinerary_slug', 'chrisvf_render_itinerary_slug');
 add_action( 'tribe_events_single_event_after_the_content', 'chrisvf_print_itinerary_add' );
 
 
-add_action( 'wp_enqueue_scripts', 'chrisvf_add_itenerary_scripts' );
 function chrisvf_add_itinerary_scripts() {
     wp_register_style( 'chrisvf-itinerary', plugins_url('itinerary.css', __FILE__) );
     wp_enqueue_style( 'chrisvf-itinerary' );
@@ -18,6 +17,7 @@ function chrisvf_add_itinerary_scripts() {
     wp_register_script( 'chrisvf-itinerary', plugins_url('itinerary.js', __FILE__), array( 'jquery' ) );
     wp_enqueue_script( 'chrisvf-itinerary' );
 }
+add_action( 'wp_enqueue_scripts', 'chrisvf_add_itinerary_scripts' );
 
 function chrisvf_print_itinerary_add( $atts = [], $content = null) {
   global $wp_query;

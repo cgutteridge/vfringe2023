@@ -136,17 +136,37 @@ jQuery( document ).ready( function() {
   }
 
   $js .="
+    L.Control.Magnets = L.Control.extend({
+      onAdd: function(map) {
+	let div = L.DomUtil.create('div');
+	jQuery(div).html( '<div class=\"vf-magnet-control\"><div class=\"vf-magnet-title\">Fringe poetry magnets visible!</div><div>Discover and drag them around to make poems.</div></div>' );
+        return div;
+      },
+    
+      onRemove: function(map) {
+          // Nothing to do here
+      }
+    });
+    
+    L.control.magnets = function(opts) {
+        return new L.Control.Magnets(opts);
+    }
+    
+    let magnets = L.control.magnets({ position: 'bottomleft' });
+
     let old_mapzoom_class ='';
     map.on('zoomend', ()=> {
       let zoomlevel = map.getZoom();
       if (zoomlevel  <17){
           if (map.hasLayer(words_layer)) {
               map.removeLayer(words_layer);
+              magnets.remove();
           }
       }
       if (zoomlevel >= 17){
         if (!map.hasLayer(words_layer)){
             map.addLayer(words_layer);
+            magnets.addTo(map);
         }
       }
       jQuery('#'+mapid).removeClass( old_mapzoom_class );
@@ -247,6 +267,16 @@ $js.="
   $h.= "</script>\n";
   $h.= "<style>\n";
   $h.= "
+.vf-magnet-control {
+  background-color: #000;
+  color: #fff;
+  border: solid 1px #fff;
+  padding: 0 1em;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.8);
+}
+.vf-magnet-title {
+  font-weight: bold;
+}
 .map-word {
   font-family: Times New Roman, Serif;
   background-color: #eee;
@@ -262,7 +292,6 @@ $js.="
   transform:translate(-50%, -50%);
   padding: 0px 0.3em;
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.8);
-
 }
 .mapzoom_17 .map-word { font-size:  50% !important; border-width:1px; opacity: 70%;}
 .mapzoom_18 .map-word { font-size: 100% !important; border-width:2px; }
