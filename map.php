@@ -20,10 +20,12 @@ function chrisvf_render_map() {
   $warnings = [];
 
   $info = chrisvf_get_info();
+
   $places_raw = file_get_contents( dirname(__FILE__)."/places.json" );
   $places = json_decode( $places_raw, true );
-  $words_raw = file_get_contents( dirname(__FILE__)."/words.json" );
-  $words = json_decode( $words_raw, true );
+
+  $outlines_raw = file_get_contents( dirname(__FILE__)."/outlines.json" );
+  $outlines = json_decode( $outlines_raw, true );
 
   $venueToPOI = [];
   for( $i=0;$i<sizeof($places);++$i) {
@@ -91,93 +93,21 @@ function chrisvf_render_map() {
   $js.="
 jQuery( document ).ready( function() {
 
-  let word_pos = {};
-  document.cookie.split( /; / ).forEach( (v)=>{
-    let kv = v.split(/=/);
-    if( kv[0] == 'vfwords' ) {
-      try {
-	const obj = JSON.parse(kv[1]);
-	word_pos = obj;
-      } catch (e) {
-        console.error(e); 
-      }
-    }
-  });
-  
   let map;
   let bounds = L.latLngBounds([]);
   (function(mapid){
     map = L.map(mapid,{scrollWheelZoom: true});
-    let words_layer = L.featureGroup();
-    map.addLayer(words_layer);
     let icon;
     let marker;
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{ attribution: 'Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>', maxZoom: 19 }).addTo(map);
-";
-  # add each word to the map, and when it's dragged, log the new position but only to 5 decimal places
-  for( $i=0; $i<count($words); $i++ ) {
-    $word = $words[$i];
-    $js .= "
-     {
-	let myIcon = L.divIcon({className: 'map-word-outer', html:'<div class=\'map-word\'>".$word[0]."</div>'});
-	let ll = ".json_encode( [$word[1],$word[2]] ).";
-        if( word_pos[".$i."] ) {
-	  ll = word_pos[".$i."];
-        }
-	let marker = L.marker(ll, { icon: myIcon, draggable: true, autoPan: true });
-	marker.on( 'moveend', (e)=>{
-	  let ll = marker.getLatLng();
-	  word_pos[$i] = [ Math.round(ll.lat * 100000) / 100000, Math.round(ll.lng * 100000) / 100000 ];
-          document.cookie = 'vfwords='+JSON.stringify(word_pos)+'; expires=Mon, 1 Jul 2024 12:00:00 UTC';
-	});
-        words_layer.addLayer( marker );
-     }
-    ";
-  }
-
-  $js .="
-    L.Control.Magnets = L.Control.extend({
-      onAdd: function(map) {
-	let div = L.DomUtil.create('div');
-	jQuery(div).html( '<div class=\"vf-magnet-control\"><div class=\"vf-magnet-title\">Fringe poetry magnets visible!</div><div>Discover and drag them around to make poems.</div></div>' );
-        return div;
-      },
-    
-      onRemove: function(map) {
-          // Nothing to do here
-      }
-    });
-    
-    L.control.magnets = function(opts) {
-        return new L.Control.Magnets(opts);
-    }
-    
-    let magnets = L.control.magnets({ position: 'bottomleft' });
 
     let old_mapzoom_class ='';
     map.on('zoomend', ()=> {
       let zoomlevel = map.getZoom();
-      if (zoomlevel  <17){
-          if (map.hasLayer(words_layer)) {
-              map.removeLayer(words_layer);
-              magnets.remove();
-          }
-      }
-      if (zoomlevel >= 17){
-        if (!map.hasLayer(words_layer)){
-            map.addLayer(words_layer);
-            magnets.addTo(map);
-        }
-      }
       jQuery('#'+mapid).removeClass( old_mapzoom_class );
       jQuery('#'+mapid).addClass( 'mapzoom_'+zoomlevel );
       old_mapzoom_class = 'mapzoom_'+zoomlevel;
     });
-  ";
-
-	
-
-$js.="
   }('$id'));
 ";
     
@@ -258,46 +188,17 @@ $js.="
     bounds.extend( lat_long );
 }([$lat_long],'$icon_url',[$icon_size],[$icon_anchor],'".htmlspecialchars($place["NAME"], ENT_QUOTES)."','".preg_replace("/'/","\\'",$popup)."',$nowText));\n";
   }
-
   $js.= "map.fitBounds( bounds );\n";
-  $js.= "});";
+
+  // add outlined areas
+  foreach( $outlines as $outline ) {
+    $js .= "L.polygon( ".json_encode($outline["GEO"]).", ".json_encode($outline["OPTIONS"])." ).addTo(map)\n";
+  }
+  $js.= "});\n";
 
   $h.= "<script>\n";
   $h.= $js;
   $h.= "</script>\n";
-  $h.= "<style>\n";
-  $h.= "
-.vf-magnet-control {
-  background-color: #000;
-  color: #fff;
-  border: solid 1px #fff;
-  padding: 0 1em;
-  box-shadow: 0 3px 10px rgb(0 0 0 / 0.8);
-}
-.vf-magnet-title {
-  font-weight: bold;
-}
-.map-word {
-  font-family: Times New Roman, Serif;
-  background-color: #eee;
-  border-style: solid;
-  border-top-color: #fff;
-  border-right-color: #fff;
-  border-bottom-color: #ccc;
-  border-left-color: #ccc;
-  color: #000;
-  width: auto !important;
-  height: auto !important;
-  display: inline-block;
-  transform:translate(-50%, -50%);
-  padding: 0px 0.3em;
-  box-shadow: 0 3px 10px rgb(0 0 0 / 0.8);
-}
-.mapzoom_17 .map-word { font-size:  50% !important; border-width:1px; opacity: 70%;}
-.mapzoom_18 .map-word { font-size: 100% !important; border-width:2px; }
-.mapzoom_19 .map-word { font-size: 200% !important; border-width:4px; }
-";
-  $h.= "</style>\n";
 
   return $h;
 }

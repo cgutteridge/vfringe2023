@@ -29,3 +29,35 @@
 
 ]
 
+
+
+ { "GEO":[ 50.5983,-1.19792 ], "ICON":"number_5.png",  "NAME":"Boniface Studios", "VENUES":["Boniface Studios (The Hall)","Boniface Studios (The Studio)"]},
+ { "GEO":[ 50.59212,-1.21638], "ICON":"number_10.png", "NAME":"Parkside Bar", "VENUES":["Parkside Bar"]},
+ { "GEO":[ 50.59085,-1.21882], "ICON":"bar.png", "NAME":"Big Top Bar", "VENUES":["The Big Top Bar"]},
+ { "GEO":[ 50.59426,-1.20465], "ICON":"number_17.png", "NAME":"Peer Studios", "VENUES":["Peer Studios"]},
+ { "GEO":[ 50.59263,-1.21695], "ICON":"number_19.png", "NAME":"Gianpaolo Mario Photo Gallery", "VENUES":["Park View Studio"]},
+
+
+ { "GEO":[ 50.59719,-1.20842 ], "ICON":"walk.png", "NAME":"Top of Grove Road", "VENUES":["Top of Grove Road"]},
+ { "GEO":[ 50.61696,-1.23363 ], "ICON":"popup.png", "NAME":"Appuldurcombe House", "VENUES":["Appuldurcombe House"]},
+ { "GEO":[ 50.58172,-1.25758 ], "ICON":"popup.png", "NAME":"Binnel Studios ", "VENUES":["Binnel Studios"]},
+ { "GEO":[ 50.59911,-1.18999 ], "ICON":"walk.png", "NAME":"Bonchurch Pond", "VENUES":["Bonchurch Pond"]},
+ { "GEO":[ 50.6024,-1.18295 ], "ICON":"walk.png", "NAME":"Bonchurch Shute", "VENUES":["Bonchurch Shute"]},
+ { "GEO":[ 50.59397,-1.20266 ], "ICON":"popup.png", "NAME":"Ventnor Town Council", "VENUES":["Ventnor Town Council"]},
+ { "GEO":[ 50.59283,-1.2056 ], "ICON":"popup.png", "NAME":"Ventnor Harbour Bandstand", "VENUES":["Ventnor Harbour Bandstand"]},
+ { "GEO":[ 50.59484,-1.2058 ], "ICON":"popup.png", "NAME":"Drunken Lobster", "VENUES":["Drunken Lobster"]},
+ { "GEO":[ 50.59483,-1.20596 ], "ICON":"popup.png", "NAME":"Honeybourne Jewellery", "VENUES":["Honeybourne Jewellery"]},
+
+
+ { "GEO":[ 50.59463,-1.20507 ],"ICON":"popup.png", "NAME":"The Athanor", "VENUES":["The Athanor"]},
+ { "GEO":[ 50.59526,-1.20471 ],"ICON":"popup.png", "NAME":"Luchelle Boutique", "VENUES":["Luchelle Boutique"]},
+ { "GEO":[ 50.59484,-1.20544 ],"ICON":"popup.png", "NAME":"Reggie's Retro", "VENUES":["Reggie's Retro"]},
+ { "GEO":[ 50.59479,-1.2054  ],"ICON":"popup.png", "NAME":"Blue Labelle", "VENUES":["Blue Labelle"]},
+ { "GEO":[ 50.59438,-1.20478 ],"ICON":"popup.png", "NAME":"Lesley's", "VENUES":["Lesleys Nutshell"]},
+ { "GEO":[ 50.59498,-1.20608 ],"ICON":"popup.png", "NAME":"Scott's Hair Saloon", "VENUES":["Scott's Hair Saloon"]},
+ { "GEO":[ 50.59659,-1.20079 ],"ICON":"popup.png", "NAME":"Royal British Legion", "VENUES":["Ventnor Royal British Legion (Social Club)"]},
+ { "GEO":[ 50.59757,-1.21483 ],"ICON":"popup.png", "NAME":"Social Club", "VENUES":["Social Club"]},
+ { "GEO":[ 50.59534,-1.20583 ],"ICON":"popup.png", "NAME":"The Blenheim", "VENUES":["The Blenheim"]},
+
+
+]
