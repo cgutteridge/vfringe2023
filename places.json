@@ -24,9 +24,9 @@
  { "GEO":[ 50.59268,-1.21116 ], "ICON":"number_20.png", "NAME":"La Falaise Carpark Shelter", "VENUES":["La Falaise Carpark Shelter"]},
  { "GEO":[ 50.59230,-1.23203 ], "ICON":"number_21.png", "NAME":"Park & Ride", "VENUES": ["Ventnor Rugby Football Club"]},
 
- { "GEO":[ 50.59393,-1.20299 ], "ICON":"blank.png", "NAME":"Salisbury Gardens", "VENUES":["Salisbury Gardens"] },
- { "GEO":[ 50.59282,-1.21457 ], "ICON":"blank.png", "NAME":"Ventnor Putting Green","VENUES":["Ventnor Putting Green (Ventnor Park)"]},
- { "GEO":[ 50.59231,-1.21587 ], "ICON":"blank.png", "NAME":"Fringe Village Bandstand","VENUES":["Fringe Village Bandstand"]},
+ { "GEO":[ 50.59393,-1.20299 ], "ICON":"walk.png", "NAME":"Salisbury Gardens", "VENUES":["Salisbury Gardens"] },
+ { "GEO":[ 50.59282,-1.21457 ], "ICON":"popup.png", "NAME":"Ventnor Putting Green","VENUES":["Ventnor Putting Green (Ventnor Park)"]},
+ { "GEO":[ 50.59231,-1.21587 ], "ICON":"music.png", "NAME":"Fringe Village Bandstand","VENUES":["Fringe Village Bandstand"]},
 
  { "GEO":[ 50.58685,-1.23196 ], "ICON":"popup.png", "NAME":"Orchard Bay","VENUES":["Orchard Bay"]},
  { "GEO":[ 50.5942,-1.20694  ], "ICON":"popup.png", "NAME":"The Rex Piano Bar","VENUES":["The Rex Piano Bar"]},
@@ -51,8 +51,18 @@
  { "GEO":[ 50.59658,-1.20022 ], "ICON":"bus.png", "NAME":"Shuttle Bus Stop", "VENUES": []},
  { "GEO":[ 50.59747,-1.19734 ], "ICON":"bus.png", "NAME":"Shuttle Bus Stop", "VENUES": []},
  { "GEO":[ 50.59673,-1.19461 ], "ICON":"bus.png", "NAME":"Shuttle Bus Stop", "VENUES": []},
- { "GEO":[ 50.59208,-1.23163 ], "ICON":"bus.png", "NAME":"Shuttle Bus Stop", "VENUES": []}
+ { "GEO":[ 50.59208,-1.23163 ], "ICON":"bus.png", "NAME":"Shuttle Bus Stop", "VENUES": []},
 
+ { "GEO":[ 50.59221,-1.23286 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
+ { "GEO":[ 50.58974,-1.22761 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
+ { "GEO":[ 50.59254,-1.21165 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
+ { "GEO":[ 50.59509,-1.20777 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
+ { "GEO":[ 50.59301,-1.20297 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
+ { "GEO":[ 50.59379,-1.20355 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
+ { "GEO":[ 50.59412,-1.2012  ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
+ { "GEO":[ 50.59525,-1.20238 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
+ { "GEO":[ 50.59591,-1.20305 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
+ { "GEO":[ 50.59464,-1.19854 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []}
 ]
 
 
