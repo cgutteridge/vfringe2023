@@ -170,18 +170,22 @@ th.vf_grid_venue {
 
 /* pink */
 
-.vf_grid_venue_thebigtopbar.vf_grid_freecell, 
+.vf_grid_venue_theflowersbrookinn.vf_grid_freecell, 
+.vf_grid_venue_theflowersbrookinn.vf_grid_freecell, 
 .vf_grid_venue_thebigtop.vf_grid_freecell {
   background-color: #fff8f8 !important;
 }
 .vf_grid_row_hour_even .vf_grid_venue_thebigtopbar.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_venue_thebigtopbar.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_venue_thebigtop.vf_grid_freecell { 
   background-color: #ffe9e9 !important;
 }
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_theflowersbrookinn.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thebigtopbar.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thebigtop.vf_grid_freecell { 
   background-color: #fff8f8 !important;
 }
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_theflowersbrookinn.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thebigtopbar.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thebigtop.vf_grid_freecell { 
   background-color: #ffd8d8 !important;
@@ -217,24 +221,32 @@ th.vf_grid_venue {
 
 /* green */
 
+.vf_grid_venue_ventnorputtinggreenventnorpark.vf_grid_freecell, 
+.vf_grid_venue_ventnorpark.vf_grid_freecell, 
 .vf_grid_venue_thefringevillage.vf_grid_freecell, 
 .vf_grid_venue_fringevillagebandstand.vf_grid_freecell, 
 .vf_grid_venue_thenest.vf_grid_freecell, 
 .vf_grid_venue_themagpie.vf_grid_freecell {
   background-color: #f8fff8 !important;
 }
+.vf_grid_row_hour_even .vf_grid_venue_ventnorputtinggreenventnorpark.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_venue_ventnorpark.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_venue_thefringevillage.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_venue_fringevillagebandstand.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_venue_thenest.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_venue_themagpie.vf_grid_freecell { 
   background-color: #e9ffe9 !important;
 }
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_ventnorputtinggreenventnorpark.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_ventnorpark.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thefringevillage.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_fringevillagebandstand.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thenest.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_themagpie.vf_grid_freecell { 
   background-color: #f8fff8 !important;
 }
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_ventnorputtinggreenventnorpark.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_ventnorpark.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thefringevillage.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_fringevillagebandstand.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thenest.vf_grid_freecell,
