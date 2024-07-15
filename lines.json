@@ -15,7 +15,8 @@
       "NAME" : "Shuttlebus A",
       "OPTIONS" : {
          "color" : "#91386b",
-         "opacity" : 0.5
+         "opacity" : 0.5,
+         "weight": 5
       }
    },
    {
@@ -40,7 +41,8 @@
       "NAME" : "Shuttlebus B",
       "OPTIONS" : {
          "color" : "#91386b",
-         "opacity" : 0.5
+         "opacity" : 0.5,
+         "weight": 5
       }
    },
    {
@@ -68,7 +70,8 @@
       "NAME" : "Shuttlebus C",
       "OPTIONS" : {
          "color" : "#91386b",
-         "opacity" : 0.5
+         "opacity" : 0.5,
+         "weight": 5
       }
    },
    {
@@ -90,7 +93,8 @@
       "NAME" : "Shuttlebus D",
       "OPTIONS" : {
          "color" : "#91386b",
-         "opacity" : 0.5
+         "opacity" : 0.5,
+         "weight": 5
       }
    },
    {
@@ -107,7 +111,8 @@
       "NAME" : "Shuttlebus E",
       "OPTIONS" : {
          "color" : "#91386b",
-         "opacity" : 0.5
+         "opacity" : 0.5,
+         "weight": 5
       }
    },
    {
@@ -121,7 +126,8 @@
       "NAME" : "Shuttlebus F",
       "OPTIONS" : {
          "color" : "#91386b",
-         "opacity" : 0.5
+         "opacity" : 0.5,
+         "weight": 5
       }
    },
    {
@@ -144,7 +150,8 @@
       "NAME" : "Shuttlebus G",
       "OPTIONS" : {
          "color" : "#91386b",
-         "opacity" : 0.5
+         "opacity" : 0.5,
+         "weight": 5
       }
    },
    {
@@ -157,7 +164,8 @@
       "NAME" : "Shuttlebus H",
       "OPTIONS" : {
          "color" : "#91386b",
-         "opacity" : 0.5
+         "opacity" : 0.5,
+         "weight": 5
       }
    },
    {
@@ -190,7 +198,8 @@
       "NAME" : "Shuttlebus I",
       "OPTIONS" : {
          "color" : "#91386b",
-         "opacity" : 0.5
+         "opacity" : 0.5,
+         "weight": 5
       }
    },
    {
@@ -201,7 +210,8 @@
       "NAME" : "Shuttlebus J",
       "OPTIONS" : {
          "color" : "#91386b",
-         "opacity" : 0.5
+         "opacity" : 0.5,
+         "weight": 5
       }
    }
 ]
