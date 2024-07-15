@@ -68,39 +68,30 @@ async function scrapeJson(url) {
 }
 
 
-async function createCsv(data) {
-    const csvWriter = createCsvWriter({
-        path: '../boxoffice-events.csv',
-        header: [
-            { id: 'venue', title: 'Venue' },
-            { id: 'date', title: 'Date' },
-            { id: 'start', title: 'Start' },
-            { id: 'end', title: 'End' },
-            { id: 'title', title: 'Title' },
-            { id: 'eventUrl', title: 'Event' },
-        ],
-    });
 
+async function createTsv(data) {
+    const filePath = path.join(__dirname, '../boxoffice-events.tsv');
+    const header = ['Venue', 'Date', 'Start', 'End', 'Title', 'Event'];
     const records = data.map(jsonData => {
-        return {
-            venue: jsonData.location.name,
-            date: jsonData.startDate.split('T')[0],
-            start: jsonData.doorTime ? formatTime(jsonData.doorTime) : '',
-            end: jsonData.endDate ? formatTime(jsonData.endDate) : '',
-            title: jsonData.name,
-            eventUrl: jsonData.url,
-        };
+        return [
+            jsonData.location.name,
+            jsonData.startDate.split('T')[0],
+            jsonData.doorTime ? formatTime(jsonData.doorTime) : '',
+            jsonData.endDate ? formatTime(jsonData.endDate) : '',
+            jsonData.name,
+            jsonData.url,
+        ].join('\t');
     });
 
-    await csvWriter.writeRecords(records);
-    console.log('CSV file created successfully.');
-}
+    const tsvContent = [header.join('\t'), ...records].join('\n');
 
-function formatTime(dateTime) {
-    const date = new Date(dateTime);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+    fs.writeFile(filePath, tsvContent, 'utf8', (err) => {
+        if (err) {
+            console.error('Error writing TSV file:', err);
+        } else {
+            console.log('TSV file created successfully.');
+        }
+    });
 }
 
 

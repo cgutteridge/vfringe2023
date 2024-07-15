@@ -209,14 +209,14 @@ function chrisvf_wp_events() {
 	# load csv events
 
 	$csv_files = [
-        file( __DIR__."/extras.csv" ),
-        file( __DIR__."/boxoffice-events.csv" )
+        file( __DIR__."/extras.tsv" ),
+        file( __DIR__."/boxoffice-events.tsv" )
     ];
     foreach( $csv_files as $csvFile ) {
 	    $heading_row = trim(array_shift($csvFile));
-	    $headings = preg_split( "/,/", $heading_row );
+	    $headings = preg_split( "/\t/", $heading_row );
 	    foreach( $csvFile as $row ) {
-		    $cells = preg_split( "/,/", $row );
+		    $cells = preg_split( "/\t/", $row );
 		    $record = [];
 		    for($i=0;$i<count($headings);++$i) {
 			    $record[$headings[$i]]=trim($cells[$i]);
@@ -248,15 +248,19 @@ function chrisvf_location_sortcode( $loc ) {
 		case "Ventnor Exchange": 	return "001"; 
 		case "The Fringe Square": 	return "002"; 
 		case "St. Catherine's Church":	return "003"; 
-		case "The Book Bus": 		return "004"; 
+		case "St Catherine's Church":	return "004"; 
+		case "The Book Bus": 		return "005"; 
 
 		case "The Fringe Village": 	return "011"; 
 		case "Fringe Village Bandstand": return "012"; 
 		case "The Nest": 		return "013"; 
 		case "The Magpie": 		return "014"; 
+		case "Ventnor Park": 		return "015"; 
+		case "Ventnor Putting Green (Ventnor Park)": 		return "016"; 
 
 		case "The Big Top": 		return "021"; 
 		case "The Big Top Bar": 	return "022"; 
+		case "The Flowersbrook Inn": return "023"; 
 	}
 	return "100".$loc;
 }
