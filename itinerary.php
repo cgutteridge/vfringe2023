@@ -204,7 +204,7 @@ function chrisvf_render_itinerary_table( $itinerary, $active = true ) {
     foreach( $codes as $code ) {
       ++$vf_js_id;
       $event = @$itinerary['events'][$code];
-      $h []= "<tr id='${vf_js_id}_row'>";
+      $h []= "<tr id='{$vf_js_id}_row'>";
       if( $event ) {
         $h []= "<td>".date("l jS F",$start_time)."</td>";
         $h []= "<td>".date("H:i",$start_time)."</td>";
@@ -231,9 +231,9 @@ function chrisvf_render_itinerary_table( $itinerary, $active = true ) {
         $h []= "<td></td>";
         $h []= "<td>Error, event missing (may have been erased or altered. Sorry.)</td>";
       }
-      if( $active ) { $h []= "<td><div class='vf_itinerary_button vf_itinerary_remove_button' id='${vf_js_id}_remove'>Remove from itinerary</div>"; }
+      if( $active ) { $h []= "<td><div class='vf_itinerary_button vf_itinerary_remove_button' id='{$vf_js_id}_remove'>Remove from itinerary</div>"; }
       $h []= "</tr>";
-      $script []= "jQuery( '#${vf_js_id}_remove' ).click(function(){ jQuery( '#${vf_js_id}_row' ).hide(); vfItineraryRemove( '".$code."' ) });\n";
+      $script []= "jQuery( '#{$vf_js_id}_remove' ).click(function(){ jQuery( '#{$vf_js_id}_row' ).hide(); vfItineraryRemove( '".$code."' ) });\n";
     }
   }
   $h []= "</table>";

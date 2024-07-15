@@ -27,6 +27,9 @@ function chrisvf_render_map() {
   $outlines_raw = file_get_contents( dirname(__FILE__)."/outlines.json" );
   $outlines = json_decode( $outlines_raw, true );
 
+  $lines_raw = file_get_contents( dirname(__FILE__)."/lines.json" );
+  $lines = json_decode( $lines_raw, true );
+
   $venueToPOI = [];
   for( $i=0;$i<sizeof($places);++$i) {
     if(!empty( $places[$i]["VENUES"]  ) ) {
@@ -193,6 +196,11 @@ jQuery( document ).ready( function() {
   // add outlined areas
   foreach( $outlines as $outline ) {
     $js .= "L.polygon( ".json_encode($outline["GEO"]).", ".json_encode($outline["OPTIONS"])." ).addTo(map)\n";
+  }
+
+  // draw lines
+  foreach( $lines as $line ) {
+    $js .= "L.polyline( ".json_encode($line["GEO"]).", ".json_encode($line["OPTIONS"])." ).addTo(map)\n";
   }
   $js.= "});\n";
 

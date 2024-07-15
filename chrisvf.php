@@ -206,34 +206,41 @@ function chrisvf_wp_events() {
 		}
 	}
 
-	# load extras
-	$extras_csv = file( __DIR__."/extras.csv" );
-	$heading_row = trim(array_shift($extras_csv));
-	$headings = preg_split( "/,/", $heading_row );
-	foreach( $extras_csv as $row ) {
-		$cells = preg_split( "/,/", $row );
-		$record = [];
-		for($i=0;$i<count($headings);++$i) {
-			$record[$headings[$i]]=trim($cells[$i]);
-		}
+	# load csv events
 
-		# skip records with ??? in to indicate unconfirmed ones
-		if( preg_match( "/\?\?\?/", $record["Title"] ) ) { continue; }
-
-		$UID = sprintf("%s:%s:%s", $record["Venue"], $record["Date"], $record["Start"] );
-		$item = [
-			"UID"=>$UID,
-			"DTSTART"=>preg_replace( "/-/","", $record["Date"] )."T".preg_replace("/:/","",$record["Start"] )."00",
-			"DTEND"=>preg_replace( "/-/","", $record["Date"] )."T".preg_replace("/:/","",$record["End"] )."00",
-			"SUMMARY"=>$record["Title"],
-			"DESCRIPTION"=>"",
-			"URL"=>$record["Event"],
-			"LOCATION"=>$record["Venue"],
-			"SORTCODE"=>chrisvf_location_sortcode($record["Venue"]),
-		];
-		$ical[ $UID ] = $item;
-	}	
-	return $ical;
+	$csv_files = [
+        file( __DIR__."/extras.csv" ),
+        file( __DIR__."/boxoffice-events.csv" )
+    ];
+    foreach( $csv_files as $csvFile ) {
+	    $heading_row = trim(array_shift($csvFile));
+	    $headings = preg_split( "/,/", $heading_row );
+	    foreach( $csvFile as $row ) {
+		    $cells = preg_split( "/,/", $row );
+		    $record = [];
+		    for($i=0;$i<count($headings);++$i) {
+			    $record[$headings[$i]]=trim($cells[$i]);
+		    }
+    
+		    # skip records with ??? in to indicate unconfirmed ones
+		    if( preg_match( "/\?\?\?/", $record["Title"] ) ) { continue; }
+    
+		    $UID = sprintf("%s:%s:%s", $record["Venue"], $record["Date"], $record["Start"] );
+		    $item = [
+			    "UID"=>$UID,
+			    "DTSTART"=>preg_replace( "/-/","", $record["Date"] )."T".preg_replace("/:/","",$record["Start"] )."00",
+			    "DTEND"=>preg_replace( "/-/","", $record["Date"] )."T".preg_replace("/:/","",$record["End"] )."00",
+			    "SUMMARY"=>$record["Title"],
+			    "DESCRIPTION"=>"",
+			    "URL"=>$record["Event"],
+			    "LOCATION"=>$record["Venue"],
+			    "SORTCODE"=>chrisvf_location_sortcode($record["Venue"]),
+				"CATEGORIES"=>"",
+		    ];
+		    $ical[ $UID ] = $item;
+	    }	
+    }
+     return $ical;
 }
 
 function chrisvf_location_sortcode( $loc ) {
