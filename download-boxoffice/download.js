@@ -9,7 +9,7 @@ for(var i=1;i<25;i++) {
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs');
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+const path = require('path');
 
 const headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
@@ -94,6 +94,13 @@ async function createTsv(data) {
     });
 }
 
+function formatTime(dateTime) {
+    const date = new Date(dateTime);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+}
+
 
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -110,7 +117,7 @@ async function main() {
         await delay(2000); // 2-second delay between requests
     }
 
-    createCsv( extractedJsonBlocks );
+    createTsv( extractedJsonBlocks );
 }
 
 main();
