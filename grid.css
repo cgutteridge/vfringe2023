@@ -42,7 +42,7 @@ th.vf_grid_venue {
   padding-top: 1em;
 }
 .vf_grid_event {
-  border: dotted 2px #999;
+  border: solid 2px #999;
   background-color: #eea;
   vertical-align: top;
   text-align: center;
