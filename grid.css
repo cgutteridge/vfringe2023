@@ -3,8 +3,12 @@
   overflow: visible;
   font-size:60% !important;
 }
-th, td {
+th {
   padding: 0.2em 0.1em 1em 0.1em !important;
+  line-height: 1.2 !important;
+}
+td {
+  padding: 0 !important;
   line-height: 1.2 !important;
 }
 table.vf_grid th {
@@ -38,7 +42,7 @@ th.vf_grid_venue {
   padding-top: 1em;
 }
 .vf_grid_event {
-  border: solid 2px #333;
+  border: dotted 2px #999;
   background-color: #eea;
   vertical-align: top;
   text-align: center;
@@ -87,18 +91,6 @@ th.vf_grid_venue {
   background: url(clouds.png) fixed;
 }
 */
-.vf_grid_busy {
-  background-color: rgba(0,0,0,0.7) !important;
-}
-.vf_grid_row_hour_even .vf_grid_freecell.vf_grid_busy {
-  background-color: rgba(0,0,0,0.6) !important;
-}
-.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_freecell.vf_grid_busy { 
-  background-color: rgba(0,0,0,0.74) !important;
-}
-.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_freecell.vf_grid_busy { 
-  background-color: rgba(0,0,0,0.64) !important;
-}
 
 
 .vf_grid_cell_title {
@@ -113,37 +105,50 @@ th.vf_grid_venue {
   display: inline-block;
 }
 
-/* itinierary grid stuff */
-.vf_grid_itinerary {
-  background-color: #ccf !important;
-  color: #339;
-}
-.vf_grid_itinerary .vf_grid_cat {
-  /*background-color: rgba(255,255,255,0.2);*/
+.vf_grid_event_middle {
+  position: relative;
+  padding: 0 0.3em 1em 0.3em;
 }
 
+
+/* itinierary grid stuff */
+.vf_grid_it {
+  background-color: #31e069 !important;
+  border: solid 2px black;
+}
+.vf_grid_it_toggle {
+  background-color: transparent;
+  color: transparent;
+  cursor: pointer;
+  font-size: 70%;
+  padding: 3px;
+}
+.vf_grid_it_remove {
+  display: none;
+}
+.vf_grid_it .vf_grid_it_remove {
+  display: block;
+}
+.vf_grid_it .vf_grid_it_add {
+  display: none;
+}
+.vf_grid_event:hover .vf_grid_it_toggle {
+  background-color: black;
+  color: white;
+}
+.vf_grid_event:hover .vf_grid_it_toggle:hover {
+  background-color: blue;
+  color: white;
+}
 .vf_grid_clash {
   background-color: #333 !important;
   color: #ccc !important;
   border-color: #000 !important;
 }
+/* end of itinierary grid stuff */
 
-.vf_grid_nonitinerary {
-  background-color:  #D2B48C !important;
-  color: #333 !important;
-}
-.vf_grid_event_middle {
-  position: relative;
-  padding: 0 0.3em;
-}
-.vf_grid_star { 
-  font-size: 200%;
-  position: absolute;
-  top: 0;
-  right: 0;
-  cursor: pointer;
-  color: #996;
-}
+
+
 .vf_grid_cell_desc {
   display: none;
 }
@@ -254,4 +259,18 @@ th.vf_grid_venue {
   background-color: #d8ffd8 !important;
 }
 
-
+/* busy needs to go after the column colours */
+/*
+.vf_grid_busy {
+  background-color: rgba(0,0,0,0.7) !important;
+}
+.vf_grid_row_hour_even .vf_grid_freecell.vf_grid_busy {
+  background-color: rgba(0,0,0,0.6) !important;
+}
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_freecell.vf_grid_busy { 
+  background-color: rgba(0,0,0,0.74) !important;
+}
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_freecell.vf_grid_busy { 
+  background-color: rgba(0,0,0,0.64) !important;
+}
+*/

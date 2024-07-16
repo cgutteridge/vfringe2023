@@ -4,11 +4,6 @@
 }
   
 .vf_itinerary_toggle { 
-  margin-left: 1em;
-  margin-right: 0px;
-  margin-bottom: 0.25em;
-  display: inline-block;
-  font-size: 80%;
 
 }
 .vf_itinerary_button { 
@@ -17,7 +12,7 @@
   color: #888888 !important;
   border-color: #888888;
   background: transparent;
-  display: inline-block;
+  display: block;
   cursor: pointer;
   font-size: 20px;
   line-height: 16px;

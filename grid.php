@@ -4,7 +4,6 @@
  GRID
  *********************************************************************************/
 
-add_shortcode('chrisvf_grid', 'chrisvf_render_grid');
 add_shortcode('chrisvf_grid', 'chrisvf_render_grid_day');
 
 add_action( 'wp_enqueue_scripts', 'chrisvf_add_grid_scripts' );
@@ -78,41 +77,6 @@ function chrisvf_render_grid_list() {
   return join( "", $h );
 }
 
-function chrisvf_render_grid( $atts = [], $content = null) {
-  $h = array();
-  if( @$_GET['debug'] == "ICAL" ) {
-    $h []= "<pre>".htmlspecialchars(print_r(chrisvf_get_info(),true))."</pre>";
-  }
-  if( @$_GET['list'] ) {
-    return chrisvf_render_grid_list();
-  }
-
-  $dates = [
-	'2022-07-22',
-	'2022-07-23',
-	'2022-07-24',
-	'2022-07-25',
-	'2022-07-26',
-	'2022-07-27',
-	'2022-07-28',
-	'2022-07-29',
-	'2022-07-30',
-	'2022-07-31'
-  ];
-
-  foreach( $dates as $date ) {
-    $h []= "<div style='overflow: auto'>";
-    $time_t = strtotime( $date );
-    if( date( "Y-m-d", chrisvf_time() ) == date( "Y-m-d", $time_t ) ) {
-      $h[]="<a name='today'></a>";
-    }
-    $h[]="<h3 class='vf_grid_day_heading' style='margin-bottom:0'>".date( "l j F", $time_t )."</h3>";
-    $h[]=chrisvf_render_grid_day( ["date"=>$date] );
-    $h []= "</div>"; # end of overflow-auto div
-  }
-
-  return join( "", $h );
-}
 
 
 
@@ -138,7 +102,7 @@ function chrisvf_render_grid_day( $attr ) {
   // work out timeslots
   $times = array();
   foreach( $events as $event ) {
-    if( $event["ALLDAY"] ) { continue; }
+    if( @$event["ALLDAY"] ) { continue; }
     $ev_time = chrisvf_event_time($event);
     if( $ev_time['start'] >= $end_t ) { continue; } // starts after our window
     if( $ev_time['end'] <= $start_t ) { continue; } // ends before our window
@@ -170,7 +134,7 @@ function chrisvf_render_grid_day( $attr ) {
   // build up grid
   $grid = array(); # venue=>list of columns for venu
   foreach( $events as $event ) {
-    if( $event["ALLDAY"] ) { continue; }
+    if( @$event["ALLDAY"] ) { continue; }
     $ev_time =chrisvf_event_time($event);
 
 
@@ -307,57 +271,12 @@ function chrisvf_render_grid_day( $attr ) {
         if( $col_id==sizeof($grid[$venue_id])-1 ) {
           $classes .= " vf_grid_col_vlast"; // last column for this venue
         }
-        $classes.= " vf_grid_venue_".preg_replace( "/[^a-z0-9]/i", "", strtolower($venue_id) );
+        $classes .= " vf_grid_venue_".preg_replace( "/[^a-z0-9]/i", "", strtolower($venue_id) );
 
         if( @$cell['event'] ) {
-          $url= $cell["event"]["URL"];
-          $height = $cell['end_i'] - $cell['start_i'];
-          $classes.= ' vf_grid_event';
-
-          if( @$itinerary['events'][$cell['code']] ) {
-            $classes .= " vf_grid_itinerary";
-          }
-
-          if( $cell['est'] ) {
-            $classes.=' vf_grid_event_noend';
-          }
-          $id = "g".preg_replace( '/-/','_',$cell['event']['UID'] );
-	  $h[]= "<td id='$id' data-code='".$cell['event']['UID']."' class='$classes' colspan='".$cell['width']."' rowspan='$height' ".(empty($url)?"":"data-url='".$url."'").">";
-          if( !empty($url) ) { $h[]="<a href='$url'>"; }
-/*
-          if( $cell['event']["start"]<=chrisvf_now() && $cell['event']["end"]>=chrisvf_now() ) {
-            $h[]="<div class='vf_grid_now'>NOW</div>";
-          }
-*/
-          $h[]= "<div class='vf_grid_event_middle'>";
-          $h[]= "<div class='vf_grid_star'>";
-#          $h[]= "<div class='vf_grid_star_off' title='Add to your itinerary'><span class='vf_nhov'>☆</span><span class='vf_hov'>★</span></div>";
-#          $h[]= "<div class='vf_grid_star_on' title='Remove from itinerary'><span class='vf_hov'>☆</span><span class='vf_nhov'>★</span></div>";
-          $h[]= "</div>";
-          $h []= "<div class='vf_grid_inner'>";
-
-          $h[]= "<div class='vf_grid_cell_title'>". $cell['event']["SUMMARY"]."</div>";
-          $h[]= "<div class='vf_grid_cell_desc' style='display:none'>". $cell['event']["DESCRIPTION"]."</div>";
-/*
-          if( !empty( trim( $cell['event']['CATEGORIES'] ) ) ) {
-            foreach( preg_split( "/,/", $cell['event']['CATEGORIES'] ) as $cat ) {
-              $h[]= "<div class='vf_grid_cat'>".$cat."</div>";
-            }
-          }
-*/
-
-#          if( $clash ) {
-#            $h[]= "<div style='font-style:italic;font-size:80%;margin-top:1em'>Clashes with your itinerary</div>";
-#          }
-          if( $cell['est'] ) {
-            $h[]= "<div>[End time not yet known]</div>";
-          }
-          $h[]= "</div>"; # event inner
-          $h[]= "</div>"; # event middle
-          if( !empty($url) ) { $h[]="</a>"; }
-          $h[]= "</td>";
+          $h []= render_event($cell,$classes,$itinerary);
         } else if( $cell["used"] ) {
-          $h[]= "";
+          $h []= "";
         } else {
           foreach( $itinerary['events'] as $code=>$i_event ) {
             $t2 = chrisvf_event_time($i_event );
@@ -365,10 +284,7 @@ function chrisvf_render_grid_day( $attr ) {
               $classes .= " vf_grid_busy";
             }
           }
-
-
-          $h[]= "<td class='$classes vf_grid_freecell'>";
-          $h[]= "</td>";
+          $h[]= "<td class='$classes vf_grid_freecell'></td>";
         }
       }
       $odd_col = !$odd_col;
@@ -393,3 +309,44 @@ function chrisvf_render_grid_day( $attr ) {
   $h[]= "</div>";
   return join( "", $h );
 }
+
+function render_event($cell, $classes, $itinerary) {
+  $h = [];
+  $url= $cell["event"]["URL"];
+  $height = $cell['end_i'] - $cell['start_i'];
+  $classes.= ' vf_grid_event';
+
+  if( @$itinerary['events'][$cell['code']] ) {
+    $classes .= " vf_grid_it";
+  }
+
+  if( $cell['est'] ) {
+    $classes.=' vf_grid_event_noend';
+  }
+  $id = "g".preg_replace( '/-/','_',$cell['event']['UID'] );
+  $h[]= "<td id='$id' data-code='".$cell['event']['UID']."' class='$classes' colspan='".$cell['width']."' rowspan='$height' ".(empty($url)?"":"data-url='".$url."'").">";
+  $h[]= "<div class='vf_grid_it_control'>";
+  $h[]= "<div class='vf_grid_it_toggle vf_grid_it_add'>SAVE</div>";
+  $h[]= "<div class='vf_grid_it_toggle vf_grid_it_remove'>FORGET</div>";
+  $h[]= "</div>";
+
+  if( !empty($url) ) { $h[]="<a href='$url'>"; }
+
+  $h[]= "<div class='vf_grid_event_middle'>";
+  $h[]= "<div class='vf_grid_inner'>";
+
+  $h[]= "<div class='vf_grid_cell_title'>". $cell['event']["SUMMARY"]."</div>";
+  $h[]= "<div class='vf_grid_cell_desc' style='display:none'>". $cell['event']["DESCRIPTION"]."</div>";
+
+  if( $cell['est'] ) {
+    $h[]= "<div>[End time not yet known]</div>";
+  }
+  $h[]= "</div>"; # event inner
+  $h[]= "</div>"; # event middle
+  if( !empty($url) ) { $h[]="</a>"; }
+  $h[]= "</td>";
+  return join( "", $h );
+}
+
+
+
