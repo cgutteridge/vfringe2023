@@ -13,32 +13,32 @@
 }
 .vf_itinerary_button { 
   text-decoration: none;
-    border: 3px solid;
-    color: #888888 !important;
+  border: 3px solid;
+  color: #888888 !important;
   border-color: #888888;
-    background: transparent;
+  background: transparent;
   display: inline-block;
   cursor: pointer;
-    font-size: 20px;
+  font-size: 20px;
   line-height: 16px;
-    padding: 10px 15px;
+  padding: 10px 15px;
   margin-left: 4px;
   margin-bottom: 4px;
-    border-radius: 100px;
-    font-weight: 700;
-    transition: 1s all;
+  border-radius: 100px;
+  font-weight: 700;
+  transition: 1s all;
 
 }
 
 
 .vf_itinerary_button:hover {
-    background-color: #cccccc8a;
-    transition: 1s all;
+  background-color: #cccccc8a;
+  transition: 1s all;
 }
 .vf_itinerary_remove_button:hover {
-    border-color: #ef9393;
-    color: #ef9393 !important;
-    background: transparent !important;
+  border-color: #ef9393;
+  color: #ef9393 !important;
+  background: transparent !important;
 }
 .vf_itinerary_add_button:hover {
   background-color: #cfc;
