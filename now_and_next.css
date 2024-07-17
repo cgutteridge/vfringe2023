@@ -1,0 +1,25 @@
+.chrisvf_slides {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    xheight: 4.5em;
+    line-height: 1.5em;
+    font-size: 80%;
+}
+
+.chrisvf_slides ul {
+    list-style: none;
+    width: 100%;
+    height: 4.5em;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.chrisvf_slides li {
+    width: 100%;
+    height: 1.5em;
+    text-align: center;
+    position: relative;
+    overflow-y: hidden;
+}
