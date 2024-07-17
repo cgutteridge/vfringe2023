@@ -1,10 +1,4 @@
 jQuery(document).ready(function () {
-  /*
-  jQuery('.vf_grid_event[data-url]').click( function() {
-    var d = jQuery( this );
-    window.open( d.attr( 'data-url' ), '_self' );
-  }).css( 'cursor','pointer' );
-  */
 
   jQuery('.vf_grid_event[data-url]').each((index, element) => {
     const event = jQuery(element)

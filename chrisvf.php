@@ -131,6 +131,7 @@ function chrisvf_wp_events()
     if (@$_GET['debug'] == "WP") {
         print "<pre>";
         print_r($events);
+        print "</pre>";
     }
 
 #_status                     | scheduled 
@@ -146,7 +147,8 @@ function chrisvf_wp_events()
 #evcal_allday		     | no
 
 
-    $ical = array();
+    $ical = [];
+    $uids = [];
     foreach ($events as $event_post) {
         $times = [[$event_post->meta["evcal_srow"], $event_post->meta["evcal_erow"]]];
         if ($event_post->meta["evcal_repeat"] == "yes" && !empty($event_post->meta["repeat_intervals"])) {
@@ -207,22 +209,30 @@ function chrisvf_wp_events()
                 $image = wp_get_attachment_image_src($event_post->image);
                 $item["IMAGE"] = $image[0];
             }
-
+            // we identify wp events by their wp id so 2 can happen at once in the same place, but
+            // we track them by location/date/time too to check for clashes in the spreadsheet
             $item["SORTCODE"] = chrisvf_location_sortcode($item["LOCATION"]);
+            $item["UIDX"] = sprintf("%s:%s", $item["LOCATION"],date("Y-m-d:H:i", $time[0] ));
+
             $ical[$item["UID"]] = $item;
+            $uids[$item["UIDX"]] = $item;
         }
     }
 
     # load csv events
 
-    $csv_files = [
-        file(__DIR__ . "/extras.tsv"),
-        file(__DIR__ . "/boxoffice-events.tsv")
+    $csvFiles = [
+        "/boxoffice-events.tsv",
+        "/extras.tsv"
     ];
-    foreach ($csv_files as $csvFile) {
-        $heading_row = trim(array_shift($csvFile));
+    foreach ($csvFiles as $csvFile) {
+        $csvRows = file(__DIR__ . "/" . $csvFile);
+
+        $overwrite = $csvFile == "/boxoffice-events.tsv";
+
+        $heading_row = trim(array_shift($csvRows));
         $headings = preg_split("/\t/", $heading_row);
-        foreach ($csvFile as $row) {
+        foreach ($csvRows as $row) {
             $cells = preg_split("/\t/", $row);
             $record = [];
             for ($i = 0; $i < count($headings); ++$i) {
@@ -233,14 +243,23 @@ function chrisvf_wp_events()
             if (preg_match("/\?\?\?/", $record["Title"])) {
                 continue;
             }
-
             $UID = sprintf("%s:%s:%s", $record["Venue"], $record["Date"], $record["Start"]);
+            // skip if it has the same UID and title. Warn if it has the same UID and a different title.
+            if ($overwrite && array_key_exists($UID, $uids)) {
+                if ($uids[$UID]["SUMMARY"] == $record["Title"]) {
+                    print "<!-- WARNING: {$csvFile}:{$UID} '" . $record["Title"] . "' will replace existing event '" . $uids[$UID]["URL"] . "' -->\n";
+                } else {
+                    print "<!-- WARNING: {$csvFile}:{$UID} '" . $record["Title"] . "' will replace existing event '" . $uids[$UID]["URL"] . "' with title '" . $uids[$UID]["SUMMARY"] . "'-->\n";
+                }
+                // remove it using it' real UID
+                unset($ical[$uids[$UID]["UID"]]);
+            }
             $item = [
                 "UID" => $UID,
                 "DTSTART" => preg_replace("/-/", "", $record["Date"]) . "T" . preg_replace("/:/", "", $record["Start"]) . "00",
                 "DTEND" => preg_replace("/-/", "", $record["Date"]) . "T" . preg_replace("/:/", "", $record["End"]) . "00",
                 "SUMMARY" => $record["Title"],
-                "DESCRIPTION" => "",
+                "DESCRIPTION" => @$record["Description"],
                 "URL" => $record["Event"],
                 "LOCATION" => $record["Venue"],
                 "SORTCODE" => chrisvf_location_sortcode($record["Venue"]),
@@ -249,6 +268,13 @@ function chrisvf_wp_events()
             $ical[$UID] = $item;
         }
     }
+
+    if (@$_GET['debug'] == "ICAL") {
+        print "<pre>";
+        print_r($ical);
+        print "</pre>";
+    }
+
     return $ical;
 }
 

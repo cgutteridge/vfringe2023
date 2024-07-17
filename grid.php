@@ -101,11 +101,11 @@ function chrisvf_render_grid_day($attr)
     $day_start = "08:00:00 BST";
     $day_end = "02:00:00 BST";
 
-    $start_t = strtotime("$date $day_start");
-    $end_t = strtotime("$date $day_end") + 60 * 60 * 24;
+    $timeWindowStartT = strtotime("$date $day_start");
+    $timeWindowEndT = strtotime("$date $day_end") + 60 * 60 * 24;
 
-    $start = gmdate("Y-m-d H:i", $start_t);
-    $end = gmdate("Y-m-d H:i", $end_t);
+    $start = gmdate("Y-m-d H:i", $timeWindowStartT);
+    $end = gmdate("Y-m-d H:i", $timeWindowEndT);
 
     // load events
     $events = chrisvf_get_events(); // add day filter etc.
@@ -119,25 +119,25 @@ function chrisvf_render_grid_day($attr)
         if (@$event["ALLDAY"]) {
             continue;
         }
-        $ev_time = chrisvf_event_time($event);
-        if ($ev_time['start'] >= $end_t) {
+        $gridTimeRangeT = chrisvf_event_time($event);
+        if ($gridTimeRangeT['start'] >= $timeWindowEndT) {
             continue;
         } // starts after our window
-        if ($ev_time['end'] <= $start_t) {
+        if ($gridTimeRangeT['end'] <= $timeWindowStartT) {
             continue;
         } // ends before our window
-        if ($ev_time['start'] < $start_t) {
-            $ev_time['start'] = $start_t;
+        if ($gridTimeRangeT['start'] < $timeWindowStartT) {
+            $gridTimeRangeT['start'] = $timeWindowStartT;
         }
-        if ($ev_time['end'] > $end_t) {
-            $ev_time['end'] = $end_t;
+        if ($gridTimeRangeT['end'] > $timeWindowEndT) {
+            $gridTimeRangeT['end'] = $timeWindowEndT;
         }
-        $times[$ev_time['start']] = true;
-        $times[$ev_time['end']] = true;
+        $times[$gridTimeRangeT['start']] = true;
+        $times[$gridTimeRangeT['end']] = true;
     }
 
-    # assumes start_t is on the hour!?!
-    for ($t = $start_t; $t <= $end_t; $t += 3600) {
+    # assumes timeWindowEndT is on the hour!?!
+    for ($t = $timeWindowStartT; $t <= $timeWindowEndT; $t += 3600) {
         $times[$t] = true;
     }
 
@@ -154,6 +154,52 @@ function chrisvf_render_grid_day($attr)
         $timemap[$times[$i]] = $i;
     }
 
+    list($venues, $grid) = buildUpGrid($events, $timeWindowEndT, $timeWindowStartT, $gridTimeRangeT, $timemap, $timeslots);
+
+    // venue ids. Could/should sort this later
+    ksort($venues);
+
+    // see if we can expand any events to fill the space available.
+    $grid = seeIfWeCanExpandAnyEventsToFillTheSpaceAvailable($venues, $grid);
+
+    $itinerary = chrisvf_get_itinerary();
+
+    $h = array();
+    $h[] = "<div class='vf_grid_outer'>";
+    $h[] = "<table class='vf_grid'>";
+
+    // Venue headings
+    $h[] = renderVenueHeadings($venues, $grid);
+
+    $odd_row = true;
+    foreach ($timeslots as $timeslotId => $slot) {
+        $hour = date("H", $slot["start"]);
+        $row_classes = "vf_grid_row_" . ($odd_row ? "odd" : "even") . " " .
+            "vf_grid_row_hour_" . ($hour % 2 ? "odd" : "even");
+        $odd_row = !$odd_row;
+
+        $h []= renderGridRow($row_classes, $slot, $venues, $grid, $timeslotId, $itinerary);
+    }
+
+    // Venue headings
+    $h[] = renderVenueHeadings($venues, $grid);
+
+    $h[] = "</table>";
+    $h[] = "</div>";
+    return join("", $h);
+}
+
+/**
+ * @param $events
+ * @param $timeWindowEndT
+ * @param $timeWindowStartT
+ * @param array $gridTimeRangeT
+ * @param array $timemap
+ * @param array $timeslots
+ * @return array[]
+ */
+function buildUpGrid($events, $timeWindowEndT, $timeWindowStartT, array $gridTimeRangeT, array $timemap, array $timeslots)
+{
     $venues = array();
     // build up grid
     $grid = array(); # venue=>list of columns for venu
@@ -161,27 +207,27 @@ function chrisvf_render_grid_day($attr)
         if (@$event["ALLDAY"]) {
             continue;
         }
-        $ev_time = chrisvf_event_time($event);
+        $gridTimeRangeT = chrisvf_event_time($event);
 
 
-        if ($ev_time['start'] >= $end_t) {
+        if ($gridTimeRangeT['start'] >= $timeWindowEndT) {
             continue;
         } // starts after our window
-        if ($ev_time['end'] <= $start_t) {
+        if ($gridTimeRangeT['end'] <= $timeWindowStartT) {
             continue;
         } // ends before our window
-        if ($ev_time['start'] < $start_t) {
-            $ev_time['start'] = $start_t;
+        if ($gridTimeRangeT['start'] < $timeWindowStartT) {
+            $gridTimeRangeT['start'] = $timeWindowStartT;
         }
-        if ($ev_time['end'] > $end_t) {
-            $ev_time['end'] = $end_t;
+        if ($gridTimeRangeT['end'] > $timeWindowEndT) {
+            $gridTimeRangeT['end'] = $timeWindowEndT;
         }
 
         $venue_id = $event["LOCATION"];
         $venues[$event["SORTCODE"]] = $venue_id;
 
-        $start_i = $timemap[$ev_time['start']];
-        $end_i = $timemap[$ev_time['end']];
+        $start_i = $timemap[$gridTimeRangeT['start']];
+        $end_i = $timemap[$gridTimeRangeT['end']];
 
         $column_id = null;
         if (!@$grid[$venue_id]) {
@@ -220,14 +266,19 @@ function chrisvf_render_grid_day($attr)
         $grid[$venue_id][$column_id][$start_i]["start_i"] = $start_i;
         $grid[$venue_id][$column_id][$start_i]["end_i"] = $end_i;
         $grid[$venue_id][$column_id][$start_i]["width"] = 1;
-        $grid[$venue_id][$column_id][$start_i]["est"] = $ev_time['est'];
+        $grid[$venue_id][$column_id][$start_i]["est"] = $gridTimeRangeT['est'];
         $grid[$venue_id][$column_id][$start_i]["code"] = preg_replace('/@.*/', '', $event["UID"]);
-    } // end of events loop
+    }
+    return array($venues, $grid); // end of events loop
+}
 
-    // venue ids. Could/should sort this later
-    ksort($venues);
-
-    // see if we can expand any events to fill the space available.
+/**
+ * @param array $venues
+ * @param array $grid
+ * @return array
+ */
+function seeIfWeCanExpandAnyEventsToFillTheSpaceAvailable(array $venues, array $grid)
+{
     foreach ($venues as $venue_id) {
         $cols = $grid[$venue_id];
         // look at columns except the last one...
@@ -257,81 +308,68 @@ function chrisvf_render_grid_day($attr)
             }
         }
     }
+    return $grid;
+}
 
-    $itinerary = chrisvf_get_itinerary();
-
-    $h = array();
-    $h[] = "<div class='vf_grid_outer'>";
-    $h[] = "<table class='vf_grid'>";
-
-    // Venue headings
-    $h[] = "<tr>";
-    $h[] = "<th></th>";
+/**
+ * @param $row_classes
+ * @param $slot
+ * @param array $venues
+ * @param array $grid
+ * @param $timeslotId
+ * @param array $itinerary
+ * @return string
+ */
+function renderGridRow($row_classes, $slot, array $venues, array $grid, $timeslotId, array $itinerary)
+{
+    $h = [];
+    $h[] = "<tr class='$row_classes'>";
+    $h[] = "<th class='vf_grid_timeslot'>" . date("H:i", $slot["start"]) . "</th>";
+    $odd_col = true;
     foreach ($venues as $venue_id) {
-        $cols = $grid[$venue_id];
-        $h[] = "<th class='vf_grid_venue' colspan='" . sizeof($cols) . "'>";
-        $h[] = $venue_id;
-        $h[] = "</th>\n";
-    }
-    $h[] = "<th></th>";
-    $h[] = "</tr>\n";
+        for ($col_id = 0; $col_id < sizeof($grid[$venue_id]); ++$col_id) {
+            $col = $grid[$venue_id][$col_id];
+            $cell = $col[$timeslotId];
 
-    $odd_row = true;
-    foreach ($timeslots as $p => $slot) {
-        $hour = date("H", $slot["start"]);
-        $row_classes = "";
-        if ($odd_row) {
-            $row_classes .= " vf_grid_row_odd";
-        } else {
-            $row_classes .= " vf_grid_row_even";
-        }
-        if ($hour % 2) {
-            $row_classes .= " vf_grid_row_hour_odd";
-        } else {
-            $row_classes .= " vf_grid_row_hour_even";
-        }
-        $h[] = "<tr class='$row_classes'>";
-        $odd_row = !$odd_row;
-        $h[] = "<th class='vf_grid_timeslot'>" . date("H:i", $slot["start"]) . "</th>";
-        #$h[]= "<th class='vf_grid_timeslot'>".date("d H:i",$slot["end"])."</th>";
-        $odd_col = true;
-        foreach ($venues as $venue_id) {
-
-            for ($col_id = 0; $col_id < sizeof($grid[$venue_id]); ++$col_id) {
-                $col = $grid[$venue_id][$col_id];
-                $cell = $col[$p];
-
-                if ($odd_col) {
-                    $classes = "vf_grid_col_odd";
-                } else {
-                    $classes = "vf_grid_col_even";
-                }
-                if ($col_id == sizeof($grid[$venue_id]) - 1) {
-                    $classes .= " vf_grid_col_vlast"; // last column for this venue
-                }
-                $classes .= " vf_grid_venue_" . preg_replace("/[^a-z0-9]/i", "", strtolower($venue_id));
-
-                if (@$cell['event']) {
-                    $h [] = render_event($cell, $classes, $itinerary);
-                } else if ($cell["used"]) {
-                    $h [] = "";
-                } else {
-                    foreach ($itinerary['events'] as $code => $i_event) {
-                        $t2 = chrisvf_event_time($i_event);
-                        if ($slot['start'] < $t2['end'] && $slot['end'] > $t2['start']) {
-                            $classes .= " vf_grid_busy";
-                        }
-                    }
-                    $h[] = "<td class='$classes vf_grid_freecell'></td>";
-                }
+            if ($odd_col) {
+                $classes = "vf_grid_col_odd";
+            } else {
+                $classes = "vf_grid_col_even";
             }
-            $odd_col = !$odd_col;
-        }
-        $h[] = "<th class='vf_grid_timeslot'>" . date("H:i", $slot["start"]) . "</th>";
-        $h[] = "</tr>\n";
-    }
+            if ($col_id == sizeof($grid[$venue_id]) - 1) {
+                $classes .= " vf_grid_col_vlast"; // last column for this venue
+            }
+            $classes .= " vf_grid_venue_" . preg_replace("/[^a-z0-9]/i", "", strtolower($venue_id));
 
-    // Venue headings
+            if (@$cell['event']) {
+                $h [] = render_event($cell, $classes, $itinerary);
+            } else if ($cell["used"]) {
+                $h [] = "";
+            } else {
+                foreach ($itinerary['events'] as $code => $i_event) {
+                    $t2 = chrisvf_event_time($i_event);
+                    if ($slot['start'] < $t2['end'] && $slot['end'] > $t2['start']) {
+                        $classes .= " vf_grid_busy";
+                    }
+                }
+                $h[] = "<td class='$classes vf_grid_freecell'></td>";
+            }
+        }
+        $odd_col = !$odd_col;
+    }
+    $h[] = "<th class='vf_grid_timeslot'>" . date("H:i", $slot["start"]) . "</th>";
+    $h[] = "</tr>\n";
+    return join('', $h);
+}
+
+/**
+ * @param array $venues
+ * @param array $grid
+ * @return array
+ */
+function renderVenueHeadings(array $venues, array $grid)
+{
+    $h = [];
     $h[] = "<tr>";
     $h[] = "<th></th>";
     foreach ($venues as $venue_id) {
@@ -342,10 +380,7 @@ function chrisvf_render_grid_day($attr)
     }
     $h[] = "<th></th>";
     $h[] = "</tr>\n";
-
-    $h[] = "</table>";
-    $h[] = "</div>";
-    return join("", $h);
+    return join('', $h);
 }
 
 function render_event($cell, $classes, $itinerary)
