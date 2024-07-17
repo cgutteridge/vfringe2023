@@ -1,82 +1,99 @@
 .vf_itinerary_table td {
-  padding: 4px;
-  border: solid 1px black;
+    padding: 4px;
+    border: solid 1px black;
 }
-  
-.vf_itinerary_toggle { 
+
+.vf_itinerary_toggle {
 
 }
-.vf_itinerary_button { 
-  text-decoration: none;
-  border: 3px solid;
-  color: #888888 !important;
-  border-color: #888888;
-  background: transparent;
-  display: block;
-  cursor: pointer;
-  font-size: 20px;
-  line-height: 16px;
-  padding: 10px 15px;
-  margin-left: 4px;
-  margin-bottom: 4px;
-  border-radius: 100px;
-  font-weight: 700;
-  transition: 1s all;
+
+.vf_itinerary_button {
+    text-decoration: none;
+    border: 3px solid;
+    color: #888888 !important;
+    border-color: #888888;
+    background: transparent;
+    display: block;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 16px;
+    padding: 10px 15px;
+    margin-left: 4px;
+    margin-bottom: 4px;
+    border-radius: 100px;
+    font-weight: 700;
+    transition: 1s all;
 
 }
 
 
 .vf_itinerary_button:hover {
-  background-color: #cccccc8a;
-  transition: 1s all;
+    background-color: #cccccc8a;
+    transition: 1s all;
 }
+
 .vf_itinerary_remove_button:hover {
-  border-color: #ef9393;
-  color: #ef9393 !important;
-  background: transparent !important;
+    border-color: #ef9393;
+    color: #ef9393 !important;
+    background: transparent !important;
 }
+
 .vf_itinerary_add_button:hover {
-  background-color: #cfc;
+    background-color: #cfc;
 }
+
 .vf_itinerary_count {
-  margin-right: 1em;
-  display: inline-block;
+    margin-right: 1em;
+    display: inline-block;
 }
+
 .vf_itinerary_bar {
-  display: inline-block;
-  float:right;
+    display: inline-block;
+    float: right;
 }
+
 .vf_itinerary_display {
-  display: inline-block;
+    display: inline-block;
 }
-.vf_itinerary_bar .vf_itinerary_button{
-/*
- background-color: #7070a0;
-  color: #fff !important;
-  border-color: #fff;
-*/
+
+.vf_itinerary_bar .vf_itinerary_button {
+    /*
+     background-color: #7070a0;
+      color: #fff !important;
+      border-color: #fff;
+    */
 }
-.vf_itinerary_bar .vf_itinerary_button:hover{
-  background-color: #fff ;
-  color: #7070a0 !important;
+
+.vf_itinerary_bar .vf_itinerary_button:hover {
+    background-color: #fff;
+    color: #7070a0 !important;
 }
+
 @media only screen and (max-width: 800px) {
-  .vf_fred { text-align: center; }
-  .vf_itinerary_bar  { display: block; float: none !important }
+    .vf_fred {
+        text-align: center;
+    }
+
+    .vf_itinerary_bar {
+        display: block;
+        float: none !important
+    }
 }
+
 .nownext_slide {
-  background-color: #fff;
+    background-color: #fff;
 }
-.vf_notification {   
-  position: fixed;
-  top: 35%;
-  left: 10%;
-  width: 80%;
-  opacity: 0.8; 
-  font-size: 250%;
-  padding: 0.5em;
-  background-color: black;
-  color: white;
-  text-align: center;
-  z-index: 99001;
+
+.vf_notification {
+    position: fixed;
+    top: 35%;
+    left: 10%;
+    width: 80%;
+    opacity: 0.8;
+    font-size: 250%;
+    padding: 0.5em;
+    background-color: black;
+    color: white;
+    text-align: center;
+    z-index: 99001;
 }
