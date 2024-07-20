@@ -1,25 +1,24 @@
+html, body, #eut-content {
+    overflow: visible !important;
+}
+
 .vf_grid_outer {
     max-width: 100%;
     overflow: visible;
-    font-size: 80% !important;
 }
 
-th {
-    padding: 0.2em 0.1em 1em 0.1em !important;
-    line-height: 1.2 !important;
-}
-
-td {
+#eut-content table.vf_grid td {
     padding: 0 !important;
     line-height: 1.2 !important;
 }
 
-table.vf_grid th {
+#eut-content table.vf_grid th {
     background-color: #eee;
     color: #444;
-    border: solid 2px #333;
-    padding: 0.2em 0.5em 1em 0.5em;
+    border: solid 2px #ccc !important;
     vertical-align: top;
+    padding: 0.2em 0.1em 1em 0.1em;
+    line-height: 1.2;
 }
 
 h2 {
@@ -28,17 +27,12 @@ h2 {
     font-size: 120% !important;
 }
 
-/*
-body { background-color: #000; }
-*/
-
-table.vf_grid {
-    /*background: url(grass.png) ;*/
+#eut-content table.vf_grid {
     color: #444;
     font-family: Helvetica, "MontserratRegular", sans-serif;
     border-collapse: collapse;
-    border-right: solid 1px black;
-    border-bottom: solid 1px black;
+    border-right: solid 1px black !important;
+    border-bottom: solid 1px black !important;
     page-break-after: always;
     border-spacing: 0;
 }
@@ -48,80 +42,39 @@ th.vf_grid_venue {
     padding-top: 1em;
 }
 
-.vf_grid_event {
-    border: solid 2px #999;
+#eut-content .vf_grid_event {
+    border: solid 2px #ccc !important;
     background-color: #eea;
     vertical-align: top;
     text-align: center;
 }
 
 .vf_grid_now {
-    background-color: yellow;
+    background-color: #ffff80;
+    border-top: 1px dashed red;
+    border-bottom: 1px dashed red;
+    font-size: 80%;
+    padding-top: 2px;
+    color: #808080;
+}
+
+.vf_grid_event .vf_grid_now {
+    border-bottom: solid 2px #ccc !important;
+    background-color: #ffcf18;
 }
 
 .vf_grid_inner {
     padding: 0.5em;
 }
 
-.vf_grid_col_vlast {
-    /*border-right: dashed 2px #000;*/
-}
-
-.vf_grid_freecell {
-    background-color: #eee;
-}
-
-.vf_grid_row_hour_even .vf_grid_freecell {
-    background-color: rgba(0, 0, 0, 0.1) !important;
-}
-
-.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_freecell {
-    background-color: rgba(0, 0, 0, 0.14) !important;
-}
-
-.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_freecell {
-    background-color: rgba(0, 0, 0, 0.04) !important;
-}
 
 .vf_grid_event_noend {
     background: url(saw.png) #ffe repeat-x bottom;
     padding-bottom: 20px !important;
 }
 
-.vf_grid_venue_VentnorBotanicGarden.vf_grid_event,
-.vf_grid_venue_Parkside.vf_grid_event {
-    background-color: #cfc;
-    color: #040;
-}
-
 .vf_grid_freecell {
-    /*border-bottom: 1px dashed #cfc;*/
     background: transparent;
-}
-
-.vf_grid_venue_ObservatoryBar.vf_grid_event {
-    background-color: #ccf;
-    color: #004;
-}
-
-/*
-.vf_grid_venue_ObservatoryBar.vf_grid_freecell {
-  background: url(clouds.png) fixed;
-}
-*/
-
-
-.vf_grid_cell_title {
-}
-
-.vf_grid_cat {
-    /*border: solid 1px #000;*/
-    padding: 2px 2px 0 2px;
-    background-color: rgba(0, 0, 0, 0.2);
-    font-size: 70%;
-    margin: 6px;
-    white-space: nowrap;
-    display: inline-block;
 }
 
 .vf_grid_event_middle {
@@ -130,11 +83,8 @@ th.vf_grid_venue {
 }
 
 
-/* itinierary grid stuff */
-.vf_grid_it {
-    background-color: #31e069 !important;
-    border: solid 2px black;
-}
+/* itinerary grid stuff */
+
 
 .vf_grid_it_toggle {
     background-color: transparent;
@@ -166,14 +116,20 @@ th.vf_grid_venue {
     color: white;
 }
 
-.vf_grid_clash {
-    background-color: #333 !important;
-    color: #ccc !important;
-    border-color: #000 !important;
+.vf_grid_cell_tag {
+    background-color: #43a743;
+    color: #fff;
+    font-size: 70%;
+    margin-top: 0.3em;
+    padding: 0.2em 0.3em 0.1em 0.3em;
+    border-radius: 0.5em;
+    text-align: center;
 }
 
-/* end of itinierary grid stuff */
+/* end of itinerary grid stuff */
 
+
+/* POPUP EVENT DESCRIPTION THING */
 
 .vf_grid_cell_desc {
     display: none;
@@ -200,82 +156,94 @@ th.vf_grid_venue {
     bottom: 3%;
 }
 
+/* end of POPUP EVENT DESCRIPTION THING */
+
+
+/********* GRID COLOURS ********/
+
+/* default */
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_freecell {
+    background-color: #f8f8f8;
+}
+
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_freecell {
+    background-color: #e9e9e9;
+}
+
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_freecell {
+    background-color: #e9e9e9;
+}
+
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_freecell {
+    background-color: #d8d8d8;
+}
 
 /* pink */
 
-.vf_grid_venue_theflowersbrookinn.vf_grid_freecell,
-.vf_grid_venue_theflowersbrookinn.vf_grid_freecell,
-.vf_grid_venue_thebigtop.vf_grid_freecell {
-    background-color: #fff8f8 !important;
-}
-
-.vf_grid_row_hour_even .vf_grid_venue_thebigtopbar.vf_grid_freecell,
-.vf_grid_row_hour_even .vf_grid_venue_thebigtopbar.vf_grid_freecell,
-.vf_grid_row_hour_even .vf_grid_venue_thebigtop.vf_grid_freecell {
-    background-color: #ffe9e9 !important;
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_theflowersbrookinn.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_thebigtopbar.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_thebigtop.vf_grid_freecell {
+    background-color: #fff8f8;
 }
 
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_theflowersbrookinn.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thebigtopbar.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thebigtop.vf_grid_freecell {
-    background-color: #fff8f8 !important;
+    background-color: #ffe9e9;
+}
+
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_theflowersbrookinn.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_thebigtopbar.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_thebigtop.vf_grid_freecell {
+    background-color: #ffe9e9;
 }
 
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_theflowersbrookinn.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thebigtopbar.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thebigtop.vf_grid_freecell {
-    background-color: #ffd8d8 !important;
+    background-color: #ffd8d8;
 }
 
 /* blue */
 
-.vf_grid_venue_ventnorexchange.vf_grid_freecell,
-.vf_grid_venue_thefringesquare.vf_grid_freecell,
-.vf_grid_venue_thebookbus.vf_grid_freecell,
-.vf_grid_venue_stcatherineschurch.vf_grid_freecell {
-    background-color: #f8f8ff !important;
-}
-
-.vf_grid_row_hour_even .vf_grid_venue_ventnorexchange.vf_grid_freecell,
-.vf_grid_row_hour_even .vf_grid_venue_thefringesquare.vf_grid_freecell,
-.vf_grid_row_hour_even .vf_grid_venue_thebookbus.vf_grid_freecell,
-.vf_grid_row_hour_even .vf_grid_venue_stcatherineschurch.vf_grid_freecell {
-    background-color: #e9e9ff !important;
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_ventnorexchange.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_thefringesquare.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_thebookbus.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_stcatherineschurch.vf_grid_freecell {
+    background-color: #f8f8ff;
 }
 
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_ventnorexchange.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thefringesquare.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thebookbus.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_stcatherineschurch.vf_grid_freecell {
-    background-color: #f8f8ff !important;
+    background-color: #e9e9ff;
+}
+
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_ventnorexchange.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_thefringesquare.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_thebookbus.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_stcatherineschurch.vf_grid_freecell {
+    background-color: #e9e9ff;
 }
 
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_ventnorexchange.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thefringesquare.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thebookbus.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_stcatherineschurch.vf_grid_freecell {
-    background-color: #d8d8ff !important;
+    background-color: #d8d8ff;
 }
 
 
 /* green */
 
-.vf_grid_venue_ventnorputtinggreenventnorpark.vf_grid_freecell,
-.vf_grid_venue_ventnorpark.vf_grid_freecell,
-.vf_grid_venue_thefringevillage.vf_grid_freecell,
-.vf_grid_venue_fringevillagebandstand.vf_grid_freecell,
-.vf_grid_venue_thenest.vf_grid_freecell,
-.vf_grid_venue_themagpie.vf_grid_freecell {
-    background-color: #f8fff8 !important;
-}
-
-.vf_grid_row_hour_even .vf_grid_venue_ventnorputtinggreenventnorpark.vf_grid_freecell,
-.vf_grid_row_hour_even .vf_grid_venue_ventnorpark.vf_grid_freecell,
-.vf_grid_row_hour_even .vf_grid_venue_thefringevillage.vf_grid_freecell,
-.vf_grid_row_hour_even .vf_grid_venue_fringevillagebandstand.vf_grid_freecell,
-.vf_grid_row_hour_even .vf_grid_venue_thenest.vf_grid_freecell,
-.vf_grid_row_hour_even .vf_grid_venue_themagpie.vf_grid_freecell {
-    background-color: #e9ffe9 !important;
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_ventnorputtinggreenventnorpark.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_ventnorpark.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_thefringevillage.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_fringevillagebandstand.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_thenest.vf_grid_freecell,
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_themagpie.vf_grid_freecell {
+    background-color: #f8fff8;
 }
 
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_ventnorputtinggreenventnorpark.vf_grid_freecell,
@@ -284,7 +252,16 @@ th.vf_grid_venue {
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_fringevillagebandstand.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thenest.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_themagpie.vf_grid_freecell {
-    background-color: #f8fff8 !important;
+    background-color: #e2ffe2;
+}
+
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_ventnorputtinggreenventnorpark.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_ventnorpark.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_thefringevillage.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_fringevillagebandstand.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_thenest.vf_grid_freecell,
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_themagpie.vf_grid_freecell {
+    background-color: #e2ffe2;
 }
 
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_ventnorputtinggreenventnorpark.vf_grid_freecell,
@@ -293,21 +270,47 @@ th.vf_grid_venue {
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_fringevillagebandstand.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thenest.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_themagpie.vf_grid_freecell {
-    background-color: #d8ffd8 !important;
+    background-color: #c8ffc8;
 }
 
 /* busy needs to go after the column colours */
+
 /*
-.vf_grid_busy {
-  background-color: rgba(0,0,0,0.7) !important;
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_freecell.vf_grid_hard_clash,
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_freecell.vf_grid_hard_clash,
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_freecell.vf_grid_hard_clash,
+.vf_grid_row_hour_odd  .vf_grid_col_even.vf_grid_freecell.vf_grid_hard_clash {
+    background-color: #444444;
 }
-.vf_grid_row_hour_even .vf_grid_freecell.vf_grid_busy {
-  background-color: rgba(0,0,0,0.6) !important;
+ */
+
+#eut-content .vf_grid_event.vf_grid_hard_clash,
+#eut-content .vf_grid_event.vf_grid_soft_clash {
+    background-color: #f8f8f8;
 }
-.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_freecell.vf_grid_busy { 
-  background-color: rgba(0,0,0,0.74) !important;
+
+/* selected events */
+
+#eut-content .vf_grid_it {
+    background-color: #31e069;
 }
-.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_freecell.vf_grid_busy { 
-  background-color: rgba(0,0,0,0.64) !important;
+
+
+/* Itinerary hovering control */
+
+.vf_it_control {
+    background-color: #000000;
+    color: white;
+    cursor: pointer;
+    padding: 0.2em 1em;
+    display: none;
+    position: fixed;
+    top: 1em;
+    right: 1em;
+    z-index: 10000;
+    text-decoration: none;
 }
-*/
+
+.vf_it_control:hover {
+    background-color: #666666;
+}

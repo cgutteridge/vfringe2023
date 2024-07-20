@@ -21,6 +21,17 @@ function chrisvf_now_and_next()
 {
     $events = chrisvf_get_events();
 
+    // Define the comparison function
+    function compareByDTSTART($a, $b)
+    {
+        $dateA = strtotime($a['DTSTART']);
+        $dateB = strtotime($b['DTSTART']);
+        return $dateA - $dateB;
+    }
+
+// Sort the events
+    usort($events, 'compareByDTSTART');
+
     $list = array();
     foreach ($events as $event) {
         $start_t = strtotime($event["DTSTART"]);
@@ -30,23 +41,37 @@ function chrisvf_now_and_next()
             continue;
         } # skip done events
 
-        $free = false;
-        // TODO : detect free events
+        $categories = explode(",", $event['CATEGORIES']);
+        $free = in_array('Free Fringe', $categories);
+
+        if (date('i', $start_t) == 0) {
+            $startTimeStr = date("ga", $start_t);
+        } else {
+            $startTimeStr = date("g:ia", $start_t);
+        }
+        if (date('i', $end_t) == 0) {
+            $endTimeStr = date("ga", $end_t);
+        } else {
+            $endTimeStr = date("g:ia", $end_t);
+        }
 
         if ($start_t > chrisvf_time() && $start_t < chrisvf_time() + 90 * 60) {
             #starts in the next 90 minutes
-            $list[] = sprintf("<div>%s - <strong><a href='%s'>%s</strong></a> - %s</div>",
-                date("ga", $start_t),
+            $list[] = sprintf("%s - <strong><a href='%s'>%s</strong></a> - %s%s",
+                $startTimeStr,
                 $event["URL"],
                 htmlspecialchars($event["SUMMARY"], ENT_QUOTES),
-                $event["LOCATION"]
+                $event["LOCATION"],
+                $free ? " - FREE" : ""
             );
         }
         if ($start_t < chrisvf_time() && $end_t > chrisvf_time() + 10 * 60 && $free) {  # free,
-            $list[] = sprintf("<div>NOW - <strong><a href='%s'>%s</strong></a> - %s</div>",
+            $list[] = sprintf("NOW (ends %s) - <strong><a href='%s'>%s</strong></a> - %s%s",
+                $endTimeStr,
                 $event["URL"],
                 htmlspecialchars($event["SUMMARY"], ENT_QUOTES),
-                $event["LOCATION"]
+                $event["LOCATION"],
+                $free ? " - FREE" : ""
             );
         }
     }
@@ -61,12 +86,13 @@ function chrisvf_now_and_next()
         $slides[sizeof($slides) - 1] [] = $text;
     }
 
-    $h .= print_r($slides, true);
-    $h = "<div class='chrisvf_slides'><ul>";
+    $h = "";
+    $h .= "<div class='chrisvf_now_and_next'>";
+    $h .= "<div class='chrisvf_slides'><ul>";
     foreach ($slides as $slide) {
         $h .= "<li class='chrisvf_slide'>" . join("", $slide) . "</li>";
     }
-    $h .= "</ul></div>";
+    $h .= "</ul></div></div>";
 
     return $h;
 }

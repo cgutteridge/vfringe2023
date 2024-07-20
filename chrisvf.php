@@ -24,7 +24,8 @@ require_once("montydump.php");
 
 function chrisvf_time()
 {
-    return time() + @$_GET["TIMESHIFT"];
+    // add an hour as all times are in BST
+    return time() + @$_GET["TIMESHIFT"] + 3600;
 }
 
 /*********************************************************************************
@@ -191,7 +192,7 @@ function chrisvf_wp_events()
                 $slugs = [];
                 foreach ($tags as $tag) {
                     $slugs [] = $tag->slug;
-                    if ($tag->slug == "free-fringe") {
+                    if ($tag->slug == "free") {
                         $freetag = true;
                     }
                 }
@@ -263,7 +264,7 @@ function chrisvf_wp_events()
                 "URL" => $record["Event"],
                 "LOCATION" => $record["Venue"],
                 "SORTCODE" => chrisvf_location_sortcode($record["Venue"]),
-                "CATEGORIES" => "",
+                "CATEGORIES" => $record["Tags"],
             ];
             $ical[$UID] = $item;
         }

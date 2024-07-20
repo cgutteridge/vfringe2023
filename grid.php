@@ -39,59 +39,7 @@ function chrisvf_event_time($event, $min_t = null, $max_t = null)
     }
 
     return $times;
-
 }
-
-# is this even needed????
-function chrisvf_render_grid_list()
-{
-    $h = array();
-
-    // load events
-    $events = chrisvf_get_events(); // add day filter etc.
-    $lists = [];
-    foreach ($events as $event) {
-        $date = substr($event["DTSTART"], 0, 8);
-        $time = substr($event["DTSTART"], 9, 4);
-        $time2 = substr($event["DTEND"], 9, 4);
-        $loc = $event["LOCATION"];
-        if (!array_key_exists($date, $lists)) {
-            $lists[$date] = [];
-        }
-        if (!array_key_exists($time, $lists[$date])) {
-            $lists[$date][$time] = [];
-        }
-        if (!array_key_exists($loc, $lists[$date][$time])) {
-            $lists[$date][$time][$loc] = [];
-        }
-        $note = "";
-        if (preg_match('/Free Fringe/', $event["CATEGORIES"])) {
-            $note = " (Free)";
-        }
-        $lists[$date][$time][$loc] [] = "<div>" . substr($time, 0, 2) . ":" . substr($time, 2, 2) . " to " . substr($time2, 0, 2) . ":" . substr($time2, 2, 2) . " - $loc - " . $event["SUMMARY"] . $note . "</div>\n";
-    }
-    $h [] = "<div style='background-color:#fff;padding:1em'>";
-    ksort($lists);
-    foreach ($lists as $date => $daylist) {
-        $h [] = "<div style='margin-bottom: 3em;    page-break-before: always;'>";
-        $time_t = strtotime($date);
-        $h [] = "<h2 style='margin-bottom:1em'>" . date("l jS F", $time_t) . "</h2>";
-        ksort($daylist);
-        foreach ($daylist as $time => $timelist) {
-            if (substr($time, 2, 2) == "00") {
-                $h [] = "<div>&nbsp;</div>";
-            }
-            ksort($timelist);
-            foreach ($timelist as $loc => $list3) {
-                $h [] = join("", $list3);
-            }
-        }
-        $h [] = "</div>";
-    }
-    $h [] = "</div>";
-    return join("", $h);
-}
-
 
 function chrisvf_render_grid_day($attr)
 {
@@ -178,7 +126,7 @@ function chrisvf_render_grid_day($attr)
             "vf_grid_row_hour_" . ($hour % 2 ? "odd" : "even");
         $odd_row = !$odd_row;
 
-        $h []= renderGridRow($row_classes, $slot, $venues, $grid, $timeslotId, $itinerary);
+        $h [] = renderGridRow($row_classes, $slot, $venues, $grid, $timeslotId, $itinerary);
     }
 
     // Venue headings
@@ -322,6 +270,9 @@ function seeIfWeCanExpandAnyEventsToFillTheSpaceAvailable(array $venues, array $
  */
 function renderGridRow($row_classes, $slot, array $venues, array $grid, $timeslotId, array $itinerary)
 {
+    // same date format as used in ICAL
+    $start = date('Ymd\THis', $slot["start"]);
+    $end = date('Ymd\THis', $slot["end"]);
     $h = [];
     $h[] = "<tr class='$row_classes'>";
     $h[] = "<th class='vf_grid_timeslot'>" . date("H:i", $slot["start"]) . "</th>";
@@ -343,16 +294,10 @@ function renderGridRow($row_classes, $slot, array $venues, array $grid, $timeslo
 
             if (@$cell['event']) {
                 $h [] = render_event($cell, $classes, $itinerary);
-            } else if ($cell["used"]) {
+            } elseif ($cell["used"]) {
                 $h [] = "";
             } else {
-                foreach ($itinerary['events'] as $code => $i_event) {
-                    $t2 = chrisvf_event_time($i_event);
-                    if ($slot['start'] < $t2['end'] && $slot['end'] > $t2['start']) {
-                        $classes .= " vf_grid_busy";
-                    }
-                }
-                $h[] = "<td class='$classes vf_grid_freecell'></td>";
+                $h[] = "<td class='$classes vf_grid_freecell' data-start='$start' data-end='$end'></td>";
             }
         }
         $odd_col = !$odd_col;
@@ -386,8 +331,13 @@ function renderVenueHeadings(array $venues, array $grid)
 function render_event($cell, $classes, $itinerary)
 {
     $h = [];
+
+    $start = $cell['event']['DTSTART'];
+    $end = $cell['event']['DTEND'];
+
     $url = $cell["event"]["URL"];
     $height = $cell['end_i'] - $cell['start_i'];
+
     $classes .= ' vf_grid_event';
 
     if (@$itinerary['events'][$cell['code']]) {
@@ -398,7 +348,8 @@ function render_event($cell, $classes, $itinerary)
         $classes .= ' vf_grid_event_noend';
     }
     $id = "g" . preg_replace('/-/', '_', $cell['event']['UID']);
-    $h[] = "<td id='$id' data-code='" . $cell['event']['UID'] . "' class='$classes' colspan='" . $cell['width'] . "' rowspan='$height' " . (empty($url) ? "" : "data-url='" . $url . "'") . ">";
+    $h[] = "<td id='$id' data-code='" . $cell['event']['UID'] . "' class='$classes' colspan='" . $cell['width'] . "' rowspan='$height' " . (empty($url) ? "" : "data-url='" . $url . "'") . "  data-start='$start' data-end='$end'>";
+
     $h[] = "<div class='vf_grid_it_control'>";
     $h[] = "<div class='vf_grid_it_toggle vf_grid_it_add'>SAVE</div>";
     $h[] = "<div class='vf_grid_it_toggle vf_grid_it_remove'>FORGET</div>";
@@ -412,6 +363,10 @@ function render_event($cell, $classes, $itinerary)
     $h[] = "<div class='vf_grid_inner'>";
 
     $h[] = "<div class='vf_grid_cell_title'>" . $cell['event']["SUMMARY"] . "</div>";
+    $categories = explode(",", $cell['event']['CATEGORIES']);
+    if( in_array( 'Free Fringe', $categories)) {
+        $h[] = "<div class='vf_grid_cell_tag'>FREE</div>";
+    }
     $h[] = "<div class='vf_grid_cell_desc' style='display:none'>" . $cell['event']["DESCRIPTION"] . "</div>";
 
     if ($cell['est']) {

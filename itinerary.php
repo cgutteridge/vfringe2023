@@ -2,7 +2,7 @@
 
 /*********************************************************************************
  * ITINERARY
- *********************************************************************************/
+ **************************************************************************/
 
 add_shortcode('chrisvf_itinerary', 'chrisvf_render_itinerary');
 add_shortcode('chrisvf_saved_itinerary', 'chrisvf_render_saved_itinerary');
@@ -115,12 +115,9 @@ function chrisvf_render_itinerary($atts = [], $content = null)
     if (count($itinerary['codes'])) {
         $h [] = chrisvf_render_itinerary_table($itinerary);
 
-        $link = "https://vfringe.co.uk/saved-itinerary?ids=" . urlencode($_COOKIE["itinerary"]);
-        $msg = "My #VFringe21 plan: $link";
-        $h [] = "<div>";
-        $h [] = "<a href='https://twitter.com/intent/tweet?text=" . urlencode($msg) . "' class='vf_itinerary_button'>Tweet my Itinerary</a>";
-        $h [] = "<a href='https://www.facebook.com/sharer/sharer.php?u=" . urlencode($link) . "' class='vf_itinerary_button'>Post to Facebook</a>";
-        $body = "\r\nYour Ventnor Fringe 2022 Itinerary\r\n";
+
+        /* prepare email */
+        $body = "\r\nYour Ventnor Fringe Itinerary\r\n";
         $body = "\r\n";
 
         foreach ($itinerary['codes'] as $code) {
@@ -162,9 +159,12 @@ function chrisvf_render_itinerary($atts = [], $content = null)
                 $body .= "\r\n";
             }
         }
-
-        #$body = "\r\n\r\nView online at: ".$link;
+        $link = "https://vfringe.co.uk/saved-itinerary?ids=" . urlencode($_COOKIE["itinerary"]);
+        $msg = "My #VFringe24 plan: $link";
+        $h [] = "<div>";
         $h [] = "<a href='mailto:?subject=Your%20Ventnor%20Fringe%20Itinerary&body=" . preg_replace('/\+/', '%20', urlencode($body)) . "' class='vf_itinerary_button'>Send by Email</a>";
+        $h [] = "<a target='_blank' ref='https://twitter.com/intent/tweet?text=" . urlencode($msg) . "' class='vf_itinerary_button'>Tweet my Itinerary</a>";
+        $h [] = "<a target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=" . urlencode($link) . "' class='vf_itinerary_button'>Post to Facebook</a>";
         $h [] = "</div>";
     }
     return join("", $h);
