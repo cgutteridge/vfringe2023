@@ -9,9 +9,9 @@ add_shortcode('chrisvf_grid', 'chrisvf_render_grid_day');
 add_action('wp_enqueue_scripts', 'chrisvf_add_grid_scripts');
 function chrisvf_add_grid_scripts()
 {
-    wp_register_style('chrisvf-grid-css', plugins_url('grid.css', __FILE__));
+    wp_register_style('chrisvf-grid-css', plugins_url('grid.css', __FILE__), [], "1.001");
     wp_enqueue_style('chrisvf-grid-css');
-    wp_register_script('chrisvf-grid-js', plugins_url('grid.js', __FILE__), array('jquery'));
+    wp_register_script('chrisvf-grid-js', plugins_url('grid.js', __FILE__), array('jquery'), [], "1.001");
     wp_enqueue_script('chrisvf-grid-js');
 }
 
@@ -364,7 +364,7 @@ function render_event($cell, $classes, $itinerary)
 
     $h[] = "<div class='vf_grid_cell_title'>" . $cell['event']["SUMMARY"] . "</div>";
     $categories = explode(",", $cell['event']['CATEGORIES']);
-    if( in_array( 'Free Fringe', $categories)) {
+    if (in_array('Free Fringe', $categories)) {
         $h[] = "<div class='vf_grid_cell_tag'>FREE</div>";
     }
     $h[] = "<div class='vf_grid_cell_desc' style='display:none'>" . $cell['event']["DESCRIPTION"] . "</div>";

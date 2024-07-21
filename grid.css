@@ -1,10 +1,9 @@
 html, body, #eut-content {
-    overflow: visible !important;
 }
 
 .vf_grid_outer {
     max-width: 100%;
-    overflow: visible;
+    overflow-x: scroll;
 }
 
 #eut-content table.vf_grid td {

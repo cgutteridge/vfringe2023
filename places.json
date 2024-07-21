@@ -33,6 +33,7 @@
  { "GEO":[ 50.59318,-1.20478 ], "ICON":"popup.png", "NAME":"Ventnor Paddling Pool","VENUES":["Ventnor Paddling Pool"]},
  { "GEO":[ 50.59507,-1.20316 ], "ICON":"popup.png", "NAME":"Carnaby's", "VENUES":["Carnabys Tea Room"]},
 
+ { "GEO":[ 50.59612,-1.20486 ], "ICON":"popup.png", "NAME":"Crab and Lobster Tap","VENUES":["Crab and Lobster Tap"]},
 
 
  { "GEO":[ 50.59488,-1.20555 ], "ICON":"atm.png", "NAME":"Cash Point", "DESC":"Inside CO-OP. Free, but only available when the shop is open.", "VENUES":[]},

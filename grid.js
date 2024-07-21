@@ -1,5 +1,8 @@
 jQuery(document).ready(function () {
 
+  // hack for mobile
+  jQuery( 'meta[name="viewport"]').attr( 'content',"width=device-width, initial-scale=1, maximum-scale=100, user-scalable=yes" )
+
   const it_control = jQuery('<a href="/itinerary" class="vf_it_control"></a>')
   jQuery('body').append(it_control)
 
