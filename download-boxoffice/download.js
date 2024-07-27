@@ -25,7 +25,7 @@ async function scrapePage (url) {
     const response = await axios.get(url, { headers: headers })
     const html = response.data
     const $ = cheerio.load(html)
-
+    console.log( 'scrape: '+url)
     $('a.block').each((index, element) => {
       const href = $(element).attr('href')
       if (href) {

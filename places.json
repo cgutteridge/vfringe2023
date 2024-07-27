@@ -10,10 +10,11 @@
  { "GEO":[ 50.59652,-1.20011 ], "ICON":"number_7.png", "NAME":"Ventnor Library", "VENUES":["Ventnor Library"]},
  { "GEO":[ 50.59419,-1.20482 ], "ICON":"number_8.png", "NAME":"Pier Street Playhouse", "VENUES":["Pier Street Playhouse"] },
  { "GEO":[ 50.59294,-1.2143  ], "ICON":"number_9.png", "NAME":"The Magpie", "VENUES":["The Magpie"]},
- { "GEO":[ 50.59236,-1.21635 ], "ICON":"number_10.png", "NAME":"Parkside bar","VENUES":["Ventnor Park"]},
+ { "GEO":[ 50.59215,-1.21624 ], "ICON":"number_10.png", "NAME":"Parkside bar","VENUES":["Ventnor Park"]},
 
  { "GEO":[ 50.59225,-1.21669 ], "ICON":"number_11.png", "NAME":"The Nest", "VENUES":["The Nest"]},
- { "GEO":[ 50.5922,-1.2171   ], "ICON":"number_12.png", "NAME":"The Fringe Village Box Office", "VENUES":[] },
+ { "GEO":[ 50.5926,-1.21531   ], "ICON":"number_12.png", "NAME":"The Fringe Village Box Office", "VENUES":[] },
+
  { "GEO":[ 50.59063,-1.21827 ], "ICON":"number_13.png", "NAME":"The Big Top", "VENUES":["The Big Top"]},
  { "GEO":[ 50.59081,-1.21852 ], "ICON":"number_14.png", "NAME":"Big Top Bar", "VENUES":["The Big Top Bar" ]},
  { "GEO":[ 50.59087,-1.21871 ], "ICON":"number_15.png", "NAME":"Flowersbrook Inn", "VENUES":["The Flowersbrook Inn"] },
