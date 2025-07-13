@@ -30,7 +30,9 @@ function chrisvf_render_map()
     $outlines = json_decode($outlines_raw, true);
 
     $lines_raw = file_get_contents(dirname(__FILE__) . "/lines.json");
-    $lines = json_decode($lines_raw, true);
+    # disabled lines as we don't need them currently
+    # $lines = json_decode($lines_raw, true);
+    $lines = [];
 
     $venueToPOI = [];
     for ($i = 0; $i < sizeof($places); ++$i) {
@@ -80,6 +82,7 @@ function chrisvf_render_map()
             $places[$poi]["nowFree"][] = "<div><strong>Now - " . preg_replace('/\\\'/', '&#39;', $event['SUMMARY']) . "</strong></div>";
         }
     }
+#print_r( $warnings ); exit();
 
     wp_enqueue_script('chrisvf-leaflet');
     wp_enqueue_script('chrisvf-leaflet-label');

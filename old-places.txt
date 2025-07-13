@@ -61,3 +61,20 @@
 
 
 ]
+
+ { "GEO":[ 50.59759,-1.19674 ], "ICON":"number_6.png", "NAME":"Holy Trinity Church", "VENUES":["Holy Trinity Church"]},
+ { "GEO":[ 50.59294,-1.2143  ], "ICON":"number_9.png", "NAME":"The Magpie", "VENUES":["The Magpie"]},
+ { "GEO":[ 50.59063,-1.21827 ], "ICON":"number_13.png", "NAME":"The Big Top", "VENUES":["The Big Top"]},
+ { "GEO":[ 50.59081,-1.21852 ], "ICON":"number_14.png", "NAME":"Big Top Bar", "VENUES":["The Big Top Bar" ]},
+ { "GEO":[ 50.59678,-1.19446 ], "ICON":"number_17.png", "NAME":"27, 35 & 38A Madeira Road", "VENUES":["27 & 38A Madeira Road","35 Madeira Rd" ]},
+ { "GEO":[ 50.59551,-1.2035  ], "ICON":"number_18.png", "NAME":"Better Days Cafe", "VENUES":["Better Days Cafe"]},
+ { "GEO":[ 50.59268,-1.21116 ], "ICON":"number_20.png", "NAME":"La Falaise Carpark Shelter", "VENUES":["La Falaise Carpark Shelter"]},
+ { "GEO":[ 50.59230,-1.23203 ], "ICON":"number_21.png", "NAME":"Park & Ride", "VENUES": ["Ventnor Rugby Football Club"]},
+ { "GEO":[ 50.59393,-1.20299 ], "ICON":"walk.png", "NAME":"Salisbury Gardens", "VENUES":["Salisbury Gardens"] },
+ { "GEO":[ 50.59282,-1.21457 ], "ICON":"popup.png", "NAME":"Ventnor Putting Green","VENUES":["Ventnor Putting Green (Ventnor Park)"]},
+ { "GEO":[ 50.58685,-1.23196 ], "ICON":"popup.png", "NAME":"Orchard Bay","VENUES":["Orchard Bay"]},
+ { "GEO":[ 50.5942,-1.20694  ], "ICON":"popup.png", "NAME":"The Rex Piano Bar","VENUES":["The Rex Piano Bar"]},
+ { "GEO":[ 50.59318,-1.20478 ], "ICON":"popup.png", "NAME":"Ventnor Paddling Pool","VENUES":["Ventnor Paddling Pool"]},
+ { "GEO":[ 50.59507,-1.20316 ], "ICON":"popup.png", "NAME":"Carnaby's", "VENUES":["Carnabys Tea Room"]},
+ { "GEO":[ 50.59612,-1.20486 ], "ICON":"popup.png", "NAME":"Crab and Lobster Tap","VENUES":["Crab and Lobster Tap"]},
+
