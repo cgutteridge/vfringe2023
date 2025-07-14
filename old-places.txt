@@ -16,7 +16,6 @@
 { "GEO":[ 50.59438,-1.20477], "ICON":"popup.png", "NAME":"Lesleys Nutshell", "VENUES":["Lesleys Nutshell"]},
 { "GEO":[ 50.59555,-1.20328], "ICON":"popup.png", "NAME":"Carnaby Tea Room", "VENUES":["Carnaby Tea Room"]},
 { "GEO":[ 50.58927,-1.2279 ], "ICON":"popup.png", "NAME":"Edulis", "VENUES":["Edulis (Ventnor Botanic Garden)"]},
-{ "GEO":[ 50.59283,-1.2145 ], "ICON":"popup.png", "NAME":"The Fringe Village", "VENUES":["The Fringe Village (Ventnor Putting Green)"]},
 { "GEO":[ 50.59492,-1.20618], "ICON":"popup.png", "NAME":"KU", "VENUES":["KU"]},
 { "GEO":[ 50.59483,-1.20546], "ICON":"popup.png", "NAME":"Reggies Retro", "VENUES":["Reggies Retro"]},
 { "GEO":[ 50.59396,-1.20266], "ICON":"popup.png", "NAME":"The Green Room", "VENUES":["The Green Room"]},

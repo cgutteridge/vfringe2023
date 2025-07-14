@@ -20,9 +20,8 @@ my $json_text = do {
 my $json = JSON->new;
 my $data = $json->decode($json_text);
 
-openmy $tsv_fh 
-Dumper( \@row );
-print "Venue	Date	Start	End	Title	Event	Tags	Description\n";
+open( my $tsv_fh, ">:encoding(UTF-8)", $out_filename ) or die "Can't open $out_filename: $!";
+print {$tsv_fh} "Venue	Date	Start	End	Title	Event	Tags	Description\n";
 foreach my $record ( @{$data} ) {
 
     # Compute end dates
@@ -47,17 +46,25 @@ foreach my $record ( @{$data} ) {
         $row[2] = substr( $event->[0], 11, 5 ); 
         $row[3] = substr( $event->[1], 11, 5 ); 
         $row[4] = $record->{name};
+        my $id;
         if( $record->{id} =~ m/^(\d+)/ ) {
-            $row[5] = "https://purchase.vfringe.co.uk/EventAvailability?EventId=$1";
+            $id = $1;
+            $row[5] = "https://purchase.vfringe.co.uk/EventAvailability?EventId=$id";
+
+            if( $id eq "30601" || $id eq "30201" || $id eq "30801" ) {
+                $row[0] = "The Fringe Village Box Office";
+            }
         }
+
         $row[6] = $record->{attribute_EventType};
         $row[7] = $record->{description};
         foreach my $cell ( @row ) { 
-            $cell =~  s/[\t\n]/ /g;
+            $cell =~  s/[\r\t\n]/ /g;
         }
-        print join( "\t", @row )."\n";
+        print {$tsv_fh} join( "\t", @row )."\n";
     }
 }
+close $tsv_fh;
 
 
 
