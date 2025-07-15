@@ -65,6 +65,32 @@ foreach my $record ( @{$data} ) {
             }
         }
 
+        # no mapping required:
+        # "The Fringe Village Box Office":
+        # "Ventnor Botanic Garden":
+        # "Ingrams Yard":
+
+        my %map = (
+            "Bosco Theatre \@ Fringe Village, Ventnor Park" => "Bosco Theatre",
+            "The Bosco \@ Fringe Village, Ventnor Park" => "Bosco Theatre",
+            "Ingrams Yard, Dudley Road" => "Ingrams Yard",
+            "Peer Studios, Pier Street" => "Peer Studios",
+            "Pier Street Playhouse, Pier Street" => "Pier Street Playhouse",
+            "Rotunda \@ Fringe Village, Flowersbrook" => "Rotunda",
+            "St Catherine's Church, Church Street" => "St. Catherine's Church",
+            "Start the walk at the Family Fringe entrance, Ventnor Park" => "Family Fringe entrance of Ventnor Park",
+            "The Bijou \@ Fringe Village, Ventnor Park" => "Bijou",
+            "The Container \@ Ingrams Yard, Dudley Road" => "The Container",
+            "Ventnor Arts Club, High Street" => "Ventnor Arts Club",
+            "Ventnor Exchange Arena \@ Flowersbrook" => "Ventnor Exchange Arena",
+            "Ventnor Exchange, 11 Church Street" => "Ventnor Exchange",
+            "Ventnor Exchange, 11 Church Street, PO38 1SW" => "Ventnor Exchange",
+            "Ventnor Library, High Street" => "Ventnor Library",
+            "Ventnor Park (Putting Green end) \@ Fringe Village, Ventnor Park" => "Ventnor Park (Putting Green end)",
+        );
+
+        $row[0] = $map{ $row[0] } if exists $map{ $row[0] };
+
         $row[6] = $record->{attribute_EventType};
         $row[7] = $record->{description};
         foreach my $cell ( @row ) { 

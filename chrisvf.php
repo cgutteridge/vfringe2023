@@ -295,24 +295,39 @@ function chrisvf_location_sortcode($loc)
             return "005";
 
         case "The Fringe Village":
-            return "011";
+            return "021";
         case "Fringe Village Bandstand":
-            return "012";
+            return "022";
         case "The Nest":
-            return "013";
-        case "The Magpie":
-            return "014";
+            return "023";
+        case "The Fringe Village Box Office":
+            return "024";
         case "Ventnor Park":
-            return "015";
+            return "025";
         case "Ventnor Putting Green (Ventnor Park)":
-            return "016";
+            return "026";
+        case "Bosco Theatre":
+            return "027";
+        case "Bijou":
+            return "028";
+        case "Ventnor Park (Putting Green end)":
+            return "029";
 
         case "The Big Top":
-            return "021";
+            return "011";
         case "The Big Top Bar":
-            return "022";
+            return "012";
         case "The Flowersbrook Inn":
-            return "023";
+            return "013";
+        case "Rotunda":
+            return "014";
+        case "Ventnor Exchange Arena":
+            return "015";
+            
+        case "Ingrams Yard":
+            return "031";
+        case "The Container":
+            return "032";
     }
     return "100" . $loc;
 }
