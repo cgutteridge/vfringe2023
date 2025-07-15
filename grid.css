@@ -20,7 +20,7 @@ html, body, #eut-content {
     line-height: 1.2;
 }
 
-h2 {
+oldh2 {
     margin-top: 1em;
     font-family: Helvetica, "MontserratRegular", sans-serif;
     font-size: 120% !important;
@@ -180,24 +180,27 @@ th.vf_grid_venue {
 
 
 
-
 /* purple */
 
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_studio3ingramsyardstudio.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_ingramsyard.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_thecontainer.vf_grid_freecell {
     background-color: #fff8ff;
 }
 
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_studio3ingramsyardstudio.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_ingramsyard.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thecontainer.vf_grid_freecell {
     background-color: #ffe9ff;
 }
 
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_studio3ingramsyardstudio.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_ingramsyard.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_thecontainer.vf_grid_freecell {
     background-color: #ffe9ff;
 }
 
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_studio3ingramsyardstudio.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_ingramsyard.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thecontainer.vf_grid_freecell {
     background-color: #ffd8ff;

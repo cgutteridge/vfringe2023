@@ -328,6 +328,8 @@ function chrisvf_location_sortcode($loc)
             return "031";
         case "The Container":
             return "032";
+        case "Studio 3 @ Ingrams Yard Studio":
+            return "033";
     }
     return "100" . $loc;
 }

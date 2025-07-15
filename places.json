@@ -25,8 +25,11 @@
  { "GEO":[ 50.5932,-1.20505  ], "ICON":"popup.png", "NAME":"Ventnor Paddling Pool", "VENUES":[ "Ventnor Paddling Pool"]},
  { "GEO":[ 50.59263,-1.21695 ], "ICON":"popup.png", "NAME":"Park View Studio", "VENUES":[ "Park View Studio"]},
 
- { "GEO":[ 50.5929,-1.21516 ], "ICON":"walk.png", "NAME":"Walk start", "VENUES":["Family Fringe entrance of Ventnor Park"]},
+ { "GEO":[ 50.59286,-1.21515 ], "ICON":"walk.png", "NAME":"Walk start", "VENUES":["Family Fringe entrance of Ventnor Park"]},
 
+ { "GEO":[ 50.59237,-1.21561 ], "ICON":"food.png", "NAME":"Walk start", "VENUES":[],  "DESC":"Food stalls to keep your energy up through the Fringe" },
+ { "GEO":[ 50.592,-1.21664 ], "ICON":"food.png", "NAME":"Walk start", "VENUES":[],  "DESC":"Food stalls to keep your energy up through the Fringe" },
+ { "GEO":[ 50.59178,-1.21746 ], "ICON":"sauna.png", "NAME":"Sauna", "VENUES":[],  "HTMLDESC":"A Sauna? At this time of year, at this time of day, in this part of the country, localized entirely within Ventnor Park!?<br />Yes. <a href='https://www.klyscoastalsauna.co.uk/booking-calendar/klys-coastal-sauna-price-per-seat'>Book here</a>" },
 
  { "GEO":[ 50.5944,-1.20399  ], "ICON":"door1.png", "NAME":"7 Doors - Have you Seen Sam? - Teresa Grimaldi", "VENUES":[] },
  { "GEO":[ 50.5944,-1.20712  ], "ICON":"door2.png", "NAME":"7 Doors - Translating Frequencies:31 - Nathan Holt", "VENUES":[] },

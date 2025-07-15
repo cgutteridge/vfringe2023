@@ -131,7 +131,7 @@ jQuery( document ).ready( function() {
         }
 
         $icon_size = '32,37';
-        $icon_anchor = '16,37';
+        $icon_anchor = '16,35';
         if (!empty($place['ICON'])) {
             $icon_url = $place["ICON"];
             # make icons link to the plugin icons directory unless they start with https:// or /
@@ -149,6 +149,9 @@ jQuery( document ).ready( function() {
         $popup = "<p style='color: #000;font-size:130%'>" . htmlspecialchars($place["NAME"]) . "</p>";
         if (!empty($place["DESC"])) {
             $popup .= "<p style='color: #000;'>" . htmlspecialchars($place["DESC"]) . "</p>";
+        }
+        if (!empty($place["HTMLDESC"])) {
+            $popup .= "<p style='color: #000;'>" . $place["HTMLDESC"] . "</p>";
         }
         if (@$_GET['debug']) {
             $popup .= "<pre>" . htmlspecialchars(print_r($place, true)) . "</pre>";

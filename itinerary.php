@@ -33,7 +33,7 @@ function chrisvf_print_itinerary_add($atts = [], $content = null)
     $dayofweek = tribe_get_start_date($wp_query->post->ID, false, 'l');
 
     $msg = "This $dayofweek, I'm going to see $title at #VFringe2025 $link";
-    print "<a href='https://twitter.com/intent/tweet?text=" . urlencode($msg) . "' class='vf_itinerary_button'>Tweet this</a>";
+    #print "<a href='https://twitter.com/intent/tweet?text=" . urlencode($msg) . "' class='vf_itinerary_button'>Tweet this</a>";
     print "<a href='https://www.facebook.com/sharer/sharer.php?u=" . urlencode($link) . "' class='vf_itinerary_button'>Share on Facebook</a>";
     print "<script>jQuery(document).ready(vfItineraryInit);</script>";
 }
@@ -163,7 +163,7 @@ function chrisvf_render_itinerary($atts = [], $content = null)
         $msg = "My #VFringe25 plan: $link";
         $h [] = "<div>";
         $h [] = "<a href='mailto:?subject=Your%20Ventnor%20Fringe%20Itinerary&body=" . preg_replace('/\+/', '%20', urlencode($body)) . "' class='vf_itinerary_button'>Send by Email</a>";
-        $h [] = "<a target='_blank' ref='https://twitter.com/intent/tweet?text=" . urlencode($msg) . "' class='vf_itinerary_button'>Tweet my Itinerary</a>";
+        #$h [] = "<a target='_blank' ref='https://twitter.com/intent/tweet?text=" . urlencode($msg) . "' class='vf_itinerary_button'>Tweet my Itinerary</a>";
         $h [] = "<a target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=" . urlencode($link) . "' class='vf_itinerary_button'>Post to Facebook</a>";
         $h [] = "</div>";
     }
@@ -173,7 +173,7 @@ function chrisvf_render_itinerary($atts = [], $content = null)
 function chrisvf_render_saved_itinerary($atts = [], $content = null)
 {
     $itinerary = array();
-    $itinerary["codes"] = preg_split('/,/', $_GET['ids']);
+    $itinerary["codes"] = preg_split('/\|/', $_GET['ids']);
     $events = chrisvf_get_events();
     $itinerary["events"] = array();
     foreach ($itinerary["codes"] as $code) {
