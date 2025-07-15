@@ -51,8 +51,17 @@ foreach my $record ( @{$data} ) {
             $id = $1;
             $row[5] = "https://purchase.vfringe.co.uk/EventAvailability?EventId=$id";
 
-            if( $id eq "30601" || $id eq "30201" || $id eq "30801" ) {
+            if( $id eq "30601" ) { # artists breakfast
+                $row[0] = "Ingrams Yard";
+            }
+            if( $id eq "30201" || $id eq "30801" ) { # artists breakfast
                 $row[0] = "The Fringe Village Box Office";
+            }
+            if( $id eq "7201" ) { # Gongs
+                $row[0] = "The Bijou @ Fringe Village, Ventnor Park";
+            }
+            if( $id eq "6201" ) { # Enfant Terrible
+                $row[0] = "Rotunda @ Fringe Village, Flowersbrook";
             }
         }
 

@@ -15,7 +15,7 @@ function chrisvf_add_itinerary_scripts()
     wp_register_style('chrisvf-itinerary', plugins_url('itinerary.css', __FILE__));
     wp_enqueue_style('chrisvf-itinerary');
 
-    wp_register_script('chrisvf-itinerary', plugins_url('itinerary.js', __FILE__), array('jquery'));
+    wp_register_script('chrisvf-itinerary', plugins_url('itinerary.js?1', __FILE__), array('jquery'));
     wp_enqueue_script('chrisvf-itinerary');
 }
 
@@ -80,8 +80,8 @@ function chrisvf_get_itinerary($ids = null)
 
     if (!isset($chrisvf_itinerary)) {
         $chrisvf_itinerary = array();
-        if (@$_COOKIE["itinerary"]) {
-            $chrisvf_itinerary["codes"] = preg_split('/,/', $_COOKIE["itinerary"]);
+        if (@$_COOKIE["itinerary2025"]) {
+            $chrisvf_itinerary["codes"] = preg_split('/,/', $_COOKIE["itinerary2025"]);
         } else {
             $chrisvf_itinerary["codes"] = array();
         }
@@ -159,8 +159,8 @@ function chrisvf_render_itinerary($atts = [], $content = null)
                 $body .= "\r\n";
             }
         }
-        $link = "https://vfringe.co.uk/saved-itinerary?ids=" . urlencode($_COOKIE["itinerary"]);
-        $msg = "My #VFringe24 plan: $link";
+        $link = "https://vfringe.co.uk/saved-itinerary?ids=" . urlencode($_COOKIE["itinerary2025"]);
+        $msg = "My #VFringe25 plan: $link";
         $h [] = "<div>";
         $h [] = "<a href='mailto:?subject=Your%20Ventnor%20Fringe%20Itinerary&body=" . preg_replace('/\+/', '%20', urlencode($body)) . "' class='vf_itinerary_button'>Send by Email</a>";
         $h [] = "<a target='_blank' ref='https://twitter.com/intent/tweet?text=" . urlencode($msg) . "' class='vf_itinerary_button'>Tweet my Itinerary</a>";

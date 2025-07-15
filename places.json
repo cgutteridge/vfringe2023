@@ -27,13 +27,13 @@
  { "GEO":[ 50.5929,-1.21516 ], "ICON":"walk.png", "NAME":"Walk start", "VENUES":["Start the walk at the Family Fringe entrance, Ventnor Park"]},
 
 
- { "GEO":[ 50.5944,-1.20399  ], "ICON":"7doors.png", "NAME":"7 Doors - Have you Seen Sam? - Teresa Grimaldi", "VENUES":[] },
- { "GEO":[ 50.5944,-1.20712  ], "ICON":"7doors.png", "NAME":"7 Doors - Translating Frequencies:31 - Nathan Holt", "VENUES":[] },
- { "GEO":[ 50.59332,-1.20471 ], "ICON":"7doors.png", "NAME":"7 Doors - Stay Afloat - Abi Wheeler", "VENUES":[] },
- { "GEO":[ 50.593,-1.21435   ], "ICON":"7doors.png", "NAME":"7 Doors - Perceptions - Mark Cosby", "VENUES":[] },
- { "GEO":[ 50.59254,-1.21583 ], "ICON":"7doors.png", "NAME":"7 Doors - Interanea / Internal Things - Alicia French", "VENUES":[] },
- { "GEO":[ 50.59193,-1.2172  ], "ICON":"7doors.png", "NAME":"7 Doors - Who we are - Kathy Williams", "VENUES":[] },
- { "GEO":[ 50.59068,-1.21896 ], "ICON":"7doors.png", "NAME":"7 Doors - Where exactly are we? - Julie Hutchinson", "VENUES":[] },
+ { "GEO":[ 50.5944,-1.20399  ], "ICON":"door1.png", "NAME":"7 Doors - Have you Seen Sam? - Teresa Grimaldi", "VENUES":[] },
+ { "GEO":[ 50.5944,-1.20712  ], "ICON":"door2.png", "NAME":"7 Doors - Translating Frequencies:31 - Nathan Holt", "VENUES":[] },
+ { "GEO":[ 50.59332,-1.20471 ], "ICON":"door3.png", "NAME":"7 Doors - Stay Afloat - Abi Wheeler", "VENUES":[] },
+ { "GEO":[ 50.593,-1.21435   ], "ICON":"door4.png", "NAME":"7 Doors - Perceptions - Mark Cosby", "VENUES":[] },
+ { "GEO":[ 50.59254,-1.21583 ], "ICON":"door5.png", "NAME":"7 Doors - Interanea / Internal Things - Alicia French", "VENUES":[] },
+ { "GEO":[ 50.59193,-1.2172  ], "ICON":"door6.png", "NAME":"7 Doors - Who we are - Kathy Williams", "VENUES":[] },
+ { "GEO":[ 50.59068,-1.21896 ], "ICON":"door7.png", "NAME":"7 Doors - Where exactly are we? - Julie Hutchinson", "VENUES":[] },
  
  { "GEO":[ 50.59419,-1.20747 ], "ICON":"road-closed.png", "NAME":"Road Closed", "DESC":"The big rock fell down and is blocking the road. Yes it is very annoying.", "VENUES":[], "ICON_SIZE":"50,50","ICON_ANCHOR":"25,25"},
 

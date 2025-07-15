@@ -52,7 +52,7 @@ function vfUpdateItineraryCount (n) {
 }
 
 function vfSetItinerary (list) {
-  var name = 'itinerary'
+  var name = 'itinerary2025'
   var value = list.join(',')
   var days = 100
   if (days) {
@@ -66,7 +66,7 @@ function vfSetItinerary (list) {
 }
 
 function vfGetItinerary () {
-  var c_name = 'itinerary'
+  var c_name = 'itinerary2025'
   if (document.cookie.length > 0) {
     c_start = document.cookie.indexOf(c_name + '=')
     if (c_start != -1) {
