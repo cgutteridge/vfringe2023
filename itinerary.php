@@ -15,7 +15,7 @@ function chrisvf_add_itinerary_scripts()
     wp_register_style('chrisvf-itinerary', plugins_url('itinerary.css', __FILE__));
     wp_enqueue_style('chrisvf-itinerary');
 
-    wp_register_script('chrisvf-itinerary', plugins_url('itinerary.js?1', __FILE__), array('jquery'));
+    wp_register_script('chrisvf-itinerary', plugins_url('itinerary.js?2', __FILE__), array('jquery'));
     wp_enqueue_script('chrisvf-itinerary');
 }
 
@@ -32,7 +32,7 @@ function chrisvf_print_itinerary_add($atts = [], $content = null)
     $title = $wp_query->post->post_title;
     $dayofweek = tribe_get_start_date($wp_query->post->ID, false, 'l');
 
-    $msg = "This $dayofweek, I'm going to see $title at #VFringe17 $link";
+    $msg = "This $dayofweek, I'm going to see $title at #VFringe2025 $link";
     print "<a href='https://twitter.com/intent/tweet?text=" . urlencode($msg) . "' class='vf_itinerary_button'>Tweet this</a>";
     print "<a href='https://www.facebook.com/sharer/sharer.php?u=" . urlencode($link) . "' class='vf_itinerary_button'>Share on Facebook</a>";
     print "<script>jQuery(document).ready(vfItineraryInit);</script>";
@@ -81,7 +81,7 @@ function chrisvf_get_itinerary($ids = null)
     if (!isset($chrisvf_itinerary)) {
         $chrisvf_itinerary = array();
         if (@$_COOKIE["itinerary2025"]) {
-            $chrisvf_itinerary["codes"] = preg_split('/,/', $_COOKIE["itinerary2025"]);
+            $chrisvf_itinerary["codes"] = preg_split('/\|/', $_COOKIE["itinerary2025"]);
         } else {
             $chrisvf_itinerary["codes"] = array();
         }
@@ -214,6 +214,8 @@ function chrisvf_render_itinerary_table($itinerary, $active = true)
             $list[$time_t][] = $code;
         }
     }
+    #print "<pre>". htmlspecialchars(print_r($itinerary,1 )). "</pre>";
+    #print "<pre>". htmlspecialchars(print_r($list,1 )). "</pre>";
     ksort($list);
     global $vf_js_id;
     foreach ($list as $start_time => $codes) {
@@ -245,7 +247,7 @@ function chrisvf_render_itinerary_table($itinerary, $active = true)
                 $h [] = "<td></td>";
                 $h [] = "<td></td>";
                 $h [] = "<td></td>";
-                $h [] = "<td>Error, event missing (may have been erased or altered. Sorry.)</td>";
+                $h [] = "<td>Error, event missing (may have been erased or altered. Sorry. $code)</td>";
             }
             if ($active) {
                 $h [] = "<td><div class='vf_itinerary_button vf_itinerary_remove_button' id='{$vf_js_id}_remove'>Remove from itinerary</div>";

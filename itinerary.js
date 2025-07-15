@@ -53,7 +53,7 @@ function vfUpdateItineraryCount (n) {
 
 function vfSetItinerary (list) {
   var name = 'itinerary2025'
-  var value = list.join(',')
+  var value = list.join('|')
   var days = 100
   if (days) {
     var date = new Date()
@@ -77,7 +77,7 @@ function vfGetItinerary () {
       }
       var v = unescape(document.cookie.substring(c_start, c_end))
       var list = []
-      if (v != '') { list = v.split(/,/) }
+      if (v != '') { list = v.split(/\|/) }
       return list
     }
   }
