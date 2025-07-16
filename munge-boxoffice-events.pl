@@ -24,6 +24,34 @@ open( my $tsv_fh, ">:encoding(UTF-8)", $out_filename ) or die "Can't open $out_f
 print {$tsv_fh} "Venue	Date	Start	End	Title	Event	Tags	Description\n";
 foreach my $record ( @{$data} ) {
 
+    # Add in the events which were sold out when I downloaded the JSON from the boxoffice
+   
+    my $id;
+    if( $record->{id} =~ m/^(\d+)/ ) {
+        $id = $1;
+    }
+    
+    # Drunk Women Solving Crime
+    if( $id eq "1001" ) { 
+        push @{$record->{availableInstanceDates}}, "2025-07-19T19:30:00";
+    }
+    # Ahir Shah
+    if( $id eq "8002" ) { 
+        push @{$record->{availableInstanceDates}}, "2025-07-25T17:00:00";
+    }
+    # Gong
+    if( $id eq "7201" ) { 
+        push @{$record->{availableInstanceDates}}, "2025-07-25T09:00:00";
+    }
+    # Arcade
+    if( $id eq "1201" ) { 
+        # this seems to have changed lets leave it alone
+        #push @{$record->{availableInstanceDates}}, "2025-07-20T15:15:00";
+        #push @{$record->{availableInstanceDates}}, "2025-07-22T15:14:30
+        #push @{$record->{availableInstanceDates}}, "2025-07-22T15:15:15";
+        #push @{$record->{availableInstanceDates}}, "2025-07-22T15:15:15";
+    }
+
     # Compute end dates
     my @events = map {
         # parse the start time
@@ -46,9 +74,7 @@ foreach my $record ( @{$data} ) {
         $row[2] = substr( $event->[0], 11, 5 ); 
         $row[3] = substr( $event->[1], 11, 5 ); 
         $row[4] = $record->{name};
-        my $id;
-        if( $record->{id} =~ m/^(\d+)/ ) {
-            $id = $1;
+        if( defined $id ) {
             $row[5] = "https://purchase.vfringe.co.uk/EventAvailability?EventId=$id";
 
             if( $id eq "30601" ) { # artists breakfast
