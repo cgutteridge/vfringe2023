@@ -148,11 +148,11 @@ th.vf_grid_venue {
 }
 
 .vf_grid_infobox_top {
-    top: 3%;
+    top: 2rem;
 }
 
 .vf_grid_infobox_bottom {
-    bottom: 3%;
+    bottom: 2rem;
 }
 
 /* end of POPUP EVENT DESCRIPTION THING */

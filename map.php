@@ -197,8 +197,10 @@ jQuery( document ).ready( function() {
             $nowText = 'false';
         }
         $ldir = "left";
+        $tipOffset = -16;
         if (@$place["LDIR"] == "right") {
             $ldir = "right";
+            $tipOffset = 16;
         }
         $js .= "
   (function(lat_long,icon_url,icon_size,icon_anchor, name, popupText,nowText){
@@ -210,7 +212,7 @@ jQuery( document ).ready( function() {
     popup.setContent( '<div style=\"max-height: 300px; overflow:auto\">'+popupText+'</div>' );
     let marker = L.marker(lat_long, markerOpts ).bindPopup(popup).addTo(map);
     if( nowText ) {
-      marker.bindTooltip(nowText, { offset: [ -16, -20], permanent: true, direction: '$ldir' } );
+      marker.bindTooltip(nowText, { offset: [ $tipOffset, -20], permanent: true, direction: '$ldir' } );
     }
 
     bounds.extend( lat_long );
