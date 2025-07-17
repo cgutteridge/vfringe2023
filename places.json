@@ -24,6 +24,7 @@
  { "GEO":[ 50.59283,-1.2145  ], "ICON":"popup.png", "NAME":"The Fringe Village", "VENUES":["The Fringe Village (Ventnor Putting Green)","Ventnor Park (Putting Green end)", "Ventnor Park (Putting Green)" ]},
  { "GEO":[ 50.5932,-1.20505  ], "ICON":"popup.png", "NAME":"Ventnor Paddling Pool", "VENUES":[ "Ventnor Paddling Pool"]},
  { "GEO":[ 50.59263,-1.21695 ], "ICON":"popup.png", "NAME":"Park View Studio", "VENUES":[ "Park View Studio"]},
+ { "GEO":[ 50.59534,-1.20584], "ICON":"popup.png", "NAME":"The Crab and Lobster Tap", "VENUES":["The Crab and Lobster Tap"]},
 
  { "GEO":[ 50.59286,-1.21515 ], "ICON":"walk.png", "NAME":"Walk start", "VENUES":["Family Fringe entrance of Ventnor Park"]},
 
