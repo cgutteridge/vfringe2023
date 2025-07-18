@@ -229,7 +229,60 @@ jQuery( document ).ready( function() {
     foreach ($lines as $line) {
         $js .= "L.polyline( " . json_encode($line["GEO"]) . ", " . json_encode($line["OPTIONS"]) . " ).addTo(map)\n";
     }
+
+
+
+    # art
+    $overlays = [
+        [ 
+            "img" => "sam.png",
+            "bounds"=> [ [ 50.59374,-1.19888 ], [ 50.59334,-1.19840 ]]
+        ],
+        [ 
+            "img"=> "afloat.png",
+            "bounds"=> [ [ 50.59243,-1.20265 ], [ 50.59208,-1.2021 ] ]
+        ],
+        [ 
+            "img"=> "fringe.png",
+            "bounds"=> [ [ 50.59176,-1.21129 ], [ 50.58970,-1.2041 ]]
+        ],
+
+
+        [ 
+            "img"=> "dragon.png",
+            "bounds"=> [ [ 50.60018,-1.20549 ] , [ 50.59963,-1.20292 ] ]
+        ],
+        [ 
+            "img"=> "nostalgia.png",
+            "bounds"=> [ [ 50.59106,-1.21253 ] , [ 50.59083,-1.21208 ] ]
+        ],
+        [ 
+            "img"=> "duck.png",
+            "bounds"=> [ [ 50.59256,-1.20681 ] , [ 50.59200,-1.206 ] ]
+        ],
+        [ 
+            "img"=> "shakespeare.png",
+            "bounds"=> [ [ 50.58996,-1.2168 ] , [ 50.58956,-1.21618 ] ]
+        ],
+        [ 
+            "img"=> "bird.png",
+            "bounds"=> [ [ 50.59261,-1.20502 ] , [ 50.5924,-1.20462 ] ]
+        ],
+        [ 
+            "img"=> "alien.png",
+            "bounds"=> [  [ 50.58687,-1.19466 ] , [ 50.58661,-1.19433 ]]
+        ]
+          
+    ];
+    foreach( $overlays as $overlay ) {
+        $url = plugins_url("art/".$overlay["img"], __FILE__);
+        $bounds = json_encode( $overlay["bounds"] );
+        $js .= "L.imageOverlay( '$url' , $bounds, { opacity: 0.5 }).addTo(map)\n";
+    } 
+
     $js .= "});\n";
+
+
 
     $h .= "<script>\n";
     $h .= $js;

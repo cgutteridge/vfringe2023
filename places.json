@@ -4,8 +4,8 @@
  { "GEO":[ 50.59471,-1.20677 ], "ICON":"number_2.png", "NAME":"St. Catherine's Church", "VENUES":["St. Catherine's Church","St Catherine's Church", "St Catherine's Church, Church Street" ], "LDIR":"right"},
  { "GEO":[ 50.59453,-1.20699 ], "ICON":"number_3.png", "NAME":"Fringe Square", "VENUES":["The Fringe Square","The Book Bus" ]},
  { "GEO":[ 50.59543,-1.20549 ], "ICON":"number_4.png", "NAME":"Ventnor Arts Club", "VENUES":["Ventnor Arts Club", "Ventnor Arts Club, High Street" ]},
- { "GEO":[ 50.59436,-1.20405 ], "ICON":"number_5.png", "NAME":"Ingrams Yard", "VENUES":["Ingrams Yard" , "Ingrams Yard, Dudley Road", "Studio 3 @ Ingrams Yard Studio" ]},
- { "GEO":[ 50.59431,-1.20397 ], "ICON":"number_6.png", "NAME":"Arcade", "VENUES":[ "The Container" ], "LDIR":"right"},
+ { "GEO": [ 50.59441,-1.204 ] , "ICON":"number_5.png", "NAME":"Ingrams Yard", "VENUES":["Ingrams Yard" , "Ingrams Yard, Dudley Road", "Studio 3 @ Ingrams Yard Studio" ], "LDIR":"right" },
+ { "GEO": [ 50.59438,-1.20412], "ICON":"number_6.png", "NAME":"Arcade", "VENUES":[ "The Container" ]},
  { "GEO":[ 50.59652,-1.20011 ], "ICON":"number_7.png", "NAME":"Ventnor Library", "VENUES":["Ventnor Library", "Ventnor Library, High Street" ]},
  { "GEO":[ 50.59419,-1.20482 ], "ICON":"number_8.png", "NAME":"Pier Street Playhouse", "VENUES":["Pier Street Playhouse", "Pier Street Playhouse, Pier Street" ]},
  { "GEO":[ 50.59305,-1.2138  ], "ICON":"number_9.png", "NAME":"Bosco Theatre", "VENUES":[ "Bosco Theatre @ Fringe Village, Ventnor Park", "The Bosco @ Fringe Village, Ventnor Park","Bosco Theatre" ], "LDIR":"right"},
@@ -31,14 +31,14 @@
  { "GEO":[ 50.59237,-1.21561 ], "ICON":"food.png", "NAME":"Walk start", "VENUES":[],  "DESC":"Food stalls to keep your energy up through the Fringe" },
  { "GEO":[ 50.592,-1.21664 ], "ICON":"food.png", "NAME":"Walk start", "VENUES":[],  "DESC":"Food stalls to keep your energy up through the Fringe" },
  { "GEO":[ 50.59178,-1.21746 ], "ICON":"sauna.png", "NAME":"Sauna", "VENUES":[],  "HTMLDESC":"<div style='margin-bottom:1em'>A Sauna? At this time of year, at this time of day, in this part of the country, localized entirely within Ventnor Park!?</div><div style='margin-bottom:1em'>Yes. <a href='https://www.klyscoastalsauna.co.uk/booking-calendar/klys-coastal-sauna-price-per-seat'>Book here</a></div><div style='font-size:90% ; border-top: solid 1px #ccc; padding-top: 1em; '><a href='https://www.flaticon.com/free-icons/sauna' title='sauna icons'>Sauna icon created by Freepik - Flaticon</a></div>" },
-
- { "GEO":[ 50.5944,-1.20399  ], "ICON":"door1.png", "NAME":"7 Doors - Have you Seen Sam? - Teresa Grimaldi", "VENUES":[] },
- { "GEO":[ 50.5944,-1.20712  ], "ICON":"door2.png", "NAME":"7 Doors - Translating Frequencies:31 - Nathan Holt", "VENUES":[] },
- { "GEO":[ 50.59332,-1.20471 ], "ICON":"door3.png", "NAME":"7 Doors - Stay Afloat - Abi Wheeler", "VENUES":[] },
- { "GEO":[ 50.593,-1.21435   ], "ICON":"door4.png", "NAME":"7 Doors - Perceptions - Mark Cosby", "VENUES":[] },
- { "GEO":[ 50.59254,-1.21583 ], "ICON":"door5.png", "NAME":"7 Doors - Interanea / Internal Things - Alicia French", "VENUES":[] },
- { "GEO":[ 50.59193,-1.2172  ], "ICON":"door6.png", "NAME":"7 Doors - Who we are - Kathy Williams", "VENUES":[] },
- { "GEO":[ 50.59068,-1.21896 ], "ICON":"door7.png", "NAME":"7 Doors - Where exactly are we? - Julie Hutchinson", "VENUES":[] },
+ 
+ { "GEO": [ 50.59429,-1.20405 ], "ICON":"door1.png", "NAME":"7 Doors", "HTMLDESC": "<a href='https://www.boojumandsnark.co.uk/projects/the-sandown-clown-your-briefing/'>Have you Seen Sam?</a> - <a href='https://www.instagram.com/teresagrimaldiartist'>Teresa Grimaldi</a>", "VENUES":[] },
+ { "GEO":[ 50.5944,-1.20712  ], "ICON":"door2.png", "NAME":"7 Doors", "HTMLDESC": "Translating Frequencies:31 - <a href='https://www.nathanholtart.com/'>Nathan Holt</a>", "VENUES":[] },
+ { "GEO":[ 50.59332,-1.20471 ], "ICON":"door3.png", "NAME":"7 Doors", "HTMLDESC": "Stay Afloat - <a href='https://abiwheeler.com/'>Abi Wheeler</a>", "VENUES":[] },
+ { "GEO":[ 50.593,-1.21435   ], "ICON":"door4.png", "NAME":"7 Doors", "HTMLDESC": "Perceptions - <a href='https://www.instagram.com/markcosby_paintings'>Mark Cosby</a>", "VENUES":[] },
+ { "GEO":[ 50.59254,-1.21583 ], "ICON":"door5.png", "NAME":"7 Doors", "HTMLDESC": "Interanea / Internal Things - <a href='https://www.aliciafrench.co.uk/'>Alicia French</a>", "VENUES":[] },
+ { "GEO":[ 50.59193,-1.2172  ], "ICON":"door6.png", "NAME":"7 Doors", "HTMLDESC": "Who we are - <a href='https://www.kathywilliamsartist.co.uk/'>Kathy Williams</a>", "VENUES":[] },
+ { "GEO":[ 50.59068,-1.21896 ], "ICON":"door7.png", "NAME":"7 Doors", "HTMLDESC": "Where exactly are we? - <a href='https://linktr.ee/joolzy'>Julie Hutchinson</a>", "VENUES":[] },
  
  { "GEO":[ 50.59419,-1.20747 ], "ICON":"road-closed.png", "NAME":"Road Closed", "DESC":"The big rock fell down and is blocking the road. Yes it is very annoying.", "VENUES":[], "ICON_SIZE":"50,50","ICON_ANCHOR":"25,25"},
 
