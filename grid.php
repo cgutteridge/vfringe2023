@@ -45,6 +45,9 @@ function chrisvf_render_grid_day($attr)
 {
 
     $date = $attr["date"];
+    if( $date == "today") {
+        $date = date('Y-m-d');
+    }
 
     $day_start = "08:00:00 BST";
     $day_end = "02:00:00 BST";

@@ -11,9 +11,9 @@ function chrisvf_search()
 {
     $events = chrisvf_get_events();
 
-    $form = "<form action='/quick-search/'><input type=\"\" name=\"q\" id=\"q\" value=\"" . $_GET['q'] . "\" placeholder=\"Search...\">&nbsp;<input style='padding:0 1em 0 1em !important' value='Search' type='submit' /></form>";
-    if (@$_GET['q']) {
+    $form = "<form action='/quick-search/'><input type=\"\" name=\"q\" id=\"q\" value=\"" . $_GET['q'] . "\" placeholder=\"Search...\">&nbsp;<input style='padding:0 1em 0 1em !important' value='Search all events' type='submit' /></form>";
 
+    if (@$_GET['q']) {
         $q = $_GET['q'];
         // filter events
         $matches = [];

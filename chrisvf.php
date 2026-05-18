@@ -8,7 +8,7 @@ Plugin Name: Chris' Ventnor Fringe Hacks
 Plugin URI: http://wordpress.org/plugins/hello-dolly/
 Description: VFringe Hacks by Chris.
 Author: Christopher Gutteridge
-Version: 1.1
+Version: 1.2
 Author URI: http://users.ecs.soton.ac.uk/cjg/
 */
 
@@ -20,6 +20,7 @@ require_once("roulette.php");
 require_once("now_and_next.php");
 require_once("montydump.php");
 require_once("search.php");
+require_once("byday.php");
 
 /* FRINGE FUNCTIONS */
 

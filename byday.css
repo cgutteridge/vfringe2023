@@ -1,0 +1,12 @@
+.chrisvf-byday-table td {
+    vertical-align: top;
+    padding: 4px;
+    border: solid 1px black;
+}
+.chrisvf-byday-table th {
+    padding-left: 4px;
+    text-align: left;
+}
+body {
+    border: solid purple 20px !important;
+}
