@@ -1,128 +1,144 @@
-const urls = []
-for (var i = 1; i < 25; i++) {
-  urls.push('https://ventnorexchange.littleboxoffice.com/browse?filter%5Binclude_past_events%5D=0&filter%5Bgroup_scheduled_events%5D=0&filter%5Bhide_unavailable_events%5D=0&filter%5Bliked_events%5D=0&view_as=list&page=' + i)
-}
-
-// scrape_urls.js
-
-const axios = require('axios')
+const { execFileSync } = require('child_process')
 const cheerio = require('cheerio')
-const fs = require('fs')
+const fs = require('fs/promises')
 const path = require('path')
 
-const headers = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-  'Accept-Language': 'en-US,en;q=0.9',
-  'Accept-Encoding': 'gzip, deflate, br',
-  'Connection': 'keep-alive',
-  'Upgrade-Insecure-Requests': '1'
-}
+const SOURCE_URL = 'https://app.spektrix-link.com/clients/ventnorexchange/eventsView.json'
+const OUTPUT_PATH = path.join(__dirname, '../boxoffice-events.tsv')
+const WEBSITE_LISTING = 'VFringe'
+const HEADER = ['Venue', 'Date', 'Start', 'End', 'Title', 'Event', 'Tags', 'Event Type', 'Is On Sale', 'Is Sold Out', 'Description']
 
-const extractedUrls = []
+function fetchEvents () {
+  const raw = execFileSync('curl', ['-L', SOURCE_URL], { encoding: 'utf8' })
+  const parsed = JSON.parse(raw)
 
-async function scrapePage (url) {
-  try {
-    const response = await axios.get(url, { headers: headers })
-    const html = response.data
-    const $ = cheerio.load(html)
-    console.log( 'scrape: '+url)
-    $('a.block').each((index, element) => {
-      const href = $(element).attr('href')
-      if (href) {
-        const cleanUrl = href.split('?')[0]
-        extractedUrls.push(cleanUrl)
-        console.log('Found URL: ' + cleanUrl)
-      }
-    })
-  } catch (error) {
-    console.error('Failed to load: ' + url, error)
+  if (!Array.isArray(parsed)) {
+    throw new Error('Expected eventsView.json to return an array')
   }
+
+  return parsed
 }
 
-const extractedJsonBlocks = []
+function sanitizeField (value) {
+  return String(value ?? '')
+    .replace(/[\t\r\n]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
 
-async function scrapeJson (url) {
-  try {
-    const response = await axios.get(url, { headers: headers })
-    const html = response.data
-    const $ = cheerio.load(html)
-    let extracted
-    $('script[type="application/ld+json"]').each((index, element) => {
-      const jsonContent = $(element).html()
-      if (jsonContent) {
-        try {
-          extracted = JSON.parse(jsonContent)
-          extracted.url = url
-          console.log('Extracted JSON-LD from: ' + url)
-        } catch (error) {
-          console.error('Failed to parse JSON-LD from: ' + url, error)
-        }
-      }
-    })
-    if (extracted !== undefined) {
-      // find vue
-      const vueRaw = $('div[id="vue"]').first().attr('data-page')
-      const vue = JSON.parse(vueRaw)
-      const desc = vue?.props?.event?.description
-      extracted.desc = desc.replace(/\t/g, ' ')
-      extractedJsonBlocks.push(extracted)
-    }
-  } catch (error) {
-    console.error('Failed to load: ' + url, error)
+function htmlToText (html) {
+  const $ = cheerio.load(html || '')
+  $('br').replaceWith('\n')
+  return $.root().text().replace(/\r/g, '\n')
+}
+
+function extractVenue (htmlDescription) {
+  const text = htmlToText(htmlDescription)
+  const match = text.match(/Venue:\s*([\s\S]*?)(?:\n\s*\n|\n(?:Tickets:|Age Rating:|Duration:|Accessibility:|Wheelchair Spaces:)|$)/i)
+  return sanitizeField(match ? match[1] : '')
+}
+
+function getInstanceDateTimes (event) {
+  if (Array.isArray(event.availableInstanceDates) && event.availableInstanceDates.length > 0) {
+    return event.availableInstanceDates
   }
+
+  if (event.firstInstanceDateTime) {
+    return [event.firstInstanceDateTime]
+  }
+
+  return []
 }
 
-async function createTsv (data) {
-  const filePath = path.join(__dirname, '../boxoffice-events.tsv')
-  const header = ['Venue', 'Date', 'Start', 'End', 'Title', 'Event', 'Tags', 'Description']
-  const records = data.map(jsonData => {
-    return [
-      jsonData.location.name,
-      jsonData.startDate.split('T')[0],
-      jsonData.doorTime ? formatTime(jsonData.doorTime) : '',
-      jsonData.endDate ? formatTime(jsonData.endDate) : '',
-      jsonData.name,
-      jsonData.url,
-      '',
-      jsonData.desc
-    ].join('\t')
-  })
+function parseLocalDateTime (value) {
+  const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/)
 
-  const tsvContent = [header.join('\t'), ...records].join('\n')
+  if (!match) {
+    return null
+  }
 
-  fs.writeFile(filePath, tsvContent, 'utf8', (err) => {
-    if (err) {
-      console.error('Error writing TSV file:', err)
-    } else {
-      console.log('TSV file created successfully.')
-    }
-  })
+  const [, year, month, day, hour, minute] = match
+  return new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute))
 }
 
-function formatTime (dateTime) {
-  const date = new Date(dateTime)
-  const hours = date.getHours().toString().padStart(2, '0')
-  const minutes = date.getMinutes().toString().padStart(2, '0')
+function formatDate (value) {
+  return String(value).split('T')[0] || ''
+}
+
+function formatTime (value) {
+  const match = String(value).match(/T(\d{2}:\d{2})/)
+  return match ? match[1] : ''
+}
+
+function formatEndTime (value, durationMinutes) {
+  if (!durationMinutes && durationMinutes !== 0) {
+    return ''
+  }
+
+  const start = parseLocalDateTime(value)
+  if (!start) {
+    return ''
+  }
+
+  const end = new Date(start.getTime() + Number(durationMinutes) * 60 * 1000)
+  const hours = String(end.getHours()).padStart(2, '0')
+  const minutes = String(end.getMinutes()).padStart(2, '0')
   return `${hours}:${minutes}`
 }
 
-function delay (ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
+function toRecord (event, instanceDateTime) {
+  return [
+    extractVenue(event.htmlDescription),
+    formatDate(instanceDateTime),
+    formatTime(instanceDateTime),
+    formatEndTime(instanceDateTime, event.duration),
+    sanitizeField(event.name),
+    sanitizeField(event.id),
+    '',
+    sanitizeField(event.attribute_EventType),
+    String(Boolean(event.isOnSale)),
+    String(Boolean(event.isSoldOut)),
+    sanitizeField(event.description)
+  ]
+}
+
+function buildRecords (events) {
+  const filteredEvents = events.filter(event => event.attribute_WebsiteListing === WEBSITE_LISTING)
+  const records = []
+
+  for (const event of filteredEvents) {
+    for (const instanceDateTime of getInstanceDateTimes(event)) {
+      records.push({
+        sortKey: instanceDateTime,
+        row: toRecord(event, instanceDateTime)
+      })
+    }
+  }
+
+  records.sort((a, b) => a.sortKey.localeCompare(b.sortKey))
+  return records.map(record => record.row)
+}
+
+async function writeTsv (records) {
+  const lines = [HEADER, ...records].map(row => row.join('\t'))
+  await fs.writeFile(OUTPUT_PATH, `${lines.join('\n')}\n`, 'utf8')
 }
 
 async function main () {
-  for (const url of urls) {
-    await scrapePage(url)
-    await delay(2000) // 2-second delay between requests
+  const events = fetchEvents()
+  const records = buildRecords(events)
+
+  if (records.length === 0) {
+    throw new Error(`No rows generated for website listing "${WEBSITE_LISTING}"`)
   }
 
-  for (const url of extractedUrls) {
-    await scrapeJson(url)
-    await delay(2000) // 2-second delay between requests
-  }
+  await writeTsv(records)
 
-  await createTsv(extractedJsonBlocks)
+  console.log(`Fetched ${events.length} events from Spektrix`)
+  console.log(`Wrote ${records.length} TSV rows to ${OUTPUT_PATH}`)
 }
 
-main().then(() => console.log('done'))
-
+main().catch(error => {
+  console.error(error)
+  process.exit(1)
+})

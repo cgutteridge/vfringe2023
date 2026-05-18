@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Produce a TSV export of current festival events from the Ventnor Exchange Little Box Office site.
+Produce a TSV export of current festival events from the Ventnor Exchange Spektrix feed.
 
 ## Repository reality
 
@@ -16,10 +16,10 @@ Produce a TSV export of current festival events from the Ventnor Exchange Little
 
 ## External dependency assumptions
 
-- The browse listing pages live at `https://ventnorexchange.littleboxoffice.com/browse`.
-- Event cards are linked via `a.block`.
-- Event detail pages expose machine-readable event data in `script[type="application/ld+json"]`.
-- The full event description is also present inside `div#vue[data-page]`.
+- The source feed lives at `https://app.spektrix-link.com/clients/ventnorexchange/eventsView.json`.
+- Festival events can be identified with `attribute_WebsiteListing === "VFringe"`.
+- Event dates are supplied in `availableInstanceDates`.
+- Venue text is embedded inside `htmlDescription`.
 
 If any of those assumptions change, the script will still run but may return partial or empty data.
 
@@ -36,32 +36,24 @@ Current columns:
 - `Title`
 - `Event`
 - `Tags`
+- `Event Type`
+- `Is On Sale`
+- `Is Sold Out`
 - `Description`
 
 ## Main data flow
 
-### 1. Page list construction
+### 1. Feed download
 
-The script hard-codes browse pages `1` through `24` using a `for` loop.
+The script downloads one JSON array from Spektrix.
 
-### 2. Browse page scraping
+### 2. Festival filtering
 
-For each browse page:
+It keeps only records with `attribute_WebsiteListing === "VFringe"`.
 
-- fetch HTML with `axios`
-- parse it with `cheerio`
-- collect each `href` from `a.block`
-- strip query strings from event URLs
+### 3. Instance expansion
 
-### 3. Event page scraping
-
-For each event page:
-
-- fetch HTML
-- parse JSON-LD blocks
-- attach the current page URL
-- parse the Vue `data-page` payload
-- copy `props.event.description` into `desc`
+Each event is expanded into one TSV row per `availableInstanceDates` entry.
 
 ### 4. TSV generation
 
@@ -69,21 +61,20 @@ The script maps each event record into one tab-separated line and writes the fil
 
 ## Known fragility points
 
-- Browse page count is fixed rather than discovered dynamically.
-- Duplicate event URLs are not removed before detail-page fetches.
-- Missing `description`, `location`, `startDate`, or `data-page` payloads can throw runtime errors.
-- Description text is not sanitized for newline characters, so TSV row shape can break.
-- Time formatting depends on the local machine timezone.
-- Errors are logged but do not fail the overall run.
+- The `VFringe` listing label is hard-coded.
+- Venue parsing depends on the text layout inside `htmlDescription`.
+- If `availableInstanceDates` disappears, fallback behavior is only to use `firstInstanceDateTime`.
+- The `Event` column currently uses the Spektrix event `id`, not a public URL.
+- Runtime fetching uses `curl`, so the host environment needs that binary available.
 
 ## Expected yearly edits
 
-- target domain or browse URL filters
-- number of browse pages
-- CSS selectors used for listing links
-- location of detailed description data
+- source feed URL
+- festival listing filter
+- location and format of venue text
+- whether each instance should still become its own row
 - TSV column list
-- throttling and retry behavior
+- fetch and retry behavior
 
 ## Safe improvement direction
 

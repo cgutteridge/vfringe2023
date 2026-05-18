@@ -6,42 +6,45 @@ Use this checklist at the start of each festival cycle.
 
 Check these first:
 
-- browse URL still works
-- browse pages still use `a.block` for event links
-- event pages still include `script[type="application/ld+json"]`
-- event pages still expose the long description in `div#vue[data-page]`
+- `eventsView.json` still works
+- festival events are still marked with `attribute_WebsiteListing === "VFringe"`
+- `availableInstanceDates` still contains the dates that should be exported
+- `htmlDescription` still contains extractable venue text
 
-If any of these fail, inspect the live HTML and update selectors or parsing logic before changing anything else.
+If any of these fail, inspect the live payload and update parsing logic before changing anything else.
 
 ## 2. Confirm scope for the current year
 
 Decide:
 
-- which venue or domain should be scraped
-- whether past events must be excluded
-- whether unavailable events should be hidden
+- which `attribute_WebsiteListing` values should be included
+- whether only available instances should be exported
+- whether one row per instance is still the right shape
 - whether output columns have changed
 - whether the output location is still `../boxoffice-events.tsv`
 
-## 3. Check page-count assumptions
+## 3. Check field assumptions
 
-The current script requests pages `1..24`.
+The current script depends on these fields:
 
-Update this when:
+- `attribute_WebsiteListing`
+- `availableInstanceDates`
+- `duration`
+- `htmlDescription`
+- `description`
+- `name`
+- `id`
 
-- there are fewer pages and requests become wasteful
-- there are more pages and events would otherwise be missed
-
-Prefer dynamic pagination if this script starts surviving across multiple seasons.
+If any become optional or are renamed, update the export mapping and rerun a sample.
 
 ## 4. Run a small test scrape
 
 Before trusting a full export:
 
-1. run the script against one browse page
-2. inspect a few discovered event URLs
+1. download the JSON feed once
+2. inspect a few `VFringe` records
 3. inspect one generated TSV row manually
-4. confirm description text has not broken the TSV structure
+4. confirm description and venue text have not broken the TSV structure
 
 ## 5. Validate output shape
 
