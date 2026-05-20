@@ -9,7 +9,7 @@ const WEBSITE_LISTING = 'VFringe'
 const HEADER = ['Venue', 'Date', 'Start', 'End', 'Title', 'Event', 'Tags', 'Event Type', 'Is On Sale', 'Is Sold Out', 'Description']
 
 function fetchEvents () {
-  const raw = execFileSync('curl', ['-L', SOURCE_URL], { encoding: 'utf8' })
+  const raw = execFileSync('curl', ['-s', '-L', SOURCE_URL], { encoding: 'utf8' })
   const parsed = JSON.parse(raw)
 
   if (!Array.isArray(parsed)) {
