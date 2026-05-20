@@ -2,6 +2,7 @@ const { execFileSync } = require('child_process')
 const cheerio = require('cheerio')
 const fs = require('fs/promises')
 const path = require('path')
+const VENUE_MAPPINGS = require('./venue-mappings.json')
 
 const SOURCE_URL = 'https://app.spektrix-link.com/clients/ventnorexchange/eventsView.json'
 const OUTPUT_PATH = path.join(__dirname, '../boxoffice-events.tsv')
@@ -36,6 +37,38 @@ function extractVenue (htmlDescription) {
   const text = htmlToText(htmlDescription)
   const match = text.match(/Venue:\s*([\s\S]*?)(?:\n\s*\n|\n(?:Tickets:|Age Rating:|Duration:|Accessibility:|Wheelchair Spaces:)|$)/i)
   return sanitizeField(match ? match[1] : '')
+}
+
+function getEventIdCandidates (event) {
+  const fullId = sanitizeField(event.id)
+  const numericIdMatch = fullId.match(/^\d+/)
+  const ids = [fullId]
+
+  if (numericIdMatch && numericIdMatch[0] !== fullId) {
+    ids.unshift(numericIdMatch[0])
+  }
+
+  return ids.filter(Boolean)
+}
+
+function mapVenue (event, instanceDateTime, rawVenue) {
+  const normalizedVenue = sanitizeField(rawVenue)
+  const instanceDate = formatDate(instanceDateTime)
+
+  for (const eventId of getEventIdCandidates(event)) {
+    const dateOverrides = VENUE_MAPPINGS.eventIdDateVenueOverrides[eventId]
+    if (dateOverrides && dateOverrides[instanceDate]) {
+      return dateOverrides[instanceDate]
+    }
+  }
+
+  for (const eventId of getEventIdCandidates(event)) {
+    if (VENUE_MAPPINGS.eventIdVenueOverrides[eventId]) {
+      return VENUE_MAPPINGS.eventIdVenueOverrides[eventId]
+    }
+  }
+
+  return VENUE_MAPPINGS.exactVenueMappings[normalizedVenue] || normalizedVenue
 }
 
 function getInstanceDateTimes (event) {
@@ -87,8 +120,10 @@ function formatEndTime (value, durationMinutes) {
 }
 
 function toRecord (event, instanceDateTime) {
+  const venue = mapVenue(event, instanceDateTime, extractVenue(event.htmlDescription))
+
   return [
-    extractVenue(event.htmlDescription),
+    venue,
     formatDate(instanceDateTime),
     formatTime(instanceDateTime),
     formatEndTime(instanceDateTime, event.duration),

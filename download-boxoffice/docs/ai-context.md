@@ -13,6 +13,7 @@ Produce a TSV export of current festival events from the Ventnor Exchange Spektr
 ## Entry point
 
 - `download.js`
+- `venue-mappings.json`
 
 ## External dependency assumptions
 
@@ -55,7 +56,18 @@ It keeps only records with `attribute_WebsiteListing === "VFringe"`.
 
 Each event is expanded into one TSV row per `availableInstanceDates` entry.
 
-### 4. TSV generation
+### 4. Venue normalization
+
+The raw venue text is extracted from `htmlDescription` and then normalized via
+`venue-mappings.json`.
+
+The mapping file supports:
+
+- exact raw venue string replacements
+- event ID specific venue overrides
+- event ID plus date specific venue overrides for multi-venue listings
+
+### 5. TSV generation
 
 The script maps each event record into one tab-separated line and writes the file with `fs.writeFile`.
 
@@ -63,6 +75,7 @@ The script maps each event record into one tab-separated line and writes the fil
 
 - The `VFringe` listing label is hard-coded.
 - Venue parsing depends on the text layout inside `htmlDescription`.
+- Venue normalization depends on `venue-mappings.json` staying aligned with the current Spektrix wording.
 - If `availableInstanceDates` disappears, fallback behavior is only to use `firstInstanceDateTime`.
 - The `Event` column currently uses the Spektrix event `id`, not a public URL.
 - Runtime fetching uses `curl`, so the host environment needs that binary available.

@@ -1,0 +1,34 @@
+{
+  "exactVenueMappings": {
+    "Bosco Theatre @ Fringe Village, Ventnor Park": "Bosco Theatre",
+    "Club Lunar @ Flowersbrook": "Club Lunar",
+    "Ingrams Yard, Dudley Road": "Ingrams Yard",
+    "Peer Studios, Pier Street": "Peer Studios",
+    "Pier Street Playhouse, Pier Street": "Pier Street Playhouse",
+    "Rotunda @ Fringe Village, Flowersbrook": "Rotunda",
+    "St Catherine's Church, Church Street": "St. Catherine's Church",
+    "Start the walk at the Family Fringe entrance, Ventnor Park": "Family Fringe entrance of Ventnor Park",
+    "Start walk at Fringe Village Box Office @ Fringe Village, Ventnor Park": "The Fringe Village Box Office",
+    "Start walk by meeting at Ventnor Exchange, Church Street": "Ventnor Exchange",
+    "The Bijou @ Fringe Village, Ventnor Park": "Bijou",
+    "The Bosco @ Fringe Village, Ventnor Park": "Bosco Theatre",
+    "The Container @ Ingrams Yard, Dudley Road": "The Container",
+    "The Garage, Ingrams Yard, Dudley Road": "The Garage",
+    "The Workshop Tent @ Fringe Village, Ventnor Park": "The Workshop Tent",
+    "Ventnor Arts Club, High Street": "Ventnor Arts Club",
+    "Ventnor Exchange Arena @ Flowersbrook": "Ventnor Exchange Arena",
+    "Ventnor Exchange Arena @ Flowersbrook, Steephill Road": "Ventnor Exchange Arena",
+    "Ventnor Exchange Arena@ Flowersbrook, Steephill Road": "Ventnor Exchange Arena",
+    "Ventnor Exchange, 11 Church Street": "Ventnor Exchange",
+    "Ventnor Exchange, 11 Church Street, PO38 1SW": "Ventnor Exchange",
+    "Ventnor Library, High Street": "Ventnor Library",
+    "Ventnor Park (Putting Green end) @ Fringe Village, Ventnor Park": "Ventnor Park (Putting Green end)"
+  },
+  "eventIdVenueOverrides": {},
+  "eventIdDateVenueOverrides": {
+    "47801": {
+      "2026-07-17": "Ingrams Yard",
+      "2026-07-21": "Bosco Theatre"
+    }
+  }
+}
