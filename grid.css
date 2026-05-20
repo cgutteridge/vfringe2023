@@ -1,4 +1,4 @@
-html, body, #eut-content {
+html, body, {
 }
 
 .vf_grid_outer {
@@ -6,12 +6,12 @@ html, body, #eut-content {
     overflow-x: scroll;
 }
 
-#eut-content table.vf_grid td {
+table.vf_grid td {
     padding: 0 !important;
     line-height: 1.2 !important;
 }
 
-#eut-content table.vf_grid th {
+table.vf_grid th {
     background-color: #eee;
     color: #444;
     border: solid 2px #ccc !important;
@@ -26,7 +26,7 @@ oldh2 {
     font-size: 120% !important;
 }
 
-#eut-content table.vf_grid {
+table.vf_grid {
     color: #444;
     font-family: Helvetica, "MontserratRegular", sans-serif;
     border-collapse: collapse;
@@ -41,8 +41,8 @@ th.vf_grid_venue {
     padding-top: 1em;
 }
 
-#eut-content .vf_grid_event {
-    border: solid 2px #ccc !important;
+.vf_grid_event {
+    border: solid 2px #000 !important;
     background-color: #eea;
     vertical-align: top;
     text-align: center;
@@ -332,14 +332,14 @@ th.vf_grid_venue {
 }
  */
 
-#eut-content .vf_grid_event.vf_grid_hard_clash,
-#eut-content .vf_grid_event.vf_grid_soft_clash {
+.vf_grid_event.vf_grid_hard_clash,
+.vf_grid_event.vf_grid_soft_clash {
     background-color: #f8f8f8;
 }
 
 /* selected events */
 
-#eut-content .vf_grid_it {
+.vf_grid_it {
     background-color: #31e069;
 }
 

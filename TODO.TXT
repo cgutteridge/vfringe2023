@@ -7,5 +7,13 @@ Human Todo (2026): (AI not to update)
 - Review map (amenities etc)
 - programme layout
 - Add "today" tab at start of festival
+- clean up https://vfringe.co.uk/events/workshop-97-artist-studio-open-to-visitors/ 
+- check for other multi day events
+- is workshop tent in park or near arena?
+- fix links on programme grid
+
+Notes to tell Jack
+- added grid on live site (unlinked)
+- updated times on WORKSHOP 97
 
 

@@ -307,7 +307,7 @@ function chrisvf_location_sortcode($loc)
             return "024";
         case "Ventnor Park":
             return "025";
-        case "Ventnor Putting Green (Ventnor Park)":
+        case "Ventnor Park (Putting Green)":
             return "026";
         case "Bosco Theatre":
             return "027";

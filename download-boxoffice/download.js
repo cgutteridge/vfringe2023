@@ -7,6 +7,7 @@ const VENUE_MAPPINGS = require('./venue-mappings.json')
 const SOURCE_URL = 'https://app.spektrix-link.com/clients/ventnorexchange/eventsView.json'
 const OUTPUT_PATH = path.join(__dirname, '../boxoffice-events.tsv')
 const WEBSITE_LISTING = 'VFringe'
+const EVENT_URL_PREFIX = 'https://purchase.vfringe.co.uk/EventAvailability?EventId='
 const HEADER = ['Venue', 'Date', 'Start', 'End', 'Title', 'Event', 'Tags', 'Event Type', 'Is On Sale', 'Is Sold Out', 'Description']
 
 function fetchEvents () {
@@ -49,6 +50,16 @@ function getEventIdCandidates (event) {
   }
 
   return ids.filter(Boolean)
+}
+
+function getNumericEventId (event) {
+  const [numericId] = getEventIdCandidates(event)
+  return numericId && /^\d+$/.test(numericId) ? numericId : ''
+}
+
+function getEventUrl (event) {
+  const eventId = getNumericEventId(event)
+  return eventId ? `${EVENT_URL_PREFIX}${eventId}` : ''
 }
 
 function mapVenue (event, instanceDateTime, rawVenue) {
@@ -128,7 +139,7 @@ function toRecord (event, instanceDateTime) {
     formatTime(instanceDateTime),
     formatEndTime(instanceDateTime, event.duration),
     sanitizeField(event.name),
-    sanitizeField(event.id),
+    getEventUrl(event),
     '',
     sanitizeField(event.attribute_EventType),
     String(Boolean(event.isOnSale)),
