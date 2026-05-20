@@ -1,25 +1,11 @@
-Todo (2026):
+Human Todo (2026): (AI not to update)
 
-Sort out location:
-Friday 17th - Ingrams Yard, Dudley Road Tuesday 21st - Bosco Theatre @ Fringe Village, Ventnor Park
-
-Multinames:
-"Ventnor Exchange Arena @ Flowersbrook"
-"Ventnor Exchange Arena @ Flowersbrook, Steephill Road"
-"Ventnor Exchange Arena@ Flowersbrook, Steephill Road"
-
-Unlocated places:
-"Club Lunar @ Flowersbrook"
-"Start walk at Fringe Village Box Office @ Fringe Village, Ventnor Park"
-"Start walk by meeting at Ventnor Exchange, Church Street"
-"The Workshop Tent @ Fringe Village, Ventnor Park"
-
-Add free fringe
-
-Are there website only events?
-
-Colour scheme?
-
-Mobile app?
+- Add free fringe
+- Are there website only events?
+- Colour scheme?
+- Mobile app?
+- Review map (amenities etc)
+- programme layout
+- Add "today" tab at start of festival
 
 

@@ -43,7 +43,6 @@ function chrisvf_event_time($event, $min_t = null, $max_t = null)
 
 function chrisvf_render_grid_day($attr)
 {
-
     $date = $attr["date"];
     if( $date == "today") {
         $date = date('Y-m-d');
