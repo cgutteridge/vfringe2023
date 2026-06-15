@@ -11,6 +11,8 @@ Human Todo (2026): (AI not to update)
 - check for other multi day events
 - is workshop tent in park or near arena?
 - fix links on programme grid
+- check location of garage (just used arcade for now)
+- is fringe square showing events properly?
 
 Notes to tell Jack
 - added grid on live site (unlinked)

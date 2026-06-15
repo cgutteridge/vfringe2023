@@ -1,4 +1,36 @@
 
+ { "GEO":[ 50.59231,-1.21587 ], "ICON":"music.png", "NAME":"Fringe Village Bandstand","VENUES":[
+ ],"LDIR":"right" },
+ { "GEO":[ 50.5932,-1.20505  ], "ICON":"popup.png", "NAME":"Ventnor Paddling Pool", "VENUES":[
+ ] },
+ { "GEO":[ 50.59263,-1.21695 ], "ICON":"popup.png", "NAME":"Park View Studio", "VENUES":[
+ ] },
+ { "GEO":[ 50.59534,-1.20584], "ICON":"popup.png", "NAME":"The Crab and Lobster Tap", "VENUES":[
+ ] },
+ { "GEO":[ 50.592,-1.2174 ] , "ICON":"popup.png", "NAME":"Art in the Park", "VENUES":[
+ ] },
+
+ { "GEO":[ 50.59237,-1.21561 ], "ICON":"food.png", "NAME":"Vendors", "VENUES":[],  "DESC":"Food stalls to keep your energy up through the Fringe" },
+ { "GEO":[ 50.592,-1.21664 ], "ICON":"food.png", "NAME":"Vendors", "VENUES":[],  "DESC":"Food stalls to keep your energy up through the Fringe" },
+ { "GEO":[ 50.59196,-1.21729 ] , "ICON":"sauna.png", "NAME":"Sauna", "VENUES":[],  "HTMLDESC":"<div style='margin-bottom:1em'>A Sauna? At this time of year, at this time of day, in this part of the country, localized entirely within Ventnor Park!?</div><div style='margin-bottom:1em'>Yes. <a href='https://www.klyscoastalsauna.co.uk/booking-calendar/klys-coastal-sauna-price-per-seat'>Book here</a></div><div style='font-size:90% ; border-top: solid 1px #ccc; padding-top: 1em; '><a href='https://www.flaticon.com/free-icons/sauna' title='sauna icons'>Sauna icon created by Freepik - Flaticon</a></div>" },
+ 
+ { "GEO": [ 50.59429,-1.20405 ], "ICON":"door1.png", "NAME":"7 Doors", "HTMLDESC": "<a href='https://www.boojumandsnark.co.uk/projects/the-sandown-clown-your-briefing/'>Have you Seen Sam?</a> - <a href='https://www.instagram.com/teresagrimaldiartist'>Teresa Grimaldi</a>", "VENUES":[] },
+ { "GEO":[ 50.5944,-1.20712  ], "ICON":"door2.png", "NAME":"7 Doors", "HTMLDESC": "Translating Frequencies:31 - <a href='https://www.nathanholtart.com/'>Nathan Holt</a>", "VENUES":[] },
+ { "GEO":[ 50.59332,-1.20471 ], "ICON":"door3.png", "NAME":"7 Doors", "HTMLDESC": "Stay Afloat - <a href='https://abiwheeler.com/'>Abi Wheeler</a>", "VENUES":[] },
+ { "GEO":[ 50.593,-1.21435   ], "ICON":"door4.png", "NAME":"7 Doors", "HTMLDESC": "Perceptions - <a href='https://www.instagram.com/markcosby_paintings'>Mark Cosby</a>", "VENUES":[] },
+
+ { "GEO": [ 50.59258,-1.21543 ], "ICON":"door5.png", "NAME":"7 Doors", "HTMLDESC": "Interanea / Internal Things - <a href='https://www.aliciafrench.co.uk/'>Alicia French</a>", "VENUES":[] },
+ { "GEO": [ 50.59257,-1.2156 ], "ICON":"door6.png", "NAME":"7 Doors", "HTMLDESC": "Who we are - <a href='https://www.kathywilliamsartist.co.uk/'>Kathy Williams</a>", "VENUES":[] },
+ { "GEO":[ 50.59068,-1.21896 ], "ICON":"door7.png", "NAME":"7 Doors", "HTMLDESC": "Where exactly are we? - <a href='https://linktr.ee/joolzy'>Julie Hutchinson</a>", "VENUES":[] },
+ 
+ { "GEO":[ 50.59419,-1.20747 ], "ICON":"road-closed.png", "NAME":"Road Closed", "DESC":"The big rock fell down and is blocking the road. Yes it is very annoying.", "VENUES":[], "ICON_SIZE":"50,50","ICON_ANCHOR":"25,25"},
+
+
+
+
+
+
+
 
  { "GEO":[ 50.59949,-1.18142], "ICON":"walk.png", "NAME":"Bonchurch Pottery", "VENUES":["Bonchurch Pottery"]},
  { "GEO":[ 50.59266,-1.21524], "ICON":"walk.png", "NAME":"Fringe Village Box Office", "VENUES":["Parkside"]},

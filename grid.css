@@ -1,10 +1,7 @@
-html, body, {
-}
 
 .vf_grid_outer {
-    max-width: 100%;
-    overflow-x: scroll;
 }
+
 
 table.vf_grid td {
     padding: 0 !important;
@@ -20,15 +17,17 @@ table.vf_grid th {
     line-height: 1.2;
 }
 
-oldh2 {
-    margin-top: 1em;
-    font-family: Helvetica, "MontserratRegular", sans-serif;
-    font-size: 120% !important;
+table.vf_grid th.vf_grid_venue,
+table.vf_grid td:not(:first-child) {
+  max-width: 120px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 table.vf_grid {
     color: #444;
-    font-family: Helvetica, "MontserratRegular", sans-serif;
+    font-family: "Work Sans", Sans-serif;
+    font-size: 50%;
     border-collapse: collapse;
     border-right: solid 1px black !important;
     border-bottom: solid 1px black !important;
@@ -63,7 +62,7 @@ th.vf_grid_venue {
 }
 
 .vf_grid_inner {
-    padding: 0.5em;
+    padding: 0.3em;
 }
 
 
@@ -141,10 +140,10 @@ th.vf_grid_venue {
     max-height: 45%;
     width: 94%;
     left: 3%;
-    padding: 0.5em;
+    padding: 0.3em;
     overflow: hidden;
     font-size: 80%;
-    z-index: 1000;
+    z-index: 99002;
 }
 
 .vf_grid_infobox_top {

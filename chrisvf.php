@@ -36,6 +36,28 @@ function chrisvf_time()
  * DATA FUNCTIONS
  *********************************************************************************/
 
+/**
+ * Resolve the calendar date for a TSV row's end time when the show crosses midnight.
+ *
+ * If `End` is earlier on the clock than `Start` on the same wall date (e.g. 21:30–00:30),
+ * `End` is taken to be on the following calendar day.
+ *
+ * @param string $dateYmd Row date in `Y-m-d` form (same as the `Date` column).
+ * @param string $startTime Start time from the TSV (e.g. `21:30`).
+ * @param string $endTime End time from the TSV (e.g. `00:30`).
+ * @return string End date in `Y-m-d` for building `DTEND`.
+ */
+function chrisvf_tsv_resolve_end_date($dateYmd, $startTime, $endTime)
+{
+    $tStart = strtotime($dateYmd . ' ' . $startTime);
+    $tEndSameDay = strtotime($dateYmd . ' ' . $endTime);
+    if ($tStart !== false && $tEndSameDay !== false && $tEndSameDay < $tStart) {
+        return date('Y-m-d', strtotime($dateYmd . ' +1 day'));
+    }
+
+    return $dateYmd;
+}
+
 function chrisvf_get_events()
 {
     $info = chrisvf_get_info();
@@ -259,10 +281,11 @@ function chrisvf_wp_events()
                 // remove it using it' real UID
                 unset($ical[$uids[$UID]["UID"]]);
             }
+            $endDateYmd = chrisvf_tsv_resolve_end_date($record["Date"], $record["Start"], $record["End"]);
             $item = [
                 "UID" => $UID,
                 "DTSTART" => preg_replace("/-/", "", $record["Date"]) . "T" . preg_replace("/:/", "", $record["Start"]) . "00",
-                "DTEND" => preg_replace("/-/", "", $record["Date"]) . "T" . preg_replace("/:/", "", $record["End"]) . "00",
+                "DTEND" => preg_replace("/-/", "", $endDateYmd) . "T" . preg_replace("/:/", "", $record["End"]) . "00",
                 "SUMMARY" => $record["Title"],
                 "DESCRIPTION" => @$record["Description"],
                 "URL" => $record["Event"],

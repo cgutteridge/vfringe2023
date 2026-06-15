@@ -353,7 +353,7 @@ function render_event($cell, $classes, $itinerary)
     $h[] = "<td id='$id' data-code='" . $cell['event']['UID'] . "' class='$classes' colspan='" . $cell['width'] . "' rowspan='$height' " . (empty($url) ? "" : "data-url='" . $url . "'") . "  data-start='$start' data-end='$end'>";
 
     $h[] = "<div class='vf_grid_it_control'>";
-    $h[] = "<div class='vf_grid_it_toggle vf_grid_it_add'>SAVE</div>";
+    $h[] = "<div class='vf_grid_it_toggle vf_grid_it_add'>FAVOURITE</div>";
     $h[] = "<div class='vf_grid_it_toggle vf_grid_it_remove'>FORGET</div>";
     $h[] = "</div>";
 
