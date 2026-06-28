@@ -349,6 +349,8 @@ function chrisvf_location_sortcode($loc)
             return "014";
         case "Ventnor Exchange Arena":
             return "015";
+        case "Club Lunar":
+            return "016";
             
         case "Ingrams Yard":
             return "031";

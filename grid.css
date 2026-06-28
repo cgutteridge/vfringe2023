@@ -208,24 +208,28 @@ th.vf_grid_venue {
 
 /* pink */
 
+.vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_clublunar.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_rotunda.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_thebigtopbar.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_venue_ventnorexchangearena.vf_grid_freecell {
     background-color: #fff8f8;
 }
 
+.vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_clublunar.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_rotunda.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_thebigtopbar.vf_grid_freecell,
 .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_venue_ventnorexchangearena.vf_grid_freecell {
     background-color: #ffe9e9;
 }
 
+.vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_clublunar.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_rotunda.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_thebigtopbar.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_venue_ventnorexchangearena.vf_grid_freecell {
     background-color: #ffe9e9;
 }
 
+.vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_clublunar.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_rotunda.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_thebigtopbar.vf_grid_freecell,
 .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_venue_ventnorexchangearena.vf_grid_freecell {
