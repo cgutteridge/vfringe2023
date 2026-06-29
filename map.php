@@ -23,8 +23,7 @@ function chrisvf_render_map()
 
     $info = chrisvf_get_info();
 
-    $places_raw = file_get_contents(dirname(__FILE__) . "/places.json");
-    $places = json_decode($places_raw, true);
+    $places = chrisvf_places();
 
     $outlines_raw = file_get_contents(dirname(__FILE__) . "/outlines.json");
     $outlines = json_decode($outlines_raw, true);
@@ -38,7 +37,13 @@ function chrisvf_render_map()
     for ($i = 0; $i < sizeof($places); ++$i) {
         if (!empty($places[$i]["VENUES"])) {
             foreach ($places[$i]["VENUES"] as $venue) {
-                $venueToPOI[$venue] = $i;
+                if (is_array($venue)) {
+                    if (!empty($venue["name"])) {
+                        $venueToPOI[$venue["name"]] = $i;
+                    }
+                } else {
+                    $venueToPOI[$venue] = $i;
+                }
             }
         }
     }
@@ -290,4 +295,3 @@ jQuery( document ).ready( function() {
 
     return $h;
 }
-

@@ -101,6 +101,24 @@ function chrisvf_get_info()
     return $chrisvf_cache;
 }
 
+function chrisvf_places()
+{
+    static $places = null;
+
+    if ($places !== null) {
+        return $places;
+    }
+
+    $places_raw = file_get_contents(__DIR__ . "/places.json");
+    $places = json_decode($places_raw, true);
+
+    if (!is_array($places)) {
+        $places = [];
+    }
+
+    return $places;
+}
+
 // return a list of venues. This does not include additional map locations like ATMs 
 function chrisvf_wp_venues()
 {
@@ -308,61 +326,30 @@ function chrisvf_wp_events()
 
 function chrisvf_location_sortcode($loc)
 {
-    switch ($loc) {
-        case "Ventnor Exchange":
-            return "001";
-        case "The Fringe Square":
-            return "002";
-        case "St. Catherine's Church":
-            return "003";
-        case "St Catherine's Church":
-            return "004";
-        case "The Book Bus":
-            return "005";
+    static $sortcodes = null;
 
-        case "The Fringe Village":
-            return "021";
-        case "Fringe Village Bandstand":
-            return "022";
-        case "The Workshop Tent":
-            return "023";
-        case "The Fringe Village Box Office":
-            return "024";
-        case "Ventnor Park":
-            return "025";
-        case "Ventnor Park (Putting Green)":
-            return "026";
-        case "Bosco Theatre":
-            return "027";
-        case "Bijou":
-            return "028";
-        case "Ventnor Park (Putting Green end)":
-            return "029";
-
-        case "The Big Top":
-            return "011";
-        case "The Big Top Bar":
-            return "012";
-        case "The Flowersbrook Inn":
-            return "013";
-        case "Rotunda":
-            return "014";
-        case "Ventnor Exchange Arena":
-            return "015";
-        case "Club Lunar":
-            return "016";
-            
-        case "Ingrams Yard":
-            return "031";
-        case "The Container":
-            return "032";
-        case "Studio 3 @ Ingrams Yard Studio":
-            return "033";
+    if ($sortcodes === null) {
+        $sortcodes = [];
+        foreach (chrisvf_places() as $place) {
+            if (empty($place["VENUES"])) {
+                continue;
+            }
+            foreach ($place["VENUES"] as $venue) {
+                if (!is_array($venue) || empty($venue["name"]) || empty($venue["sortcode"])) {
+                    continue;
+                }
+                $sortcodes[$venue["name"]] = $venue["sortcode"];
+            }
+        }
     }
+
+    if (array_key_exists($loc, $sortcodes)) {
+        return $sortcodes[$loc];
+    }
+
     return "100" . $loc;
 }
 
 /*********************************************************************************
  * end of DATA FUNCTIONS
  *********************************************************************************/
-
