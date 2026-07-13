@@ -694,6 +694,44 @@
   }
 
   /**
+   * Horizontally scroll the festival-day strip so the selected day is on-screen.
+   * When the selected day is not the first, leave a small peek of the previous
+   * day visible so users can see they can scroll back.
+   */
+  function scrollSelectedDayIntoView () {
+    var nav = root.querySelector('.chrisvf-mobile-days')
+    if (!nav || !state.selectedDay) {
+      return
+    }
+    var active = nav.querySelector('[data-day="' + state.selectedDay + '"]')
+    if (!active) {
+      return
+    }
+
+    var prev = active.previousElementSibling
+    while (prev && !prev.classList.contains('chrisvf-mobile-day')) {
+      prev = prev.previousElementSibling
+    }
+
+    if (!prev) {
+      nav.scrollLeft = 0
+      return
+    }
+
+    var navRect = nav.getBoundingClientRect()
+    var activeLeft = active.getBoundingClientRect().left - navRect.left + nav.scrollLeft
+    var activeWidth = active.offsetWidth
+    var peek = Math.min(36, Math.max(28, Math.round(prev.offsetWidth * 0.4)))
+    var maxScroll = Math.max(0, nav.scrollWidth - nav.clientWidth)
+    var target = Math.max(0, activeLeft - peek)
+    var activeRight = activeLeft + activeWidth
+    if (activeRight - target > nav.clientWidth) {
+      target = activeRight - nav.clientWidth
+    }
+    nav.scrollLeft = Math.min(maxScroll, Math.max(0, target))
+  }
+
+  /**
    * Bind UI event handlers after render.
    */
   function bindEvents () {
@@ -1036,6 +1074,12 @@
       if (summaryEl) {
         summaryEl.focus()
       }
+    }
+
+    if (state.filtersOpen && state.activeTab === 'programme') {
+      requestAnimationFrame(function () {
+        scrollSelectedDayIntoView()
+      })
     }
 
     setMapVisible(state.activeTab === 'map')
