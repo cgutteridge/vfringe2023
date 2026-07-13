@@ -7,16 +7,19 @@
  */
 
 define('CHRISVF_MOBILE_QUERY_VAR', 'chrisvf_mobile_json');
-define('CHRISVF_MOBILE_REWRITE_VERSION', '2');
+define('CHRISVF_MOBILE_APP_VAR', 'chrisvf_mobile_app');
+define('CHRISVF_MOBILE_REWRITE_VERSION', '3');
 define('CHRISVF_MOBILE_TEMPLATE', 'chrisvf-mobile-programme.php');
 
 /**
- * Register rewrite rules and query vars for the mobile JSON endpoint.
+ * Register rewrite rules and query vars for the mobile app and JSON endpoint.
  */
 function chrisvf_mobile_register_routes()
 {
     add_rewrite_rule('^m/json/?$', 'index.php?' . CHRISVF_MOBILE_QUERY_VAR . '=1', 'top');
+    add_rewrite_rule('^m/?$', 'index.php?' . CHRISVF_MOBILE_APP_VAR . '=1', 'top');
     add_rewrite_tag('%' . CHRISVF_MOBILE_QUERY_VAR . '%', '([^&]+)');
+    add_rewrite_tag('%' . CHRISVF_MOBILE_APP_VAR . '%', '([^&]+)');
 }
 
 add_action('init', 'chrisvf_mobile_register_routes');
@@ -30,6 +33,7 @@ add_action('init', 'chrisvf_mobile_register_routes');
 function chrisvf_mobile_query_vars($vars)
 {
     $vars[] = CHRISVF_MOBILE_QUERY_VAR;
+    $vars[] = CHRISVF_MOBILE_APP_VAR;
     return $vars;
 }
 
@@ -106,7 +110,21 @@ function chrisvf_mobile_is_json_request()
 }
 
 /**
- * Prevent canonical redirects from breaking /m/json requests.
+ * Whether the current request targets the mobile programme app at /m.
+ *
+ * @return bool
+ */
+function chrisvf_mobile_is_app_request()
+{
+    if (get_query_var(CHRISVF_MOBILE_APP_VAR)) {
+        return true;
+    }
+
+    return chrisvf_mobile_normalise_request_path() === 'm';
+}
+
+/**
+ * Prevent canonical redirects from breaking /m and /m/json requests.
  *
  * @param string|false $redirect_url Canonical redirect target.
  * @param string       $requested_url Original request URL.
@@ -114,7 +132,8 @@ function chrisvf_mobile_is_json_request()
  */
 function chrisvf_mobile_disable_canonical_redirect($redirect_url, $requested_url)
 {
-    if (chrisvf_mobile_normalise_request_path($requested_url) === 'm/json') {
+    $path = chrisvf_mobile_normalise_request_path($requested_url);
+    if ($path === 'm/json' || $path === 'm') {
         return false;
     }
 
@@ -124,19 +143,26 @@ function chrisvf_mobile_disable_canonical_redirect($redirect_url, $requested_url
 add_filter('redirect_canonical', 'chrisvf_mobile_disable_canonical_redirect', 10, 2);
 
 /**
- * Ensure WordPress treats /m/json as the JSON endpoint, not a page.
+ * Ensure WordPress treats /m and /m/json as plugin routes, not theme pages.
  *
  * @param WP $wp WordPress environment instance.
  */
 function chrisvf_mobile_parse_request($wp)
 {
-    if (chrisvf_mobile_normalise_request_path() !== 'm/json') {
+    $path = chrisvf_mobile_normalise_request_path();
+
+    if ($path === 'm/json') {
+        $wp->query_vars = [
+            CHRISVF_MOBILE_QUERY_VAR => '1',
+        ];
         return;
     }
 
-    $wp->query_vars = [
-        CHRISVF_MOBILE_QUERY_VAR => '1',
-    ];
+    if ($path === 'm') {
+        $wp->query_vars = [
+            CHRISVF_MOBILE_APP_VAR => '1',
+        ];
+    }
 }
 
 add_action('parse_request', 'chrisvf_mobile_parse_request', 0);
@@ -168,6 +194,30 @@ function chrisvf_mobile_maybe_serve_json()
 }
 
 add_action('template_redirect', 'chrisvf_mobile_maybe_serve_json', 0);
+
+/**
+ * Serve the standalone mobile app shell at /m.
+ */
+function chrisvf_mobile_maybe_serve_app()
+{
+    if (!chrisvf_mobile_is_app_request()) {
+        return;
+    }
+
+    chrisvf_mobile_do_enqueue_assets();
+
+    $template = __DIR__ . '/templates/page-mobile.php';
+    if (!file_exists($template)) {
+        status_header(500);
+        echo 'Mobile template missing';
+        exit;
+    }
+
+    include $template;
+    exit;
+}
+
+add_action('template_redirect', 'chrisvf_mobile_maybe_serve_app', 1);
 
 /**
  * Build the normalized mobile programme JSON payload.
@@ -306,14 +356,20 @@ function chrisvf_mobile_is_page()
 }
 
 /**
- * Enqueue mobile programme assets on the mobile page only.
+ * Whether the current request should load mobile programme assets.
+ *
+ * @return bool
  */
-function chrisvf_mobile_enqueue_assets()
+function chrisvf_mobile_should_load_assets()
 {
-    if (!chrisvf_mobile_is_page()) {
-        return;
-    }
+    return chrisvf_mobile_is_app_request() || chrisvf_mobile_is_page();
+}
 
+/**
+ * Register and enqueue mobile programme CSS/JS.
+ */
+function chrisvf_mobile_do_enqueue_assets()
+{
     wp_register_style(
         'chrisvf-mobile',
         plugins_url('mobile.css', __FILE__),
@@ -334,6 +390,18 @@ function chrisvf_mobile_enqueue_assets()
     wp_localize_script('chrisvf-mobile', 'chrisvfMobileConfig', [
         'jsonUrl' => home_url('/m/json'),
     ]);
+}
+
+/**
+ * Enqueue mobile programme assets when the app or mobile page template is active.
+ */
+function chrisvf_mobile_enqueue_assets()
+{
+    if (!chrisvf_mobile_should_load_assets()) {
+        return;
+    }
+
+    chrisvf_mobile_do_enqueue_assets();
 }
 
 add_action('wp_enqueue_scripts', 'chrisvf_mobile_enqueue_assets');
