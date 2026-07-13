@@ -325,26 +325,42 @@
   }
 
   /**
+   * Whether the list ignores the day picker and spans the whole festival.
+   *
+   * @returns {boolean}
+   */
+  function showingAllDays () {
+    return state.search.trim().length > 0 || state.filter === 'itinerary'
+  }
+
+  /**
+   * Gather every indexed event, sorted by start time.
+   *
+   * @returns {object[]}
+   */
+  function allIndexedEvents () {
+    var events = []
+    Object.keys(state.eventsByDay).forEach(function (day) {
+      events = events.concat(state.eventsByDay[day] || [])
+    })
+    events.sort(function (a, b) {
+      return a.start < b.start ? -1 : a.start > b.start ? 1 : 0
+    })
+    return events
+  }
+
+  /**
    * Events for the current view after filters applied.
    *
-   * A non-empty search query searches across all festival days (day picker is ignored).
+   * Search text and the itinerary filter both span all festival days (day picker ignored).
    *
    * @returns {object[]}
    */
   function visibleEvents () {
     var q = state.search.trim().toLowerCase()
-    var events
-    if (q) {
-      events = []
-      Object.keys(state.eventsByDay).forEach(function (day) {
-        events = events.concat(state.eventsByDay[day] || [])
-      })
-      events.sort(function (a, b) {
-        return a.start < b.start ? -1 : a.start > b.start ? 1 : 0
-      })
-    } else {
-      events = state.eventsByDay[state.selectedDay] || []
-    }
+    var events = showingAllDays()
+      ? allIndexedEvents()
+      : (state.eventsByDay[state.selectedDay] || [])
 
     return events.filter(function (event) {
       if (state.filter === 'free' && !event.free) {
@@ -424,9 +440,14 @@
    * @returns {string}
    */
   function filterSummaryText () {
-    var scope = state.search.trim()
-      ? '"' + state.search.trim() + '"'
-      : (state.selectedDay ? dayLabel(state.selectedDay) : 'Programme')
+    var scope
+    if (state.search.trim()) {
+      scope = '"' + state.search.trim() + '"'
+    } else if (state.filter === 'itinerary') {
+      scope = 'All days'
+    } else {
+      scope = state.selectedDay ? dayLabel(state.selectedDay) : 'Programme'
+    }
     return scope + ' · ' + filterModeLabel()
   }
 
@@ -792,9 +813,10 @@
     root.className = 'chrisvf-mobile-root chrisvf-mobile-text-' + state.textSize +
       (state.selectedUid ? ' has-modal' : '') +
       (state.activeTab === 'map' ? ' is-map-tab' : '') +
-      (state.search.trim() ? ' is-searching' : '') +
+      (showingAllDays() ? ' is-searching' : '') +
       (state.filtersOpen ? ' is-filters-open' : '')
     var events = visibleEvents()
+    var allDays = showingAllDays()
     var searching = state.search.trim().length > 0
     var html = ''
 
@@ -857,19 +879,20 @@
           (state.textSize === TEXT_SIZES[TEXT_SIZES.length - 1] ? ' disabled' : '') + '">+A</button>'
         html += '</div></div></div>'
 
-        html += '<nav class="chrisvf-mobile-days' + (searching ? ' is-disabled' : '') +
+        html += '<nav class="chrisvf-mobile-days' + (allDays ? ' is-disabled' : '') +
           '" aria-label="Festival days"' +
-          (searching ? ' aria-disabled="true"' : '') + '>'
-        if (searching) {
-          html += '<p class="chrisvf-mobile-search-scope">Searching all days</p>'
+          (allDays ? ' aria-disabled="true"' : '') + '>'
+        if (allDays) {
+          html += '<p class="chrisvf-mobile-search-scope">' +
+            (searching ? 'Searching all days' : 'Itinerary · all days') + '</p>'
         }
         state.data.festivalDays.forEach(function (day) {
           html += '<button type="button" class="chrisvf-mobile-day' +
-            (!searching && day === state.selectedDay ? ' is-active' : '') +
+            (!allDays && day === state.selectedDay ? ' is-active' : '') +
             '" data-day="' + day + '" aria-pressed="' +
-            (!searching && day === state.selectedDay ? 'true' : 'false') +
+            (!allDays && day === state.selectedDay ? 'true' : 'false') +
             '" aria-label="' + escapeHtml(dayAriaLabel(day)) + '"' +
-            (searching ? ' disabled' : '') + '>' +
+            (allDays ? ' disabled' : '') + '>' +
             dayLabel(day) + '</button>'
         })
         html += '</nav>'
@@ -882,14 +905,18 @@
       html += '<main class="chrisvf-mobile-main" id="chrisvf-mobile-programme" role="tabpanel" aria-labelledby="chrisvf-tab-programme">'
       if (events.length === 0) {
         html += '<p class="chrisvf-mobile-empty">' +
-          (searching ? 'No events match your search.' : 'No events match your filters.') +
+          (searching
+            ? 'No events match your search.'
+            : (state.filter === 'itinerary'
+              ? 'No saved itinerary events.'
+              : 'No events match your filters.')) +
           '</p>'
       } else {
         html += '<ul class="chrisvf-mobile-list">'
         events.forEach(function (event) {
           var badge = liveBadge(event)
           var saved = isInItinerary(event.uid)
-          var dayKey = searching ? eventDayKey(event) : ''
+          var dayKey = allDays ? eventDayKey(event) : ''
           html += '<li class="chrisvf-mobile-event' + (saved ? ' is-saved' : '') +
             '" data-event-uid="' + escapeHtml(event.uid) + '">'
           html += '<div class="chrisvf-mobile-event-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open details for ' +
