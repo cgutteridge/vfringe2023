@@ -386,7 +386,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-mobile',
         plugins_url('mobile.css', __FILE__),
         [],
-        '1.0.27'
+        '1.0.28'
     );
     wp_enqueue_style('chrisvf-mobile');
 
@@ -394,7 +394,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-itinerary',
         plugins_url('itinerary.js', __FILE__),
         ['jquery'],
-        '1.0.27',
+        '1.0.28',
         true
     );
 
@@ -402,15 +402,14 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-mobile',
         plugins_url('mobile.js', __FILE__),
         ['chrisvf-itinerary'],
-        '1.0.27',
+        '1.0.28',
         true
     );
     wp_enqueue_script('chrisvf-mobile');
 
     wp_localize_script('chrisvf-mobile', 'chrisvfMobileConfig', [
         'jsonUrl' => home_url('/m/json'),
-        'plannerUrl' => home_url('/vfringe/planner'),
-        'fullMapUrl' => home_url('/vfringe/map'),
+        'mainSiteUrl' => home_url('/'),
     ]);
 }
 

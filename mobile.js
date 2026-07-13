@@ -958,9 +958,7 @@
     }
 
     html += '<footer class="chrisvf-mobile-footer">'
-    html += '<a href="' + escapeHtml(config.plannerUrl || '/vfringe/planner') + '">Festival planner</a>'
-    html += ' · '
-    html += '<a href="' + escapeHtml(config.fullMapUrl || '/vfringe/map') + '">Festival map</a>'
+    html += '<a href="' + escapeHtml(config.mainSiteUrl || '/') + '">Full website</a>'
     html += '</footer>'
 
     if (state.selectedUid) {
