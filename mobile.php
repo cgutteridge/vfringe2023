@@ -374,7 +374,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-mobile',
         plugins_url('mobile.css', __FILE__),
         [],
-        '1.0.0'
+        '1.0.1'
     );
     wp_enqueue_style('chrisvf-mobile');
 
@@ -382,13 +382,15 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-mobile',
         plugins_url('mobile.js', __FILE__),
         [],
-        '1.0.0',
+        '1.0.1',
         true
     );
     wp_enqueue_script('chrisvf-mobile');
 
     wp_localize_script('chrisvf-mobile', 'chrisvfMobileConfig', [
         'jsonUrl' => home_url('/m/json'),
+        'plannerUrl' => home_url('/vfringe/planner'),
+        'fullMapUrl' => home_url('/vfringe/map'),
     ]);
 }
 

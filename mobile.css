@@ -1,5 +1,5 @@
 /**
- * Mobile programme styles (/m) — Milestone 2.
+ * Mobile programme styles (/m).
  *
  * @package ChrisVF
  */
@@ -18,6 +18,34 @@ body.chrisvf-mobile-page {
   display: flex;
   flex-direction: column;
   font-size: 1rem;
+}
+
+.chrisvf-mobile-text-large {
+  font-size: 1.125rem;
+}
+
+.chrisvf-mobile-text-large .chrisvf-mobile-event-time {
+  font-size: 1rem;
+}
+
+.chrisvf-mobile-text-xlarge {
+  font-size: 1.25rem;
+}
+
+.chrisvf-mobile-text-xlarge .chrisvf-mobile-event-time {
+  font-size: 1.125rem;
+}
+
+.screen-reader-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .chrisvf-mobile-loading,
@@ -46,14 +74,40 @@ body.chrisvf-mobile-page {
   font-weight: 700;
 }
 
-.chrisvf-mobile-days {
-  display: flex;
-  gap: 0.35rem;
-  overflow-x: auto;
-  padding: 0.5rem 0;
-  -webkit-overflow-scrolling: touch;
+.chrisvf-mobile-controls {
+  padding-bottom: 0.5rem;
 }
 
+.chrisvf-mobile-search-label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.chrisvf-mobile-search {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  font-size: 1em;
+  border: 2px solid #111;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.chrisvf-mobile-search:focus-visible {
+  outline: 3px solid #0066cc;
+  outline-offset: 2px;
+}
+
+.chrisvf-mobile-filters,
+.chrisvf-mobile-text-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+.chrisvf-mobile-filter,
+.chrisvf-mobile-text-btn,
 .chrisvf-mobile-day {
   min-height: 44px;
   min-width: 44px;
@@ -64,6 +118,31 @@ body.chrisvf-mobile-page {
   font-weight: 600;
   cursor: pointer;
   border-radius: 4px;
+}
+
+.chrisvf-mobile-filter.is-active,
+.chrisvf-mobile-text-btn.is-active {
+  background: #333;
+  color: #fff;
+  border-color: #333;
+}
+
+.chrisvf-mobile-filter:focus-visible,
+.chrisvf-mobile-text-btn:focus-visible,
+.chrisvf-mobile-day:focus-visible {
+  outline: 3px solid #0066cc;
+  outline-offset: 2px;
+}
+
+.chrisvf-mobile-days {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.chrisvf-mobile-day {
   flex-shrink: 0;
 }
 
@@ -71,11 +150,6 @@ body.chrisvf-mobile-page {
   background: #111;
   color: #fff;
   border-color: #111;
-}
-
-.chrisvf-mobile-day:focus-visible {
-  outline: 3px solid #0066cc;
-  outline-offset: 2px;
 }
 
 .chrisvf-mobile-main {
@@ -89,11 +163,14 @@ body.chrisvf-mobile-page {
 }
 
 .chrisvf-mobile-event {
+  border-bottom: 1px solid #ccc;
+}
+
+.chrisvf-mobile-event-row {
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
   padding: 0.6rem 0.75rem;
-  border-bottom: 1px solid #ccc;
 }
 
 .chrisvf-mobile-event-time {
@@ -106,6 +183,13 @@ body.chrisvf-mobile-page {
 .chrisvf-mobile-event-body {
   flex: 1;
   min-width: 0;
+}
+
+.chrisvf-mobile-event-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .chrisvf-mobile-event-title {
@@ -127,7 +211,95 @@ body.chrisvf-mobile-page {
   text-transform: uppercase;
 }
 
+.chrisvf-mobile-badge-now {
+  background: #c00;
+  color: #fff;
+}
+
+.chrisvf-mobile-badge-next {
+  background: #f90;
+  color: #111;
+}
+
 .chrisvf-mobile-badge-free {
   background: #090;
   color: #fff;
+}
+
+.chrisvf-mobile-expand {
+  flex: 0 0 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  font-size: 1.25em;
+  cursor: pointer;
+  color: #333;
+}
+
+.chrisvf-mobile-expand:focus-visible {
+  outline: 3px solid #0066cc;
+  outline-offset: 2px;
+}
+
+.chrisvf-mobile-event-detail {
+  padding: 0 0.75rem 0.75rem 4.75rem;
+}
+
+.chrisvf-mobile-event-desc {
+  margin: 0 0 0.75rem;
+  font-size: 0.9em;
+  color: #333;
+}
+
+.chrisvf-mobile-event-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chrisvf-mobile-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.4rem 0.85rem;
+  border: 2px solid #111;
+  background: #fff;
+  color: #111;
+  font-weight: 600;
+  font-size: 0.9em;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.chrisvf-mobile-btn-ticket {
+  background: #111;
+  color: #fff;
+}
+
+.chrisvf-mobile-btn:focus-visible {
+  outline: 3px solid #0066cc;
+  outline-offset: 2px;
+}
+
+.chrisvf-mobile-footer {
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.85em;
+  border-top: 1px solid #ccc;
+  background: #f8f8f8;
+}
+
+.chrisvf-mobile-footer a {
+  color: #0066cc;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
 }
