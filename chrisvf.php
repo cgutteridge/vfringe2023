@@ -350,6 +350,38 @@ function chrisvf_location_sortcode($loc)
     return "100" . $loc;
 }
 
+/**
+ * Resolve the festival zone for a venue location name from places.json.
+ *
+ * @param string $loc Venue location name.
+ * @return string|null Zone id when known, otherwise null.
+ */
+function chrisvf_location_zone($loc)
+{
+    static $zones = null;
+
+    if ($zones === null) {
+        $zones = [];
+        foreach (chrisvf_places() as $place) {
+            if (empty($place["VENUES"])) {
+                continue;
+            }
+            foreach ($place["VENUES"] as $venue) {
+                if (!is_array($venue) || empty($venue["name"]) || empty($venue["zone"])) {
+                    continue;
+                }
+                $zones[$venue["name"]] = $venue["zone"];
+            }
+        }
+    }
+
+    if (array_key_exists($loc, $zones)) {
+        return $zones[$loc];
+    }
+
+    return null;
+}
+
 /*********************************************************************************
  * end of DATA FUNCTIONS
  *********************************************************************************/

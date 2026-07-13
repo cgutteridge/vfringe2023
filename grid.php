@@ -9,7 +9,7 @@ add_shortcode('chrisvf_grid', 'chrisvf_render_grid_day');
 add_action('wp_enqueue_scripts', 'chrisvf_add_grid_scripts');
 function chrisvf_add_grid_scripts()
 {
-    wp_register_style('chrisvf-grid-css', plugins_url('grid.css', __FILE__), [], "1.001");
+    wp_register_style('chrisvf-grid-css', plugins_url('grid.css', __FILE__), [], "1.002");
     wp_enqueue_style('chrisvf-grid-css');
     wp_register_script('chrisvf-grid-js', plugins_url('grid.js', __FILE__), array('jquery'), [], "1.001");
     wp_enqueue_script('chrisvf-grid-js');
@@ -292,7 +292,10 @@ function renderGridRow($row_classes, $slot, array $venues, array $grid, $timeslo
             if ($col_id == sizeof($grid[$venue_id]) - 1) {
                 $classes .= " vf_grid_col_vlast"; // last column for this venue
             }
-            $classes .= " vf_grid_venue_" . preg_replace("/[^a-z0-9]/i", "", strtolower($venue_id));
+            $zone = chrisvf_location_zone($venue_id);
+            if ($zone !== null) {
+                $classes .= " vf_grid_zone_" . preg_replace("/[^a-z0-9]/i", "", strtolower($zone));
+            }
 
             if (@$cell['event']) {
                 $h [] = render_event($cell, $classes, $itinerary);
