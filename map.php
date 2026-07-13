@@ -273,6 +273,9 @@ jQuery( document ).ready( function() {
 }([$lat_long],'$icon_url',[$icon_size],[$icon_anchor],'" . htmlspecialchars($place["NAME"], ENT_QUOTES) . "','" . preg_replace("/'/", "\\'", $popup) . "',$nowText));\n";
     }
     $js .= "map.fitBounds( bounds );\n";
+    if ($embedded) {
+        $js .= "window.chrisvfMobileLeafletBounds = bounds;\n";
+    }
 
     // add outlined areas
     foreach ($outlines as $outline) {

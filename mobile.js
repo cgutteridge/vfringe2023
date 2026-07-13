@@ -282,6 +282,28 @@
   }
 
   /**
+   * After the map host is visible, fix Leaflet size and re-fit if init ran while hidden.
+   *
+   * Leaflet fitBounds during a zero-size (hidden) container leaves the map at world zoom.
+   */
+  function refreshVisibleMap () {
+    syncMapHostLayout()
+    var map = window.chrisvfMobileLeafletMap
+    if (!map || typeof map.invalidateSize !== 'function') {
+      return
+    }
+    map.invalidateSize()
+    var bounds = window.chrisvfMobileLeafletBounds
+    if (!bounds || typeof map.fitBounds !== 'function') {
+      return
+    }
+    // Hidden init leaves zoom at ~0; re-fit once we have a real container size.
+    if (typeof map.getZoom === 'function' && map.getZoom() < 10) {
+      map.fitBounds(bounds, { padding: [24, 24], maxZoom: 17 })
+    }
+  }
+
+  /**
    * Show or hide the embedded festival map and refresh Leaflet size when shown.
    *
    * @param {boolean} visible Whether the map tab is active.
@@ -298,13 +320,8 @@
       return
     }
     syncMapHostLayout()
-    setTimeout(function () {
-      syncMapHostLayout()
-      if (window.chrisvfMobileLeafletMap &&
-          typeof window.chrisvfMobileLeafletMap.invalidateSize === 'function') {
-        window.chrisvfMobileLeafletMap.invalidateSize()
-      }
-    }, 100)
+    setTimeout(refreshVisibleMap, 50)
+    setTimeout(refreshVisibleMap, 250)
   }
 
   /**
@@ -422,8 +439,7 @@
         selectedDay: state.selectedDay,
         search: state.search,
         filter: state.filter,
-        activeTab: state.activeTab,
-        filtersOpen: state.filtersOpen
+        activeTab: state.activeTab
       }))
     } catch (e) { /* ignore */ }
   }
@@ -449,9 +465,6 @@
       }
       if (saved.activeTab === 'programme' || saved.activeTab === 'map') {
         state.activeTab = saved.activeTab
-      }
-      if (typeof saved.filtersOpen === 'boolean') {
-        state.filtersOpen = saved.filtersOpen
       }
     } catch (e) { /* ignore */ }
   }
@@ -644,6 +657,9 @@
       btn.addEventListener('click', function () {
         state.activeTab = btn.getAttribute('data-tab')
         state.selectedUid = null
+        if (state.activeTab === 'programme') {
+          state.filtersOpen = false
+        }
         saveSession()
         render({ resetScroll: state.activeTab === 'programme' })
       })
@@ -971,14 +987,11 @@
         if (!state.selectedDay) {
           state.selectedDay = defaultDay(data.festivalDays)
         }
+        state.filtersOpen = false
         render()
         window.addEventListener('resize', function () {
           if (state.activeTab === 'map') {
-            syncMapHostLayout()
-            if (window.chrisvfMobileLeafletMap &&
-                typeof window.chrisvfMobileLeafletMap.invalidateSize === 'function') {
-              window.chrisvfMobileLeafletMap.invalidateSize()
-            }
+            refreshVisibleMap()
           }
         })
         setInterval(function () {
