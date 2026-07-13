@@ -2,5 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../graph-nav" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../syns-wordpress-plugin" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../../themes/syns-wordpress-theme" vcs="Git" />
   </component>
 </project>

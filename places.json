@@ -2,12 +2,12 @@
  { "GEO":[ 50.59461,-1.20613 ], "ICON":"https://vfringe.co.uk/wp-content/uploads/sites/2/2017/08/ExchangeIcon.png", "ICON_SIZE":"40,47","ICON_ANCHOR":"20,23", "NAME":"Ventnor Exchange", "VENUES":[
 { "name":"Ventnor Exchange", "sortcode":"001", "zone":"square" }
  ]},
- { "GEO":[ 50.59471,-1.20677 ], "ICON":"number_2.png", "NAME":"St. Catherine's Church", "VENUES":[ { "name":"St. Catherine's Church", "sortcode":"003", "zone":"square" }, { "name":"St Catherine's Church", "sortcode":"004", "zone":"square" } ], "LDIR":"right"},
+ { "GEO":[ 50.59471,-1.20677 ], "ICON":"number_2.png", "NAME":"St. Catherine's Church", "VENUES":[ { "name":"St. Catherine's Church", "sortcode":"003", "zone":"square" } ], "LDIR":"right"},
  { "GEO":[ 50.59453,-1.20699 ], "ICON":"number_3.png", "NAME":"Fringe Square", "VENUES":[
 { "name":"The Fringe Square", "sortcode":"002", "zone":"square" }, { "name":"The Book Bus", "sortcode":"005", "zone":"square" }
  ]},
  { "GEO":[ 50.59543,-1.20549 ], "ICON":"number_4.png", "NAME":"Ventnor Arts Club", "VENUES":[ { "name":"Ventnor Arts Club" } ]},
- { "GEO":[ 50.59441,-1.204 ] , "ICON":"number_5.png", "NAME":"Ingrams Yard", "VENUES":[ { "name":"Ingrams Yard", "sortcode":"031", "zone":"ingrams" }, { "name":"The Container", "sortcode":"032", "zone":"ingrams" }, { "name":"Studio 3 @ Ingrams Yard Studio", "sortcode":"033", "zone":"ingrams" }, { "name":"The Garage", "zone":"ingrams" } ], "LDIR":"right" },
+ { "GEO":[ 50.59441,-1.204 ] , "ICON":"number_5.png", "NAME":"Ingrams Yard", "VENUES":[ { "name":"Ingrams Yard", "sortcode":"031", "zone":"ingrams" } ]},
  { "GEO":[ 50.59438,-1.20412], "ICON":"number_6.png", "NAME":"The Garage", "VENUES":[ ]},
 
  { "GEO":[ 50.59536,-1.20419 ] , "ICON":"number_7.png", "NAME":"Gallery 44", "VENUES":[ { "name":"Gallery 44" } ]},
@@ -18,16 +18,16 @@
  { "GEO":[ 50.59305,-1.2138  ], "ICON":"number_12.png", "NAME":"Bosco Theatre", "VENUES":[ { "name":"Bosco Theatre", "sortcode":"027", "zone":"park" } ], "LDIR":"right" },
  { "GEO":[ 50.59288,-1.21437 ], "ICON":"number_13.png", "NAME":"Bijou", "VENUES":[ { "name":"Bijou", "sortcode":"028", "zone":"park" } ] },
  { "GEO":[ 50.59225,-1.21669 ], "ICON":"number_14.png", "NAME":"The Workshop Tent", "VENUES":[{ "name":"The Workshop Tent", "sortcode":"023", "zone":"park" }]},
- { "GEO":[ 50.5926,-1.21531  ], "ICON":"number_15.png", "NAME":"The Fringe Village Box Office", "VENUES":[ { "name":"The Fringe Village", "sortcode":"021", "zone":"park" }, { "name":"Fringe Village Bandstand", "sortcode":"022", "zone":"park" }, { "name":"The Fringe Village Box Office", "sortcode":"024", "zone":"park" }, { "name":"Ventnor Park", "sortcode":"025", "zone":"park" }, { "name":"Ventnor Park (Putting Green)", "sortcode":"026", "zone":"park" }, { "name":"Ventnor Park (Putting Green end)", "sortcode":"029", "zone":"park" } ] },
+ { "GEO":[ 50.5926,-1.21531  ], "ICON":"number_15.png", "NAME":"The Fringe Village Box Office", "VENUES":[ { "name":"The Fringe Village Box Office", "sortcode":"024", "zone":"park" } ] },
  { "GEO":[ 50.59215,-1.21624 ], "ICON":"number_16.png", "NAME":"Parkside bar","VENUES":[ ]},
- { "GEO":[ 50.59049,-1.21863 ], "ICON":"number_17.png", "NAME":"Ventnor Exchange Arena", "VENUES":[ { "name":"The Big Top", "sortcode":"011", "zone":"flowersbrook" }, { "name":"The Big Top Bar", "sortcode":"012", "zone":"flowersbrook" }, { "name":"The Flowersbrook Inn", "sortcode":"013", "zone":"flowersbrook" }, { "name":"Rotunda", "sortcode":"014", "zone":"flowersbrook" }, { "name":"Ventnor Exchange Arena", "sortcode":"015", "zone":"flowersbrook" }]},
+ { "GEO":[ 50.59049,-1.21863 ], "ICON":"number_17.png", "NAME":"Ventnor Exchange Arena", "VENUES":[  { "name":"Ventnor Exchange Arena", "sortcode":"015", "zone":"flowersbrook" }]},
  { "GEO":[ 50.59071,-1.21888 ], "ICON":"number_18.png", "NAME":"Club Lunar", "VENUES":[ { "name":"Club Lunar", "sortcode":"016", "zone":"flowersbrook" } ] },
 
  { "GEO":[ 50.58999,-1.22658 ], "ICON":"number_19.png", "NAME":"Ventnor Botanic Garden", "VENUES":[ { "name":"Ventnor Botanic Garden" } ] },
 
+ { "GEO":[ 50.59231,-1.21587 ], "ICON":"music.png", "NAME":"Fringe Village Bandstand","VENUES":[ {"name":"Fringe Village Bandstand", "zone": "park" } ] },
 
-
-
+ { "GEO":[ 50.5947,-1.20742 ], "ICON":"mysterybox.png", "NAME":"Unknown. Do not visit this location. There is nothing to see here. Nothing at all. I can't stress enough how this location has no relevance to The Fringe and there is nothing to be learned at all here. Probably.", "ICON_SIZE":"15,44","ICON_ANCHOR":"7,44", "VENUES":[  ] },
 
  { "GEO":[ 50.59488,-1.20555 ], "ICON":"atm.png", "NAME":"Cash Point", "DESC":"Inside CO-OP. Free, but only available when the shop is open.", "VENUES":[]},
  { "GEO":[ 50.59549,-1.20376 ], "ICON":"atm.png", "NAME":"Cash Point", "VENUES":[]},
@@ -37,7 +37,6 @@
  { "GEO":[ 50.59078,-1.21862 ], "ICON":"poo.png", "NAME":"Festival Toilets", "VENUES":[]},
  { "GEO":[ 50.59247,-1.21532 ], "ICON":"poo.png", "NAME":"Public Toilets", "VENUES":[]},
 
- { "GEO":[ 50.59221,-1.23286 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
  { "GEO":[ 50.58974,-1.22761 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
  { "GEO":[ 50.59254,-1.21165 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
  { "GEO":[ 50.59509,-1.20777 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
@@ -46,6 +45,11 @@
  { "GEO":[ 50.59412,-1.2012  ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
  { "GEO":[ 50.59525,-1.20238 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
  { "GEO":[ 50.59591,-1.20305 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
- { "GEO":[ 50.59464,-1.19854 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []}
+ { "GEO":[ 50.59464,-1.19854 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
+
+
+ { "GEO":[ 50.59708,-1.18766 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
+ { "GEO":[ 50.59046,-1.22363 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []}
+
 ]
 
