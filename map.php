@@ -7,8 +7,10 @@ add_action('wp_enqueue_scripts', 'chrisvf_add_map_scripts');
 function chrisvf_add_map_scripts()
 {
     # register them here, but only enqueue if we need them
-    wp_register_script('chrisvf-leaflet', plugins_url('leaflet.js', __FILE__));
+    wp_register_script('chrisvf-leaflet', plugins_url('leaflet.js', __FILE__), ['jquery'], null, false);
     wp_register_style('chrisvf-leaflet', plugins_url('leaflet.css', __FILE__));
+    wp_register_script('chrisvf-leaflet-label', plugins_url('leaflet.label.js', __FILE__), ['chrisvf-leaflet'], null, false);
+    wp_register_style('chrisvf-leaflet-label', plugins_url('leaflet.label.css', __FILE__), ['chrisvf-leaflet']);
 }
 
 /*********************************************************************************
@@ -17,8 +19,30 @@ function chrisvf_add_map_scripts()
 
 // to add the map; ensure that page-cleanpage.php is added to the templates folder of whatever theme the site uses and the page with the map slug in uses that template.
 
-function chrisvf_render_map()
+/**
+ * Render the festival Leaflet map.
+ *
+ * @param array|string $atts Optional shortcode attributes.
+ *                           - layout="embedded" for in-page placement (absolute fill) instead of fullscreen.
+ *                           - mobile="1" marks event links for the /m modal UI instead of normal navigation.
+ * @return string Map HTML and inline initialisation script.
+ */
+function chrisvf_render_map($atts = [])
 {
+    if (!is_array($atts)) {
+        $atts = [];
+    }
+    $atts = shortcode_atts(
+        [
+            'layout' => 'fullscreen',
+            'mobile' => '0',
+        ],
+        $atts,
+        'chrisvf_map'
+    );
+    $embedded = ($atts['layout'] === 'embedded');
+    $mobile = ($atts['mobile'] === '1' || $atts['mobile'] === 'true' || $atts['mobile'] === true);
+
     $warnings = [];
 
     $info = chrisvf_get_info();
@@ -105,7 +129,11 @@ function chrisvf_render_map()
         $h .= "<pre>" . htmlspecialchars(print_r($places, true)) . "</pre>";
     }
     $h .= "<style>.leaflet-tooltip { font-size: 70%; opacity: 0.7; }</style>";
-    $h .= "<div id='$id' style='height: 100%; width: 100%; position: fixed; top: 0; left:0; z-index: 10000000;'>";
+    if ($embedded) {
+        $h .= "<div id='$id' class='chrisvf-map chrisvf-map-embedded' style='height:100%;width:100%;position:absolute;inset:0;'>";
+    } else {
+        $h .= "<div id='$id' style='height: 100%; width: 100%; position: fixed; top: 0; left:0; z-index: 10000000;'>";
+    }
     $js = "";
     $js .= "
 jQuery( document ).ready( function() {
@@ -117,7 +145,13 @@ jQuery( document ).ready( function() {
     let icon;
     let marker;
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{ attribution: 'Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>', maxZoom: 19 }).addTo(map);
-
+";
+    if ($embedded) {
+        $js .= "
+    window.chrisvfMobileLeafletMap = map;
+";
+    }
+    $js .= "
     let old_mapzoom_class ='';
     map.on('zoomend', ()=> {
       let zoomlevel = map.getZoom();
@@ -176,8 +210,22 @@ jQuery( document ).ready( function() {
 
                         $url = $event["URL"];
                         $name = $event["SUMMARY"];
+                        $uid = !empty($event['UID']) ? $event['UID'] : '';
                         $popup .= "<div style='color:#000;'>$time - ";
-                        if (!empty($url)) {
+                        if ($mobile && $uid !== '') {
+                            // Mobile /m: keep a real href for accessibility, but hook opens the SPA modal.
+                            $uid_attr = htmlspecialchars($uid, ENT_QUOTES);
+                            $name_html = htmlspecialchars($name);
+                            if (!empty($url)) {
+                                $href = htmlspecialchars($url, ENT_QUOTES);
+                                $popup .= "<a href='$href' data-chrisvf-mobile-event='$uid_attr'>$name_html</a>";
+                            } else {
+                                $popup .= "<button type='button' class='chrisvf-mobile-map-event-btn' data-chrisvf-mobile-event='$uid_attr'>$name_html</button>";
+                                if ($free) {
+                                    $popup .= " - Free Fringe";
+                                }
+                            }
+                        } elseif (!empty($url)) {
                             $popup .= "<a href='$url'>" . $name . "</a>";
                         } else {
                             $popup .= $name;
@@ -185,6 +233,7 @@ jQuery( document ).ready( function() {
                                 $popup .= " - Free Fringe";
                             }
                         }
+                        $popup .= "</div>";
                     }
                 }
             }
@@ -224,6 +273,9 @@ jQuery( document ).ready( function() {
 }([$lat_long],'$icon_url',[$icon_size],[$icon_anchor],'" . htmlspecialchars($place["NAME"], ENT_QUOTES) . "','" . preg_replace("/'/", "\\'", $popup) . "',$nowText));\n";
     }
     $js .= "map.fitBounds( bounds );\n";
+    if ($embedded) {
+        $js .= "window.chrisvfMobileLeafletBounds = bounds;\n";
+    }
 
     // add outlined areas
     foreach ($outlines as $outline) {

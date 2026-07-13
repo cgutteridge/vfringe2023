@@ -15,11 +15,13 @@ This repository root is the real WordPress plugin. Do not confuse it with `downl
 
 - `chrisvf.php` is the central data layer.
 - Most other PHP files register one or more shortcodes and render views from the shared event array.
+- `mobile.php` is not a shortcode: it owns `/m` and `/m/json`, plus the minimal template in `templates/page-mobile.php`.
 - Event data is hybrid:
   - WordPress event posts are the base dataset.
   - `boxoffice-events.tsv` can replace matching WordPress rows by venue/date/start.
   - `extras.tsv` adds manual rows.
 - Map output also depends on curated JSON and image assets in this repository.
+- The `/m` Map tab reuses `chrisvf_render_map()` with `layout=embedded` and `mobile=1` (modal hooks). Do not add a second Leaflet map implementation for `/m`.
 
 ## Important invariants
 
@@ -39,6 +41,7 @@ This repository root is the real WordPress plugin. Do not confuse it with `downl
 - `chrisvf_wp_events()` in `chrisvf.php`: shared event contract, repeat handling, TSV merge logic
 - `places.json` and `map.php`: venue name mismatches cause silent map omissions plus HTML comment warnings
 - `itinerary.php`: year-specific cookie names and hard-coded paths
+- `mobile.php` / `mobile.js`: rewrite routes, normalized JSON field names (`ticketUrl` / `siteUrl` / `free`), and map `mobile` mode — keep cookie + map shortcode behaviour compatible with the rest of the site
 - Any changes to shortcode names: pages on the live site likely depend on them directly
 
 ## Seasonal assumptions to preserve unless intentionally updating them
