@@ -1,15 +1,14 @@
 <?php
 
 /**
- * Mobile programme JSON feed at /m/json.
- *
- * Milestone 1: data layer only — no page UI yet.
+ * Mobile programme at /m and JSON feed at /m/json.
  *
  * @package ChrisVF
  */
 
 define('CHRISVF_MOBILE_QUERY_VAR', 'chrisvf_mobile_json');
 define('CHRISVF_MOBILE_REWRITE_VERSION', '2');
+define('CHRISVF_MOBILE_TEMPLATE', 'chrisvf-mobile-programme.php');
 
 /**
  * Register rewrite rules and query vars for the mobile JSON endpoint.
@@ -250,3 +249,91 @@ function chrisvf_mobile_json_payload()
         'places' => chrisvf_places(),
     ];
 }
+
+/**
+ * Register the plugin-owned Mobile Programme page template.
+ *
+ * @param array<string, string> $templates Existing templates.
+ * @return array<string, string>
+ */
+function chrisvf_mobile_register_page_template($templates)
+{
+    $templates[CHRISVF_MOBILE_TEMPLATE] = 'Mobile Programme';
+    return $templates;
+}
+
+add_filter('theme_page_templates', 'chrisvf_mobile_register_page_template');
+
+/**
+ * Load the mobile page template from the plugin when selected.
+ *
+ * @param string $template Current template path.
+ * @return string
+ */
+function chrisvf_mobile_load_page_template($template)
+{
+    if (!is_page()) {
+        return $template;
+    }
+
+    $slug = get_page_template_slug(get_queried_object_id());
+    if ($slug !== CHRISVF_MOBILE_TEMPLATE) {
+        return $template;
+    }
+
+    $pluginTemplate = __DIR__ . '/templates/page-mobile.php';
+    if (file_exists($pluginTemplate)) {
+        return $pluginTemplate;
+    }
+
+    return $template;
+}
+
+add_filter('template_include', 'chrisvf_mobile_load_page_template');
+
+/**
+ * Whether the current request is the mobile programme page.
+ *
+ * @return bool
+ */
+function chrisvf_mobile_is_page()
+{
+    if (!is_page()) {
+        return false;
+    }
+
+    return get_page_template_slug(get_queried_object_id()) === CHRISVF_MOBILE_TEMPLATE;
+}
+
+/**
+ * Enqueue mobile programme assets on the mobile page only.
+ */
+function chrisvf_mobile_enqueue_assets()
+{
+    if (!chrisvf_mobile_is_page()) {
+        return;
+    }
+
+    wp_register_style(
+        'chrisvf-mobile',
+        plugins_url('mobile.css', __FILE__),
+        [],
+        '1.0.0'
+    );
+    wp_enqueue_style('chrisvf-mobile');
+
+    wp_register_script(
+        'chrisvf-mobile',
+        plugins_url('mobile.js', __FILE__),
+        [],
+        '1.0.0',
+        true
+    );
+    wp_enqueue_script('chrisvf-mobile');
+
+    wp_localize_script('chrisvf-mobile', 'chrisvfMobileConfig', [
+        'jsonUrl' => home_url('/m/json'),
+    ]);
+}
+
+add_action('wp_enqueue_scripts', 'chrisvf_mobile_enqueue_assets');

@@ -1,0 +1,133 @@
+/**
+ * Mobile programme styles (/m) — Milestone 2.
+ *
+ * @package ChrisVF
+ */
+
+body.chrisvf-mobile-page {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: #111;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.4;
+}
+
+.chrisvf-mobile-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+}
+
+.chrisvf-mobile-loading,
+.chrisvf-mobile-error,
+.chrisvf-mobile-empty {
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+
+.chrisvf-mobile-error {
+  color: #a00;
+}
+
+.chrisvf-mobile-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  border-bottom: 2px solid #111;
+  padding: 0.75rem 0.75rem 0;
+}
+
+.chrisvf-mobile-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.25em;
+  font-weight: 700;
+}
+
+.chrisvf-mobile-days {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.chrisvf-mobile-day {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.35rem 0.75rem;
+  border: 2px solid #555;
+  background: #fff;
+  font-size: 0.9em;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.chrisvf-mobile-day.is-active {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.chrisvf-mobile-day:focus-visible {
+  outline: 3px solid #0066cc;
+  outline-offset: 2px;
+}
+
+.chrisvf-mobile-main {
+  flex: 1;
+}
+
+.chrisvf-mobile-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.chrisvf-mobile-event {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.chrisvf-mobile-event-time {
+  flex: 0 0 3.5rem;
+  font-weight: 700;
+  font-size: 0.9em;
+  color: #333;
+}
+
+.chrisvf-mobile-event-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.chrisvf-mobile-event-title {
+  font-weight: 600;
+}
+
+.chrisvf-mobile-event-meta {
+  font-size: 0.85em;
+  color: #444;
+  margin-top: 0.15rem;
+}
+
+.chrisvf-mobile-badge {
+  display: inline-block;
+  font-size: 0.7em;
+  font-weight: 700;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.chrisvf-mobile-badge-free {
+  background: #090;
+  color: #fff;
+}
