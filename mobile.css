@@ -83,6 +83,32 @@ html {
   font-weight: 700;
 }
 
+.chrisvf-mobile-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.chrisvf-mobile-tab {
+  flex: 1;
+  min-height: 44px;
+  border: 2px solid #111;
+  background: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px 4px 0 0;
+}
+
+.chrisvf-mobile-tab.is-active {
+  background: #111;
+  color: #fff;
+}
+
+.chrisvf-mobile-tab:focus-visible {
+  outline: 3px solid #0066cc;
+  outline-offset: 2px;
+}
+
 .chrisvf-mobile-controls {
   padding-bottom: 0.5rem;
 }
@@ -290,6 +316,37 @@ html {
 .chrisvf-mobile-btn:focus-visible {
   outline: 3px solid #0066cc;
   outline-offset: 2px;
+}
+
+.chrisvf-mobile-main-map {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+  background: #eee;
+}
+
+.chrisvf-mobile-root.is-map-tab .chrisvf-mobile-header {
+  padding-bottom: 0.5rem;
+}
+
+.chrisvf-mobile-map-host {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  overflow: hidden;
+  background: #eee;
+}
+
+.chrisvf-mobile-map-host.is-visible {
+  display: block;
+}
+
+.chrisvf-mobile-map-host .chrisvf-map-embedded {
+  height: 100% !important;
+  width: 100% !important;
 }
 
 .chrisvf-mobile-modal {

@@ -14,6 +14,7 @@
 
   var STORAGE_TEXT = 'chrisvf_mobile_text_size'
   var STORAGE_SESSION = 'chrisvf_mobile_session'
+  var mapHost = document.getElementById('chrisvf-mobile-map-host')
 
   var state = {
     data: null,
@@ -23,7 +24,8 @@
     search: '',
     filter: 'all',
     selectedUid: null,
-    textSize: 'normal'
+    textSize: 'normal',
+    activeTab: 'programme'
   }
 
   /**
@@ -243,6 +245,50 @@
   window.chrisvfNotifyHandler = handleMobileNotify
 
   /**
+   * Position the server-rendered map between the sticky header and footer.
+   */
+  function syncMapHostLayout () {
+    if (!mapHost) {
+      return
+    }
+    var header = root.querySelector('.chrisvf-mobile-header')
+    var footer = root.querySelector('.chrisvf-mobile-footer')
+    if (!header || !footer) {
+      return
+    }
+    var headerBottom = header.getBoundingClientRect().bottom
+    var footerTop = footer.getBoundingClientRect().top
+    mapHost.style.top = Math.round(headerBottom) + 'px'
+    mapHost.style.bottom = Math.round(window.innerHeight - footerTop) + 'px'
+  }
+
+  /**
+   * Show or hide the embedded festival map and refresh Leaflet size when shown.
+   *
+   * @param {boolean} visible Whether the map tab is active.
+   */
+  function setMapVisible (visible) {
+    if (!mapHost) {
+      return
+    }
+    mapHost.hidden = !visible
+    mapHost.setAttribute('aria-hidden', visible ? 'false' : 'true')
+    mapHost.classList.toggle('is-visible', visible)
+    document.body.classList.toggle('chrisvf-mobile-map-open', visible)
+    if (!visible) {
+      return
+    }
+    syncMapHostLayout()
+    setTimeout(function () {
+      syncMapHostLayout()
+      if (window.chrisvfMobileLeafletMap &&
+          typeof window.chrisvfMobileLeafletMap.invalidateSize === 'function') {
+        window.chrisvfMobileLeafletMap.invalidateSize()
+      }
+    }, 100)
+  }
+
+  /**
    * Events for the current view after filters applied.
    *
    * @returns {object[]}
@@ -302,7 +348,8 @@
       sessionStorage.setItem(STORAGE_SESSION, JSON.stringify({
         selectedDay: state.selectedDay,
         search: state.search,
-        filter: state.filter
+        filter: state.filter,
+        activeTab: state.activeTab
       }))
     } catch (e) { /* ignore */ }
   }
@@ -325,6 +372,9 @@
       }
       if (saved.filter === 'all' || saved.filter === 'free' || saved.filter === 'itinerary') {
         state.filter = saved.filter
+      }
+      if (saved.activeTab === 'programme' || saved.activeTab === 'map') {
+        state.activeTab = saved.activeTab
       }
     } catch (e) { /* ignore */ }
   }
@@ -466,6 +516,15 @@
       })
     })
 
+    root.querySelectorAll('[data-tab]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        state.activeTab = btn.getAttribute('data-tab')
+        state.selectedUid = null
+        saveSession()
+        render({ resetScroll: state.activeTab === 'programme' })
+      })
+    })
+
     root.querySelectorAll('[data-text-size]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         state.textSize = btn.getAttribute('data-text-size')
@@ -550,95 +609,114 @@
     var scrollTop = options.resetScroll ? 0 : (previousMain ? previousMain.scrollTop : 0)
 
     root.className = 'chrisvf-mobile-root chrisvf-mobile-text-' + state.textSize +
-      (state.selectedUid ? ' has-modal' : '')
+      (state.selectedUid ? ' has-modal' : '') +
+      (state.activeTab === 'map' ? ' is-map-tab' : '')
     var events = visibleEvents()
     var html = ''
 
     html += '<header class="chrisvf-mobile-header">'
     html += '<h1 class="chrisvf-mobile-title">Ventnor Fringe</h1>'
 
-    html += '<div class="chrisvf-mobile-controls">'
-    html += '<label class="chrisvf-mobile-search-label">'
-    html += '<span class="screen-reader-text">Search events</span>'
-    html += '<input type="search" class="chrisvf-mobile-search" placeholder="Search…" value="' +
-      escapeHtml(state.search) + '" autocomplete="off" enterkeyhint="search">'
-    html += '</label>'
-
-    html += '<div class="chrisvf-mobile-filters" role="group" aria-label="Quick filters">'
-    html += '<button type="button" class="chrisvf-mobile-filter' +
-      (state.filter === 'all' ? ' is-active' : '') +
-      '" data-filter="all" aria-pressed="' + (state.filter === 'all' ? 'true' : 'false') +
-      '">All</button>'
-    html += '<button type="button" class="chrisvf-mobile-filter' +
-      (state.filter === 'free' ? ' is-active' : '') +
-      '" data-filter="free" aria-pressed="' + (state.filter === 'free' ? 'true' : 'false') +
-      '">Free</button>'
-    html += '<button type="button" class="chrisvf-mobile-filter' +
-      (state.filter === 'itinerary' ? ' is-active' : '') +
-      '" data-filter="itinerary" aria-pressed="' + (state.filter === 'itinerary' ? 'true' : 'false') +
-      '">My itinerary</button>'
+    html += '<div class="chrisvf-mobile-tabs" role="tablist" aria-label="Programme views">'
+    html += '<button type="button" role="tab" class="chrisvf-mobile-tab' +
+      (state.activeTab === 'programme' ? ' is-active' : '') +
+      '" data-tab="programme" aria-selected="' + (state.activeTab === 'programme' ? 'true' : 'false') +
+      '">Programme</button>'
+    html += '<button type="button" role="tab" class="chrisvf-mobile-tab' +
+      (state.activeTab === 'map' ? ' is-active' : '') +
+      '" data-tab="map" aria-selected="' + (state.activeTab === 'map' ? 'true' : 'false') +
+      '">Map</button>'
     html += '</div>'
 
-    html += '<div class="chrisvf-mobile-text-controls" role="group" aria-label="Text size">'
-    ;['normal', 'large', 'xlarge'].forEach(function (size) {
-      var labels = { normal: 'A', large: 'A+', xlarge: 'A++' }
-      html += '<button type="button" class="chrisvf-mobile-text-btn' +
-        (state.textSize === size ? ' is-active' : '') +
-        '" data-text-size="' + size + '" aria-pressed="' +
-        (state.textSize === size ? 'true' : 'false') + '" aria-label="Text size ' +
-        labels[size] + '">' + labels[size] + '</button>'
-    })
-    html += '</div></div>'
+    if (state.activeTab === 'programme') {
+      html += '<div class="chrisvf-mobile-controls">'
+      html += '<label class="chrisvf-mobile-search-label">'
+      html += '<span class="screen-reader-text">Search events</span>'
+      html += '<input type="search" class="chrisvf-mobile-search" placeholder="Search…" value="' +
+        escapeHtml(state.search) + '" autocomplete="off" enterkeyhint="search">'
+      html += '</label>'
 
-    html += '<nav class="chrisvf-mobile-days" aria-label="Festival days">'
-    state.data.festivalDays.forEach(function (day) {
-      html += '<button type="button" class="chrisvf-mobile-day' +
-        (day === state.selectedDay ? ' is-active' : '') +
-        '" data-day="' + day + '" aria-pressed="' +
-        (day === state.selectedDay ? 'true' : 'false') + '">' +
-        dayLabel(day) + '</button>'
-    })
-    html += '</nav></header>'
+      html += '<div class="chrisvf-mobile-filters" role="group" aria-label="Quick filters">'
+      html += '<button type="button" class="chrisvf-mobile-filter' +
+        (state.filter === 'all' ? ' is-active' : '') +
+        '" data-filter="all" aria-pressed="' + (state.filter === 'all' ? 'true' : 'false') +
+        '">All</button>'
+      html += '<button type="button" class="chrisvf-mobile-filter' +
+        (state.filter === 'free' ? ' is-active' : '') +
+        '" data-filter="free" aria-pressed="' + (state.filter === 'free' ? 'true' : 'false') +
+        '">Free</button>'
+      html += '<button type="button" class="chrisvf-mobile-filter' +
+        (state.filter === 'itinerary' ? ' is-active' : '') +
+        '" data-filter="itinerary" aria-pressed="' + (state.filter === 'itinerary' ? 'true' : 'false') +
+        '">My itinerary</button>'
+      html += '</div>'
 
-    html += '<main class="chrisvf-mobile-main">'
-    if (events.length === 0) {
-      html += '<p class="chrisvf-mobile-empty">No events match your filters.</p>'
-    } else {
-      html += '<ul class="chrisvf-mobile-list">'
-      events.forEach(function (event) {
-        var badge = liveBadge(event)
-        var saved = isInItinerary(event.uid)
-        html += '<li class="chrisvf-mobile-event' + (saved ? ' is-saved' : '') +
-          '" data-event-uid="' + escapeHtml(event.uid) + '">'
-        html += '<div class="chrisvf-mobile-event-row" role="button" tabindex="0" aria-haspopup="dialog">'
-        html += '<span class="chrisvf-mobile-event-time">' + formatTime(event.start) + '</span>'
-        html += '<div class="chrisvf-mobile-event-body">'
-        html += '<div class="chrisvf-mobile-event-title-row">'
-        html += '<span class="chrisvf-mobile-event-title">' + escapeHtml(event.summary) + '</span>'
-        if (badge === 'now') {
-          html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-now">Now</span>'
-        } else if (badge === 'next') {
-          html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-next">Up next</span>'
-        }
-        if (event.free) {
-          html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-free">FREE</span>'
-        }
-        if (saved) {
-          html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-saved" aria-label="In your itinerary">★ Saved</span>'
-        }
-        html += '</div>'
-        html += '<div class="chrisvf-mobile-event-meta">'
-        html += escapeHtml(event.location)
-        if (event.categories) {
-          html += ' · ' + escapeHtml(event.categories)
-        }
-        html += '</div></div>'
-        html += '<span class="chrisvf-mobile-open" aria-hidden="true">›</span>'
-        html += '</div></li>'
+      html += '<div class="chrisvf-mobile-text-controls" role="group" aria-label="Text size">'
+      ;['normal', 'large', 'xlarge'].forEach(function (size) {
+        var labels = { normal: 'A', large: 'A+', xlarge: 'A++' }
+        html += '<button type="button" class="chrisvf-mobile-text-btn' +
+          (state.textSize === size ? ' is-active' : '') +
+          '" data-text-size="' + size + '" aria-pressed="' +
+          (state.textSize === size ? 'true' : 'false') + '" aria-label="Text size ' +
+          labels[size] + '">' + labels[size] + '</button>'
       })
-      html += '</ul>'
+      html += '</div></div>'
+
+      html += '<nav class="chrisvf-mobile-days" aria-label="Festival days">'
+      state.data.festivalDays.forEach(function (day) {
+        html += '<button type="button" class="chrisvf-mobile-day' +
+          (day === state.selectedDay ? ' is-active' : '') +
+          '" data-day="' + day + '" aria-pressed="' +
+          (day === state.selectedDay ? 'true' : 'false') + '">' +
+          dayLabel(day) + '</button>'
+      })
+      html += '</nav>'
     }
-    html += '</main>'
+    html += '</header>'
+
+    if (state.activeTab === 'programme') {
+      html += '<main class="chrisvf-mobile-main" id="chrisvf-mobile-programme" role="tabpanel">'
+      if (events.length === 0) {
+        html += '<p class="chrisvf-mobile-empty">No events match your filters.</p>'
+      } else {
+        html += '<ul class="chrisvf-mobile-list">'
+        events.forEach(function (event) {
+          var badge = liveBadge(event)
+          var saved = isInItinerary(event.uid)
+          html += '<li class="chrisvf-mobile-event' + (saved ? ' is-saved' : '') +
+            '" data-event-uid="' + escapeHtml(event.uid) + '">'
+          html += '<div class="chrisvf-mobile-event-row" role="button" tabindex="0" aria-haspopup="dialog">'
+          html += '<span class="chrisvf-mobile-event-time">' + formatTime(event.start) + '</span>'
+          html += '<div class="chrisvf-mobile-event-body">'
+          html += '<div class="chrisvf-mobile-event-title-row">'
+          html += '<span class="chrisvf-mobile-event-title">' + escapeHtml(event.summary) + '</span>'
+          if (badge === 'now') {
+            html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-now">Now</span>'
+          } else if (badge === 'next') {
+            html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-next">Up next</span>'
+          }
+          if (event.free) {
+            html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-free">FREE</span>'
+          }
+          if (saved) {
+            html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-saved" aria-label="In your itinerary">★ Saved</span>'
+          }
+          html += '</div>'
+          html += '<div class="chrisvf-mobile-event-meta">'
+          html += escapeHtml(event.location)
+          if (event.categories) {
+            html += ' · ' + escapeHtml(event.categories)
+          }
+          html += '</div></div>'
+          html += '<span class="chrisvf-mobile-open" aria-hidden="true">›</span>'
+          html += '</div></li>'
+        })
+        html += '</ul>'
+      }
+      html += '</main>'
+    } else {
+      html += '<main class="chrisvf-mobile-main chrisvf-mobile-main-map" id="chrisvf-mobile-map-panel" role="tabpanel" aria-label="Festival map"></main>'
+    }
 
     html += '<footer class="chrisvf-mobile-footer">'
     html += '<a href="' + escapeHtml(config.plannerUrl || '/vfringe/planner') + '">Festival planner</a>'
@@ -646,7 +724,7 @@
     html += '<a href="' + escapeHtml(config.fullMapUrl || '/vfringe/map') + '">Festival map</a>'
     html += '</footer>'
 
-    if (state.selectedUid) {
+    if (state.selectedUid && state.activeTab === 'programme') {
       html += renderModalHtml()
     }
 
@@ -654,9 +732,11 @@
     bindEvents()
 
     var main = root.querySelector('.chrisvf-mobile-main')
-    if (main) {
+    if (main && state.activeTab === 'programme') {
       main.scrollTop = scrollTop
     }
+
+    setMapVisible(state.activeTab === 'map')
   }
 
   /**
@@ -682,8 +762,19 @@
           state.selectedDay = defaultDay(data.festivalDays)
         }
         render()
+        window.addEventListener('resize', function () {
+          if (state.activeTab === 'map') {
+            syncMapHostLayout()
+            if (window.chrisvfMobileLeafletMap &&
+                typeof window.chrisvfMobileLeafletMap.invalidateSize === 'function') {
+              window.chrisvfMobileLeafletMap.invalidateSize()
+            }
+          }
+        })
         setInterval(function () {
-          render()
+          if (state.activeTab === 'programme') {
+            render()
+          }
         }, 60000)
 
         document.addEventListener('keydown', function (e) {
