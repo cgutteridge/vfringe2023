@@ -175,10 +175,28 @@ html {
   overflow-x: auto;
   padding: 0.5rem 0;
   -webkit-overflow-scrolling: touch;
+  align-items: center;
+}
+
+.chrisvf-mobile-days.is-disabled {
+  opacity: 0.55;
+}
+
+.chrisvf-mobile-search-scope {
+  flex-shrink: 0;
+  margin: 0 0.35rem 0 0;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
 }
 
 .chrisvf-mobile-day {
   flex-shrink: 0;
+}
+
+.chrisvf-mobile-day:disabled {
+  cursor: not-allowed;
 }
 
 .chrisvf-mobile-day.is-active {
@@ -226,6 +244,20 @@ html {
   font-weight: 700;
   font-size: 0.9em;
   color: #333;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.chrisvf-mobile-root.is-searching .chrisvf-mobile-event-time {
+  flex-basis: 4.25rem;
+}
+
+.chrisvf-mobile-event-day {
+  font-size: 0.75em;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.1rem;
 }
 
 .chrisvf-mobile-event-body {

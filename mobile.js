@@ -308,11 +308,25 @@
   /**
    * Events for the current view after filters applied.
    *
+   * A non-empty search query searches across all festival days (day picker is ignored).
+   *
    * @returns {object[]}
    */
   function visibleEvents () {
-    var events = state.eventsByDay[state.selectedDay] || []
     var q = state.search.trim().toLowerCase()
+    var events
+    if (q) {
+      events = []
+      Object.keys(state.eventsByDay).forEach(function (day) {
+        events = events.concat(state.eventsByDay[day] || [])
+      })
+      events.sort(function (a, b) {
+        return a.start < b.start ? -1 : a.start > b.start ? 1 : 0
+      })
+    } else {
+      events = state.eventsByDay[state.selectedDay] || []
+    }
+
     return events.filter(function (event) {
       if (state.filter === 'free' && !event.free) {
         return false
@@ -331,6 +345,19 @@
       ].join(' ').toLowerCase()
       return haystack.indexOf(q) !== -1
     })
+  }
+
+  /**
+   * Festival day key for a normalized event (08:00–02:00 window).
+   *
+   * @param {object} event Event record.
+   * @returns {string}
+   */
+  function eventDayKey (event) {
+    if (!state.data || !state.data.festivalDays) {
+      return ''
+    }
+    return eventFestivalDay(event, state.data.festivalDays) || ''
   }
 
   /**
@@ -677,8 +704,10 @@
 
     root.className = 'chrisvf-mobile-root chrisvf-mobile-text-' + state.textSize +
       (state.selectedUid ? ' has-modal' : '') +
-      (state.activeTab === 'map' ? ' is-map-tab' : '')
+      (state.activeTab === 'map' ? ' is-map-tab' : '') +
+      (state.search.trim() ? ' is-searching' : '')
     var events = visibleEvents()
+    var searching = state.search.trim().length > 0
     var html = ''
 
     html += '<header class="chrisvf-mobile-header">'
@@ -736,13 +765,19 @@
       })
       html += '</div></div>'
 
-      html += '<nav class="chrisvf-mobile-days" aria-label="Festival days">'
+      html += '<nav class="chrisvf-mobile-days' + (searching ? ' is-disabled' : '') +
+        '" aria-label="Festival days"' +
+        (searching ? ' aria-disabled="true"' : '') + '>'
+      if (searching) {
+        html += '<p class="chrisvf-mobile-search-scope">Searching all days</p>'
+      }
       state.data.festivalDays.forEach(function (day) {
         html += '<button type="button" class="chrisvf-mobile-day' +
-          (day === state.selectedDay ? ' is-active' : '') +
+          (!searching && day === state.selectedDay ? ' is-active' : '') +
           '" data-day="' + day + '" aria-pressed="' +
-          (day === state.selectedDay ? 'true' : 'false') +
-          '" aria-label="' + escapeHtml(dayAriaLabel(day)) + '">' +
+          (!searching && day === state.selectedDay ? 'true' : 'false') +
+          '" aria-label="' + escapeHtml(dayAriaLabel(day)) + '"' +
+          (searching ? ' disabled' : '') + '>' +
           dayLabel(day) + '</button>'
       })
       html += '</nav>'
@@ -752,17 +787,24 @@
     if (state.activeTab === 'programme') {
       html += '<main class="chrisvf-mobile-main" id="chrisvf-mobile-programme" role="tabpanel" aria-labelledby="chrisvf-tab-programme">'
       if (events.length === 0) {
-        html += '<p class="chrisvf-mobile-empty">No events match your filters.</p>'
+        html += '<p class="chrisvf-mobile-empty">' +
+          (searching ? 'No events match your search.' : 'No events match your filters.') +
+          '</p>'
       } else {
         html += '<ul class="chrisvf-mobile-list">'
         events.forEach(function (event) {
           var badge = liveBadge(event)
           var saved = isInItinerary(event.uid)
+          var dayKey = searching ? eventDayKey(event) : ''
           html += '<li class="chrisvf-mobile-event' + (saved ? ' is-saved' : '') +
             '" data-event-uid="' + escapeHtml(event.uid) + '">'
           html += '<div class="chrisvf-mobile-event-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open details for ' +
             escapeHtml(event.summary) + '">'
-          html += '<span class="chrisvf-mobile-event-time">' + formatTime(event.start) + '</span>'
+          html += '<span class="chrisvf-mobile-event-time">'
+          if (dayKey) {
+            html += '<span class="chrisvf-mobile-event-day">' + escapeHtml(dayLabel(dayKey)) + '</span>'
+          }
+          html += escapeHtml(formatTime(event.start)) + '</span>'
           html += '<div class="chrisvf-mobile-event-body">'
           html += '<div class="chrisvf-mobile-event-title-row">'
           html += '<span class="chrisvf-mobile-event-title">' + escapeHtml(event.summary) + '</span>'
