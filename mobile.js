@@ -186,6 +186,23 @@
   }
 
   /**
+   * Accessible long day label for the day picker.
+   *
+   * @param {string} dayKey Y-m-d date.
+   * @returns {string}
+   */
+  function dayAriaLabel (dayKey) {
+    var parts = dayKey.split('-')
+    var dt = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10))
+    var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    var months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ]
+    return days[dt.getDay()] + ' ' + parseInt(parts[2], 10) + ' ' + months[dt.getMonth()]
+  }
+
+  /**
    * Whether an event is in the saved itinerary cookie.
    *
    * @param {string} uid Event UID.
@@ -612,11 +629,35 @@
 
     var modal = root.querySelector('.chrisvf-mobile-modal')
     if (modal) {
+      var chrome = root.querySelectorAll('.chrisvf-mobile-header, .chrisvf-mobile-main, .chrisvf-mobile-footer')
+      chrome.forEach(function (el) {
+        el.setAttribute('aria-hidden', 'true')
+      })
+
       modal.addEventListener('click', function (e) {
         if (e.target === modal) {
           closeModal()
         }
       })
+
+      var focusables = modal.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      var first = focusables[0]
+      var last = focusables[focusables.length - 1]
+      modal.addEventListener('keydown', function (e) {
+        if (e.key !== 'Tab' || focusables.length === 0) {
+          return
+        }
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      })
+
       var closeBtn = modal.querySelector('.chrisvf-mobile-modal-close')
       if (closeBtn) {
         closeBtn.focus()
@@ -644,13 +685,17 @@
     html += '<h1 class="chrisvf-mobile-title">Ventnor Fringe</h1>'
 
     html += '<div class="chrisvf-mobile-tabs" role="tablist" aria-label="Programme views">'
-    html += '<button type="button" role="tab" class="chrisvf-mobile-tab' +
+    html += '<button type="button" role="tab" id="chrisvf-tab-programme" class="chrisvf-mobile-tab' +
       (state.activeTab === 'programme' ? ' is-active' : '') +
-      '" data-tab="programme" aria-selected="' + (state.activeTab === 'programme' ? 'true' : 'false') +
+      '" data-tab="programme" aria-controls="chrisvf-mobile-programme" aria-selected="' +
+      (state.activeTab === 'programme' ? 'true' : 'false') +
+      '" tabindex="' + (state.activeTab === 'programme' ? '0' : '-1') +
       '">Programme</button>'
-    html += '<button type="button" role="tab" class="chrisvf-mobile-tab' +
+    html += '<button type="button" role="tab" id="chrisvf-tab-map" class="chrisvf-mobile-tab' +
       (state.activeTab === 'map' ? ' is-active' : '') +
-      '" data-tab="map" aria-selected="' + (state.activeTab === 'map' ? 'true' : 'false') +
+      '" data-tab="map" aria-controls="chrisvf-mobile-map-panel" aria-selected="' +
+      (state.activeTab === 'map' ? 'true' : 'false') +
+      '" tabindex="' + (state.activeTab === 'map' ? '0' : '-1') +
       '">Map</button>'
     html += '</div>'
 
@@ -678,13 +723,16 @@
       html += '</div>'
 
       html += '<div class="chrisvf-mobile-text-controls" role="group" aria-label="Text size">'
-      ;['normal', 'large', 'xlarge'].forEach(function (size) {
-        var labels = { normal: 'A', large: 'A+', xlarge: 'A++' }
+      ;[
+        { size: 'normal', label: 'A', name: 'normal' },
+        { size: 'large', label: 'A+', name: 'large' },
+        { size: 'xlarge', label: 'A++', name: 'extra large' }
+      ].forEach(function (item) {
         html += '<button type="button" class="chrisvf-mobile-text-btn' +
-          (state.textSize === size ? ' is-active' : '') +
-          '" data-text-size="' + size + '" aria-pressed="' +
-          (state.textSize === size ? 'true' : 'false') + '" aria-label="Text size ' +
-          labels[size] + '">' + labels[size] + '</button>'
+          (state.textSize === item.size ? ' is-active' : '') +
+          '" data-text-size="' + item.size + '" aria-pressed="' +
+          (state.textSize === item.size ? 'true' : 'false') +
+          '" aria-label="Text size ' + item.name + '">' + item.label + '</button>'
       })
       html += '</div></div>'
 
@@ -693,7 +741,8 @@
         html += '<button type="button" class="chrisvf-mobile-day' +
           (day === state.selectedDay ? ' is-active' : '') +
           '" data-day="' + day + '" aria-pressed="' +
-          (day === state.selectedDay ? 'true' : 'false') + '">' +
+          (day === state.selectedDay ? 'true' : 'false') +
+          '" aria-label="' + escapeHtml(dayAriaLabel(day)) + '">' +
           dayLabel(day) + '</button>'
       })
       html += '</nav>'
@@ -701,7 +750,7 @@
     html += '</header>'
 
     if (state.activeTab === 'programme') {
-      html += '<main class="chrisvf-mobile-main" id="chrisvf-mobile-programme" role="tabpanel">'
+      html += '<main class="chrisvf-mobile-main" id="chrisvf-mobile-programme" role="tabpanel" aria-labelledby="chrisvf-tab-programme">'
       if (events.length === 0) {
         html += '<p class="chrisvf-mobile-empty">No events match your filters.</p>'
       } else {
@@ -711,7 +760,8 @@
           var saved = isInItinerary(event.uid)
           html += '<li class="chrisvf-mobile-event' + (saved ? ' is-saved' : '') +
             '" data-event-uid="' + escapeHtml(event.uid) + '">'
-          html += '<div class="chrisvf-mobile-event-row" role="button" tabindex="0" aria-haspopup="dialog">'
+          html += '<div class="chrisvf-mobile-event-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open details for ' +
+            escapeHtml(event.summary) + '">'
           html += '<span class="chrisvf-mobile-event-time">' + formatTime(event.start) + '</span>'
           html += '<div class="chrisvf-mobile-event-body">'
           html += '<div class="chrisvf-mobile-event-title-row">'
@@ -741,7 +791,7 @@
       }
       html += '</main>'
     } else {
-      html += '<main class="chrisvf-mobile-main chrisvf-mobile-main-map" id="chrisvf-mobile-map-panel" role="tabpanel" aria-label="Festival map"></main>'
+      html += '<main class="chrisvf-mobile-main chrisvf-mobile-main-map" id="chrisvf-mobile-map-panel" role="tabpanel" aria-labelledby="chrisvf-tab-map" aria-label="Festival map"></main>'
     }
 
     html += '<footer class="chrisvf-mobile-footer">'

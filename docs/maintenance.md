@@ -5,9 +5,10 @@
 ### Seasonal rollover
 
 - Search for hard-coded year strings such as `2025`.
-- Check cookie names in `itinerary.php`.
+- Check cookie names in `itinerary.php` (and keep `/m` on the same cookie via `itinerary.js`).
 - Check social/share text and saved itinerary URLs.
-- Verify absolute paths such as `/vfringe/map`, `/vfringe/planner`, `/itinerary`, and `/quick-search/`.
+- Verify absolute paths such as `/vfringe/map`, `/vfringe/planner`, `/itinerary`, `/m`, and `/quick-search/`.
+- After deploy, flush permalinks once if `/m` or `/m/json` 404s.
 
 ### Box office import refresh
 
@@ -36,6 +37,7 @@ Change only one layer at a time unless the task clearly spans layers:
 - shared event contract: `chrisvf.php`
 - map: `map.php` plus JSON/icon assets
 - itinerary: `itinerary.php`, `itinerary.js`, `itinerary.css`
+- mobile programme: `mobile.php`, `mobile.js`, `mobile.css`, `templates/page-mobile.php` (map via `map.php` with `layout`/`mobile` attrs)
 - schedule/grid: `grid.php`, `grid.js`, `grid.css`, `byday.php`, `byday.css`
 - curated data: `boxoffice-events.tsv`, `extras.tsv`, `places.json`, `outlines.json`, `lines.json`
 - downloader: `download-boxoffice/`

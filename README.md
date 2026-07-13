@@ -16,9 +16,43 @@ The plugin assembles festival event data from WordPress event posts and two tab-
 - `roulette.php`: random event picker
 - `search.php`: simple event search
 - `montydump.php`: JSON dump shortcode
+- `mobile.php`: standalone mobile programme at `/m` plus JSON feed at `/m/json`
 - `boxoffice-events.tsv`: imported box office events that can overwrite matching WordPress events
 - `extras.tsv`: extra manual events layered on top
 - `download-boxoffice/`: separate Node utility that produces `boxoffice-events.tsv`
+
+## Mobile programme (`/m`)
+
+A plugin-owned standalone app for phones. No theme header/nav.
+
+| URL | Purpose |
+|-----|---------|
+| `/m` | Programme UI (day list, search/filters, itinerary, embedded festival map) |
+| `/m/json` | Normalized programme JSON consumed by the UI |
+
+### Setup
+
+1. Ensure the `chrisvf` plugin is active (loads `mobile.php`).
+2. Visit **Settings → Permalinks** and Save once after deploy if `/m` or `/m/json` 404s (rewrite flush).
+3. Optional: create a WordPress page with slug `m` and the **Mobile Programme** template — mainly for editor convenience. The plugin also serves `/m` directly via `template_redirect`.
+
+### Behaviour notes
+
+- Festival days come from event data in `/m/json` (not hard-coded dates in JS).
+- Day window matches other programme views: roughly 08:00 → 02:00 next calendar morning.
+- Itinerary uses the shared cookie helpers in `itinerary.js` (`itinerary2025` today — keep in sync with the grid when rolling the year).
+- Map tab embeds `chrisvf_render_map(['layout' => 'embedded', 'mobile' => '1'])`. Popup event links open the same `/m` modal; the normal `/vfringe/map` slug still navigates to event pages.
+- Text size preference is stored in `localStorage`; day/search/filter/tab in `sessionStorage`.
+
+### Acceptance checklist
+
+- [ ] `/m` loads without theme chrome; `/m/json` returns valid JSON with `Cache-Control`
+- [ ] Default day is today during festival dates, otherwise first festival day
+- [ ] Search, All/Free/My itinerary filters, and text size work together
+- [ ] Event modal: tickets / site / add-remove itinerary as expected; syncs with grid cookie
+- [ ] Map tab shows the shared Leaflet map; tapping an event opens the modal
+- [ ] Usable on a ~375px viewport; keyboard can reach tabs, filters, list rows, and modal Close
+- [ ] Documented permalink flush and cookie year noted for next season
 
 ## How the plugin gets event data
 

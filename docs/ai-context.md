@@ -21,6 +21,7 @@ It is not only a downloader. The `download-boxoffice/` subdirectory is a separat
 - `montydump.php`
 - `search.php`
 - `byday.php`
+- `mobile.php`
 
 ### 2. Shared event build
 
@@ -46,6 +47,11 @@ Each shortcode file renders from the shared event array:
 - `chrisvf_search`
 - `chrisvf_by_day`
 - `chrisvf_montydump`
+
+`mobile.php` also exposes non-shortcode routes:
+
+- `/m` — standalone mobile programme shell
+- `/m/json` — normalized JSON for that shell
 
 ## External dependencies and assumptions
 
