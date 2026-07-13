@@ -374,15 +374,23 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-mobile',
         plugins_url('mobile.css', __FILE__),
         [],
-        '1.0.7'
+        '1.0.10'
     );
     wp_enqueue_style('chrisvf-mobile');
 
     wp_register_script(
+        'chrisvf-itinerary',
+        plugins_url('itinerary.js', __FILE__),
+        ['jquery'],
+        '1.0.10',
+        true
+    );
+
+    wp_register_script(
         'chrisvf-mobile',
         plugins_url('mobile.js', __FILE__),
-        [],
-        '1.0.7',
+        ['chrisvf-itinerary'],
+        '1.0.10',
         true
     );
     wp_enqueue_script('chrisvf-mobile');

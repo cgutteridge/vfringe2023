@@ -184,6 +184,65 @@
   }
 
   /**
+   * Whether an event is in the saved itinerary cookie.
+   *
+   * @param {string} uid Event UID.
+   * @returns {boolean}
+   */
+  function isInItinerary (uid) {
+    if (typeof vfGetItinerary !== 'function') {
+      return false
+    }
+    return vfGetItinerary().indexOf(uid) !== -1
+  }
+
+  /**
+   * Show a small mobile toast on document.body so re-renders do not wipe it.
+   *
+   * @param {string} msg Message text.
+   */
+  function showMobileToast (msg) {
+    var existing = document.querySelector('.chrisvf-mobile-toast')
+    if (existing) {
+      existing.remove()
+    }
+    var toast = document.createElement('div')
+    toast.className = 'chrisvf-mobile-toast'
+    toast.setAttribute('role', 'status')
+    toast.textContent = msg
+    document.body.appendChild(toast)
+    setTimeout(function () {
+      if (toast.parentNode) {
+        toast.classList.add('is-hiding')
+      }
+    }, 2200)
+    setTimeout(function () {
+      if (toast.parentNode) {
+        toast.remove()
+      }
+    }, 2800)
+  }
+
+  /**
+   * Route itinerary.js notifications through the mobile toast.
+   *
+   * @param {string} msg Message from vfNotify.
+   */
+  function handleMobileNotify (msg) {
+    if (/added/i.test(msg)) {
+      showMobileToast('Added. Find your itinerary in the filters.')
+      return
+    }
+    if (/removed/i.test(msg)) {
+      showMobileToast('Removed from itinerary')
+      return
+    }
+    showMobileToast(msg)
+  }
+
+  window.chrisvfNotifyHandler = handleMobileNotify
+
+  /**
    * Events for the current view after filters applied.
    *
    * @returns {object[]}
@@ -193,6 +252,9 @@
     var q = state.search.trim().toLowerCase()
     return events.filter(function (event) {
       if (state.filter === 'free' && !event.free) {
+        return false
+      }
+      if (state.filter === 'itinerary' && !isInItinerary(event.uid)) {
         return false
       }
       if (!q) {
@@ -261,7 +323,7 @@
       if (typeof saved.search === 'string') {
         state.search = saved.search
       }
-      if (saved.filter === 'all' || saved.filter === 'free') {
+      if (saved.filter === 'all' || saved.filter === 'free' || saved.filter === 'itinerary') {
         state.filter = saved.filter
       }
     } catch (e) { /* ignore */ }
@@ -324,6 +386,7 @@
     }
 
     var badge = liveBadge(event)
+    var saved = isInItinerary(event.uid)
     var html = ''
     html += '<div class="chrisvf-mobile-modal" role="dialog" aria-modal="true" aria-labelledby="chrisvf-mobile-modal-title">'
     html += '<div class="chrisvf-mobile-modal-panel">'
@@ -347,6 +410,9 @@
     if (event.free) {
       html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-free">FREE</span>'
     }
+    if (saved) {
+      html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-saved" aria-label="In your itinerary">★ Saved</span>'
+    }
     html += '</div>'
     html += '<p class="chrisvf-mobile-modal-meta"><strong>' + escapeHtml(event.location) + '</strong>'
     if (event.categories) {
@@ -358,6 +424,15 @@
     }
     html += '</div>'
     html += '<footer class="chrisvf-mobile-modal-actions">'
+    if (typeof vfItineraryAdd === 'function') {
+      if (saved) {
+        html += '<button type="button" class="chrisvf-mobile-btn chrisvf-mobile-btn-itin-remove" data-itin-remove="' +
+          escapeHtml(event.uid) + '">Remove from itinerary</button>'
+      } else {
+        html += '<button type="button" class="chrisvf-mobile-btn chrisvf-mobile-btn-itin-add" data-itin-add="' +
+          escapeHtml(event.uid) + '">Add to itinerary</button>'
+      }
+    }
     if (event.ticketUrl) {
       html += '<a class="chrisvf-mobile-btn chrisvf-mobile-btn-ticket" href="' +
         escapeHtml(event.ticketUrl) + '" target="_blank" rel="noopener">Tickets</a>'
@@ -436,6 +511,20 @@
       btn.addEventListener('click', closeModal)
     })
 
+    root.querySelectorAll('[data-itin-add]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        vfItineraryAdd(btn.getAttribute('data-itin-add'))
+        render()
+      })
+    })
+
+    root.querySelectorAll('[data-itin-remove]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        vfItineraryRemove(btn.getAttribute('data-itin-remove'))
+        render()
+      })
+    })
+
     var modal = root.querySelector('.chrisvf-mobile-modal')
     if (modal) {
       modal.addEventListener('click', function (e) {
@@ -484,6 +573,10 @@
       (state.filter === 'free' ? ' is-active' : '') +
       '" data-filter="free" aria-pressed="' + (state.filter === 'free' ? 'true' : 'false') +
       '">Free</button>'
+    html += '<button type="button" class="chrisvf-mobile-filter' +
+      (state.filter === 'itinerary' ? ' is-active' : '') +
+      '" data-filter="itinerary" aria-pressed="' + (state.filter === 'itinerary' ? 'true' : 'false') +
+      '">My itinerary</button>'
     html += '</div>'
 
     html += '<div class="chrisvf-mobile-text-controls" role="group" aria-label="Text size">'
@@ -514,7 +607,9 @@
       html += '<ul class="chrisvf-mobile-list">'
       events.forEach(function (event) {
         var badge = liveBadge(event)
-        html += '<li class="chrisvf-mobile-event" data-event-uid="' + escapeHtml(event.uid) + '">'
+        var saved = isInItinerary(event.uid)
+        html += '<li class="chrisvf-mobile-event' + (saved ? ' is-saved' : '') +
+          '" data-event-uid="' + escapeHtml(event.uid) + '">'
         html += '<div class="chrisvf-mobile-event-row" role="button" tabindex="0" aria-haspopup="dialog">'
         html += '<span class="chrisvf-mobile-event-time">' + formatTime(event.start) + '</span>'
         html += '<div class="chrisvf-mobile-event-body">'
@@ -527,6 +622,9 @@
         }
         if (event.free) {
           html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-free">FREE</span>'
+        }
+        if (saved) {
+          html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-saved" aria-label="In your itinerary">★ Saved</span>'
         }
         html += '</div>'
         html += '<div class="chrisvf-mobile-event-meta">'

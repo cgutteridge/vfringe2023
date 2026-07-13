@@ -15,7 +15,7 @@ function chrisvf_add_itinerary_scripts()
     wp_register_style('chrisvf-itinerary', plugins_url('itinerary.css', __FILE__));
     wp_enqueue_style('chrisvf-itinerary');
 
-    wp_register_script('chrisvf-itinerary', plugins_url('itinerary.js?2', __FILE__), array('jquery'));
+    wp_register_script('chrisvf-itinerary', plugins_url('itinerary.js', __FILE__), array('jquery'), '1.0.10');
     wp_enqueue_script('chrisvf-itinerary');
 }
 

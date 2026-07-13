@@ -1,6 +1,15 @@
 var vfNotification
 
+/**
+ * Show an itinerary notification. Mobile /m can override via window.chrisvfNotifyHandler.
+ *
+ * @param {string} msg Message to display.
+ */
 function vfNotify (msg) {
+  if (typeof window.chrisvfNotifyHandler === 'function') {
+    window.chrisvfNotifyHandler(msg)
+    return
+  }
   if (!vfNotification) {
     vfNotification = jQuery('<div class=\'vf_notification\'></div>')
     jQuery('body').append(vfNotification)
