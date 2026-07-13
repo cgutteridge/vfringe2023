@@ -383,10 +383,18 @@ function chrisvf_mobile_should_load_assets()
 function chrisvf_mobile_do_enqueue_assets()
 {
     wp_register_style(
+        'chrisvf-mobile-fonts',
+        'https://fonts.googleapis.com/css2?family=Suez+One&family=Work+Sans:wght@400;600;700&display=swap',
+        [],
+        null
+    );
+    wp_enqueue_style('chrisvf-mobile-fonts');
+
+    wp_register_style(
         'chrisvf-mobile',
         plugins_url('mobile.css', __FILE__),
-        [],
-        '1.0.28'
+        ['chrisvf-mobile-fonts'],
+        '1.0.29'
     );
     wp_enqueue_style('chrisvf-mobile');
 
@@ -394,7 +402,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-itinerary',
         plugins_url('itinerary.js', __FILE__),
         ['jquery'],
-        '1.0.28',
+        '1.0.29',
         true
     );
 
@@ -402,7 +410,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-mobile',
         plugins_url('mobile.js', __FILE__),
         ['chrisvf-itinerary'],
-        '1.0.28',
+        '1.0.29',
         true
     );
     wp_enqueue_script('chrisvf-mobile');
