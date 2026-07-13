@@ -12,8 +12,9 @@
     return
   }
 
-  var STORAGE_TEXT = 'chrisvf_mobile_text_size'
+  var STORAGE_TEXT = 'chrisvf_mobile_text_size_v2'
   var STORAGE_SESSION = 'chrisvf_mobile_session'
+  var TEXT_SIZES = ['normal', 'large', 'xlarge']
   var mapHost = document.getElementById('chrisvf-mobile-map-host')
 
   var state = {
@@ -24,8 +25,9 @@
     search: '',
     filter: 'all',
     selectedUid: null,
-    textSize: 'normal',
-    activeTab: 'programme'
+    textSize: TEXT_SIZES[0],
+    activeTab: 'programme',
+    filtersOpen: false
   }
 
   /**
@@ -385,6 +387,33 @@
   }
 
   /**
+   * Label for the active quick filter.
+   *
+   * @returns {string}
+   */
+  function filterModeLabel () {
+    if (state.filter === 'free') {
+      return 'Free'
+    }
+    if (state.filter === 'itinerary') {
+      return 'Itinerary'
+    }
+    return 'All'
+  }
+
+  /**
+   * One-line summary of the active programme filters.
+   *
+   * @returns {string}
+   */
+  function filterSummaryText () {
+    var scope = state.search.trim()
+      ? '"' + state.search.trim() + '"'
+      : (state.selectedDay ? dayLabel(state.selectedDay) : 'Programme')
+    return scope + ' · ' + filterModeLabel()
+  }
+
+  /**
    * Persist session UI state.
    */
   function saveSession () {
@@ -393,7 +422,8 @@
         selectedDay: state.selectedDay,
         search: state.search,
         filter: state.filter,
-        activeTab: state.activeTab
+        activeTab: state.activeTab,
+        filtersOpen: state.filtersOpen
       }))
     } catch (e) { /* ignore */ }
   }
@@ -420,7 +450,31 @@
       if (saved.activeTab === 'programme' || saved.activeTab === 'map') {
         state.activeTab = saved.activeTab
       }
+      if (typeof saved.filtersOpen === 'boolean') {
+        state.filtersOpen = saved.filtersOpen
+      }
     } catch (e) { /* ignore */ }
+  }
+
+  /**
+   * Step text size up or down within the available sizes.
+   *
+   * @param {number} delta +1 to enlarge, -1 to shrink.
+   */
+  function stepTextSize (delta) {
+    var index = TEXT_SIZES.indexOf(state.textSize)
+    if (index < 0) {
+      index = 0
+    }
+    var next = index + delta
+    if (next < 0 || next >= TEXT_SIZES.length) {
+      return
+    }
+    state.textSize = TEXT_SIZES[next]
+    try {
+      localStorage.setItem(STORAGE_TEXT, state.textSize)
+    } catch (e) { /* ignore */ }
+    render()
   }
 
   /**
@@ -429,7 +483,7 @@
   function loadTextSize () {
     try {
       var size = localStorage.getItem(STORAGE_TEXT)
-      if (size === 'large' || size === 'xlarge' || size === 'normal') {
+      if (TEXT_SIZES.indexOf(size) !== -1) {
         state.textSize = size
       }
     } catch (e) { /* ignore */ }
@@ -595,13 +649,25 @@
       })
     })
 
-    root.querySelectorAll('[data-text-size]').forEach(function (btn) {
+    root.querySelectorAll('[data-filters-open]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        state.textSize = btn.getAttribute('data-text-size')
-        try {
-          localStorage.setItem(STORAGE_TEXT, state.textSize)
-        } catch (e) { /* ignore */ }
-        render()
+        state.filtersOpen = true
+        saveSession()
+        render({ focusSearch: true })
+      })
+    })
+
+    root.querySelectorAll('[data-filters-close]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        state.filtersOpen = false
+        saveSession()
+        render({ focusSummary: true })
+      })
+    })
+
+    root.querySelectorAll('[data-text-step]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        stepTextSize(parseInt(btn.getAttribute('data-text-step'), 10))
       })
     })
 
@@ -612,8 +678,9 @@
         clearTimeout(debounceTimer)
         debounceTimer = setTimeout(function () {
           state.search = searchInput.value
+          state.filtersOpen = true
           saveSession()
-          render({ resetScroll: true })
+          render({ focusSearch: true })
           var newInput = root.querySelector('.chrisvf-mobile-search')
           if (newInput) {
             newInput.focus()
@@ -695,17 +762,22 @@
   /**
    * Render the programme list for the selected day.
    *
-   * @param {{resetScroll?: boolean}|undefined} options Render options.
+   * @param {{resetScroll?: boolean, focusSearch?: boolean, focusSummary?: boolean, keepFiltersOpen?: boolean}|undefined} options Render options.
    */
   function render (options) {
     options = options || {}
     var previousMain = root.querySelector('.chrisvf-mobile-main')
     var scrollTop = options.resetScroll ? 0 : (previousMain ? previousMain.scrollTop : 0)
 
+    if (options.keepFiltersOpen) {
+      state.filtersOpen = true
+    }
+
     root.className = 'chrisvf-mobile-root chrisvf-mobile-text-' + state.textSize +
       (state.selectedUid ? ' has-modal' : '') +
       (state.activeTab === 'map' ? ' is-map-tab' : '') +
-      (state.search.trim() ? ' is-searching' : '')
+      (state.search.trim() ? ' is-searching' : '') +
+      (state.filtersOpen ? ' is-filters-open' : '')
     var events = visibleEvents()
     var searching = state.search.trim().length > 0
     var html = ''
@@ -729,58 +801,64 @@
     html += '</div>'
 
     if (state.activeTab === 'programme') {
-      html += '<div class="chrisvf-mobile-controls">'
-      html += '<label class="chrisvf-mobile-search-label">'
-      html += '<span class="screen-reader-text">Search events</span>'
-      html += '<input type="search" class="chrisvf-mobile-search" placeholder="Search…" value="' +
-        escapeHtml(state.search) + '" autocomplete="off" enterkeyhint="search">'
-      html += '</label>'
+      if (!state.filtersOpen) {
+        html += '<button type="button" class="chrisvf-mobile-filter-summary" data-filters-open aria-expanded="false" aria-controls="chrisvf-mobile-filter-panel">'
+        html += '<span class="chrisvf-mobile-filter-summary-text">' + escapeHtml(filterSummaryText()) + '</span>'
+        html += '<span class="chrisvf-mobile-filter-summary-toggle" aria-hidden="true">▾</span>'
+        html += '<span class="screen-reader-text">Open filters</span>'
+        html += '</button>'
+      } else {
+        html += '<div class="chrisvf-mobile-filter-panel" id="chrisvf-mobile-filter-panel">'
+        html += '<div class="chrisvf-mobile-controls">'
+        html += '<div class="chrisvf-mobile-search-row">'
+        html += '<label class="chrisvf-mobile-search-label">'
+        html += '<span class="screen-reader-text">Search events</span>'
+        html += '<input type="search" class="chrisvf-mobile-search" placeholder="Search…" value="' +
+          escapeHtml(state.search) + '" autocomplete="off" enterkeyhint="search">'
+        html += '</label>'
+        html += '<button type="button" class="chrisvf-mobile-filter-close" data-filters-close aria-expanded="true" aria-controls="chrisvf-mobile-filter-panel" aria-label="Close filters">▴</button>'
+        html += '</div>'
 
-      html += '<div class="chrisvf-mobile-filters" role="group" aria-label="Quick filters">'
-      html += '<button type="button" class="chrisvf-mobile-filter' +
-        (state.filter === 'all' ? ' is-active' : '') +
-        '" data-filter="all" aria-pressed="' + (state.filter === 'all' ? 'true' : 'false') +
-        '">All</button>'
-      html += '<button type="button" class="chrisvf-mobile-filter' +
-        (state.filter === 'free' ? ' is-active' : '') +
-        '" data-filter="free" aria-pressed="' + (state.filter === 'free' ? 'true' : 'false') +
-        '">Free</button>'
-      html += '<button type="button" class="chrisvf-mobile-filter' +
-        (state.filter === 'itinerary' ? ' is-active' : '') +
-        '" data-filter="itinerary" aria-pressed="' + (state.filter === 'itinerary' ? 'true' : 'false') +
-        '">My itinerary</button>'
-      html += '</div>'
+        html += '<div class="chrisvf-mobile-filters" role="group" aria-label="Quick filters and text size">'
+        html += '<div class="chrisvf-mobile-filter-group" role="group" aria-label="Quick filters">'
+        html += '<button type="button" class="chrisvf-mobile-filter' +
+          (state.filter === 'all' ? ' is-active' : '') +
+          '" data-filter="all" aria-pressed="' + (state.filter === 'all' ? 'true' : 'false') +
+          '">All</button>'
+        html += '<button type="button" class="chrisvf-mobile-filter' +
+          (state.filter === 'free' ? ' is-active' : '') +
+          '" data-filter="free" aria-pressed="' + (state.filter === 'free' ? 'true' : 'false') +
+          '">Free</button>'
+        html += '<button type="button" class="chrisvf-mobile-filter' +
+          (state.filter === 'itinerary' ? ' is-active' : '') +
+          '" data-filter="itinerary" aria-pressed="' + (state.filter === 'itinerary' ? 'true' : 'false') +
+          '">Itinerary</button>'
+        html += '</div>'
+        html += '<div class="chrisvf-mobile-text-group" role="group" aria-label="Text size">'
+        html += '<button type="button" class="chrisvf-mobile-text-btn" data-text-step="-1" aria-label="Decrease text size"' +
+          (state.textSize === TEXT_SIZES[0] ? ' disabled' : '') + '">−A</button>'
+        html += '<button type="button" class="chrisvf-mobile-text-btn" data-text-step="1" aria-label="Increase text size"' +
+          (state.textSize === TEXT_SIZES[TEXT_SIZES.length - 1] ? ' disabled' : '') + '">+A</button>'
+        html += '</div></div></div>'
 
-      html += '<div class="chrisvf-mobile-text-controls" role="group" aria-label="Text size">'
-      ;[
-        { size: 'normal', label: 'A', name: 'normal' },
-        { size: 'large', label: 'A+', name: 'large' },
-        { size: 'xlarge', label: 'A++', name: 'extra large' }
-      ].forEach(function (item) {
-        html += '<button type="button" class="chrisvf-mobile-text-btn' +
-          (state.textSize === item.size ? ' is-active' : '') +
-          '" data-text-size="' + item.size + '" aria-pressed="' +
-          (state.textSize === item.size ? 'true' : 'false') +
-          '" aria-label="Text size ' + item.name + '">' + item.label + '</button>'
-      })
-      html += '</div></div>'
-
-      html += '<nav class="chrisvf-mobile-days' + (searching ? ' is-disabled' : '') +
-        '" aria-label="Festival days"' +
-        (searching ? ' aria-disabled="true"' : '') + '>'
-      if (searching) {
-        html += '<p class="chrisvf-mobile-search-scope">Searching all days</p>'
+        html += '<nav class="chrisvf-mobile-days' + (searching ? ' is-disabled' : '') +
+          '" aria-label="Festival days"' +
+          (searching ? ' aria-disabled="true"' : '') + '>'
+        if (searching) {
+          html += '<p class="chrisvf-mobile-search-scope">Searching all days</p>'
+        }
+        state.data.festivalDays.forEach(function (day) {
+          html += '<button type="button" class="chrisvf-mobile-day' +
+            (!searching && day === state.selectedDay ? ' is-active' : '') +
+            '" data-day="' + day + '" aria-pressed="' +
+            (!searching && day === state.selectedDay ? 'true' : 'false') +
+            '" aria-label="' + escapeHtml(dayAriaLabel(day)) + '"' +
+            (searching ? ' disabled' : '') + '>' +
+            dayLabel(day) + '</button>'
+        })
+        html += '</nav>'
+        html += '</div>'
       }
-      state.data.festivalDays.forEach(function (day) {
-        html += '<button type="button" class="chrisvf-mobile-day' +
-          (!searching && day === state.selectedDay ? ' is-active' : '') +
-          '" data-day="' + day + '" aria-pressed="' +
-          (!searching && day === state.selectedDay ? 'true' : 'false') +
-          '" aria-label="' + escapeHtml(dayAriaLabel(day)) + '"' +
-          (searching ? ' disabled' : '') + '>' +
-          dayLabel(day) + '</button>'
-      })
-      html += '</nav>'
     }
     html += '</header>'
 
@@ -852,6 +930,19 @@
     var main = root.querySelector('.chrisvf-mobile-main')
     if (main && state.activeTab === 'programme') {
       main.scrollTop = scrollTop
+    }
+
+    if (options.focusSearch) {
+      var searchEl = root.querySelector('.chrisvf-mobile-search')
+      if (searchEl) {
+        searchEl.focus()
+        searchEl.selectionStart = searchEl.selectionEnd = searchEl.value.length
+      }
+    } else if (options.focusSummary) {
+      var summaryEl = root.querySelector('[data-filters-open]')
+      if (summaryEl) {
+        summaryEl.focus()
+      }
     }
 
     setMapVisible(state.activeTab === 'map')
