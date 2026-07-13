@@ -17,7 +17,7 @@
  { "GEO":[ 50.59432,-1.20498 ], "ICON":"number_11.png", "NAME":"Peer Studios", "VENUES":[ { "name":"Peer Studios" } ] },
  { "GEO":[ 50.59305,-1.2138  ], "ICON":"number_12.png", "NAME":"Bosco Theatre", "VENUES":[ { "name":"Bosco Theatre", "sortcode":"027", "zone":"park" } ], "LDIR":"right" },
  { "GEO":[ 50.59288,-1.21437 ], "ICON":"number_13.png", "NAME":"Bijou", "VENUES":[ { "name":"Bijou", "sortcode":"028", "zone":"park" } ] },
- { "GEO":[ 50.59225,-1.21669 ], "ICON":"number_14.png", "NAME":"The Workshop Tent", "VENUES":[{ "name":"The Workshop Tent", "sortcode":"023", "zone":"park" }]},
+ { "GEO":[ 50.59296,-1.21408 ], "ICON":"number_14.png", "NAME":"The Workshop Tent", "VENUES":[{ "name":"The Workshop Tent", "sortcode":"023", "zone":"park" }]},
  { "GEO":[ 50.5926,-1.21531  ], "ICON":"number_15.png", "NAME":"The Fringe Village Box Office", "VENUES":[ { "name":"The Fringe Village Box Office", "sortcode":"024", "zone":"park" } ] },
  { "GEO":[ 50.59215,-1.21624 ], "ICON":"number_16.png", "NAME":"Parkside bar","VENUES":[ ]},
  { "GEO":[ 50.59049,-1.21863 ], "ICON":"number_17.png", "NAME":"Ventnor Exchange Arena", "VENUES":[  { "name":"Ventnor Exchange Arena", "sortcode":"015", "zone":"flowersbrook" }]},
@@ -46,10 +46,14 @@
  { "GEO":[ 50.59525,-1.20238 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
  { "GEO":[ 50.59591,-1.20305 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
  { "GEO":[ 50.59464,-1.19854 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
-
-
  { "GEO":[ 50.59708,-1.18766 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
- { "GEO":[ 50.59046,-1.22363 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []}
+ { "GEO":[ 50.59046,-1.22363 ], "ICON":"parking.png", "NAME":"Parking", "VENUES": []},
+
+
+ { "GEO":[ 50.5945,-1.20708 ], "ICON":"ebike.png", "NAME":"E-Bike and E-Scooter Rental", "VENUES": []},
+ { "GEO":[ 50.59433,-1.20399 ], "ICON":"ebike.png", "NAME":"E-Bike and E-Scooter Rental", "VENUES": []},
+ { "GEO":[ 50.59266,-1.21516 ], "ICON":"ebike.png", "NAME":"E-Bike and E-Scooter Rental", "VENUES": []},
+ { "GEO":[ 50.58955,-1.22797 ], "ICON":"ebike.png", "NAME":"E-Bike and E-Scooter Rental", "VENUES": []}
 
 ]
 
