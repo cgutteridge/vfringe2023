@@ -420,8 +420,34 @@
    * @param {string} uid Event UID.
    */
   function openModal (uid) {
+    if (!uid || !state.eventsByUid[uid]) {
+      return
+    }
     state.selectedUid = uid
+    if (window.chrisvfMobileLeafletMap &&
+        typeof window.chrisvfMobileLeafletMap.closePopup === 'function') {
+      window.chrisvfMobileLeafletMap.closePopup()
+    }
     render()
+  }
+
+  /**
+   * Bind map popup event links (data-chrisvf-mobile-event) to the SPA modal.
+   * Uses event delegation on the server-rendered map host.
+   */
+  function bindMapEventHooks () {
+    if (!mapHost || mapHost.getAttribute('data-chrisvf-mobile-bound') === '1') {
+      return
+    }
+    mapHost.setAttribute('data-chrisvf-mobile-bound', '1')
+    mapHost.addEventListener('click', function (e) {
+      var target = e.target.closest('[data-chrisvf-mobile-event]')
+      if (!target || !mapHost.contains(target)) {
+        return
+      }
+      e.preventDefault()
+      openModal(target.getAttribute('data-chrisvf-mobile-event'))
+    })
   }
 
   /**
@@ -724,7 +750,7 @@
     html += '<a href="' + escapeHtml(config.fullMapUrl || '/vfringe/map') + '">Festival map</a>'
     html += '</footer>'
 
-    if (state.selectedUid && state.activeTab === 'programme') {
+    if (state.selectedUid) {
       html += renderModalHtml()
     }
 
@@ -745,6 +771,7 @@
   function boot () {
     root.innerHTML = '<p class="chrisvf-mobile-loading">Loading programme…</p>'
     loadTextSize()
+    bindMapEventHooks()
 
     fetch(config.jsonUrl || '/m/json')
       .then(function (res) {

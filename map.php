@@ -22,8 +22,9 @@ function chrisvf_add_map_scripts()
 /**
  * Render the festival Leaflet map.
  *
- * @param array|string $atts Optional shortcode attributes. Use layout="embedded" for in-page placement
- *                           (absolute fill) instead of the default fullscreen fixed overlay.
+ * @param array|string $atts Optional shortcode attributes.
+ *                           - layout="embedded" for in-page placement (absolute fill) instead of fullscreen.
+ *                           - mobile="1" marks event links for the /m modal UI instead of normal navigation.
  * @return string Map HTML and inline initialisation script.
  */
 function chrisvf_render_map($atts = [])
@@ -34,11 +35,13 @@ function chrisvf_render_map($atts = [])
     $atts = shortcode_atts(
         [
             'layout' => 'fullscreen',
+            'mobile' => '0',
         ],
         $atts,
         'chrisvf_map'
     );
     $embedded = ($atts['layout'] === 'embedded');
+    $mobile = ($atts['mobile'] === '1' || $atts['mobile'] === 'true' || $atts['mobile'] === true);
 
     $warnings = [];
 
@@ -207,8 +210,22 @@ jQuery( document ).ready( function() {
 
                         $url = $event["URL"];
                         $name = $event["SUMMARY"];
+                        $uid = !empty($event['UID']) ? $event['UID'] : '';
                         $popup .= "<div style='color:#000;'>$time - ";
-                        if (!empty($url)) {
+                        if ($mobile && $uid !== '') {
+                            // Mobile /m: keep a real href for accessibility, but hook opens the SPA modal.
+                            $uid_attr = htmlspecialchars($uid, ENT_QUOTES);
+                            $name_html = htmlspecialchars($name);
+                            if (!empty($url)) {
+                                $href = htmlspecialchars($url, ENT_QUOTES);
+                                $popup .= "<a href='$href' data-chrisvf-mobile-event='$uid_attr'>$name_html</a>";
+                            } else {
+                                $popup .= "<button type='button' class='chrisvf-mobile-map-event-btn' data-chrisvf-mobile-event='$uid_attr'>$name_html</button>";
+                                if ($free) {
+                                    $popup .= " - Free Fringe";
+                                }
+                            }
+                        } elseif (!empty($url)) {
                             $popup .= "<a href='$url'>" . $name . "</a>";
                         } else {
                             $popup .= $name;
@@ -216,6 +233,7 @@ jQuery( document ).ready( function() {
                                 $popup .= " - Free Fringe";
                             }
                         }
+                        $popup .= "</div>";
                     }
                 }
             }

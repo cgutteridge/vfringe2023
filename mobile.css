@@ -349,6 +349,26 @@ html {
   width: 100% !important;
 }
 
+.chrisvf-mobile-map-host .chrisvf-mobile-map-event-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: #06c;
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.chrisvf-mobile-map-host a[data-chrisvf-mobile-event] {
+  cursor: pointer;
+}
+
+.chrisvf-mobile-root.has-modal ~ .chrisvf-mobile-map-host {
+  z-index: 40;
+}
+
 .chrisvf-mobile-modal {
   position: fixed;
   inset: 0;

@@ -209,6 +209,7 @@ function chrisvf_mobile_maybe_serve_app()
     // Render the shared festival map before wp_head so Leaflet assets are enqueued.
     $GLOBALS['chrisvf_mobile_map_html'] = chrisvf_render_map([
         'layout' => 'embedded',
+        'mobile' => '1',
     ]);
 
     $template = __DIR__ . '/templates/page-mobile.php';
@@ -341,6 +342,7 @@ function chrisvf_mobile_load_page_template($template)
         if (empty($GLOBALS['chrisvf_mobile_map_html'])) {
             $GLOBALS['chrisvf_mobile_map_html'] = chrisvf_render_map([
                 'layout' => 'embedded',
+                'mobile' => '1',
             ]);
         }
         return $pluginTemplate;
@@ -384,7 +386,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-mobile',
         plugins_url('mobile.css', __FILE__),
         [],
-        '1.0.15'
+        '1.0.16'
     );
     wp_enqueue_style('chrisvf-mobile');
 
@@ -392,7 +394,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-itinerary',
         plugins_url('itinerary.js', __FILE__),
         ['jquery'],
-        '1.0.15',
+        '1.0.16',
         true
     );
 
@@ -400,7 +402,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-mobile',
         plugins_url('mobile.js', __FILE__),
         ['chrisvf-itinerary'],
-        '1.0.15',
+        '1.0.16',
         true
     );
     wp_enqueue_script('chrisvf-mobile');
