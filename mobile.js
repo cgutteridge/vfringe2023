@@ -18,10 +18,11 @@
   var state = {
     data: null,
     eventsByDay: {},
+    eventsByUid: {},
     selectedDay: null,
     search: '',
     filter: 'all',
-    expandedUid: null,
+    selectedUid: null,
     textSize: 'normal'
   }
 
@@ -131,10 +132,12 @@
    */
   function buildIndexes (data) {
     state.eventsByDay = {}
+    state.eventsByUid = {}
     data.festivalDays.forEach(function (day) {
       state.eventsByDay[day] = []
     })
     data.events.forEach(function (event) {
+      state.eventsByUid[event.uid] = event
       var day = eventFestivalDay(event, data.festivalDays)
       if (day && state.eventsByDay[day]) {
         state.eventsByDay[day].push(event)
@@ -289,15 +292,94 @@
   }
 
   /**
+   * Close the event detail modal if open.
+   */
+  function closeModal () {
+    if (!state.selectedUid) {
+      return
+    }
+    state.selectedUid = null
+    render()
+  }
+
+  /**
+   * Open the event detail modal for a UID.
+   *
+   * @param {string} uid Event UID.
+   */
+  function openModal (uid) {
+    state.selectedUid = uid
+    render()
+  }
+
+  /**
+   * Build modal HTML for the selected event.
+   *
+   * @returns {string}
+   */
+  function renderModalHtml () {
+    var event = state.eventsByUid[state.selectedUid]
+    if (!event) {
+      return ''
+    }
+
+    var badge = liveBadge(event)
+    var html = ''
+    html += '<div class="chrisvf-mobile-modal" role="dialog" aria-modal="true" aria-labelledby="chrisvf-mobile-modal-title">'
+    html += '<div class="chrisvf-mobile-modal-panel">'
+    html += '<header class="chrisvf-mobile-modal-header">'
+    html += '<button type="button" class="chrisvf-mobile-modal-close" data-modal-close aria-label="Close">Close</button>'
+    html += '</header>'
+    html += '<div class="chrisvf-mobile-modal-body">'
+    html += '<p class="chrisvf-mobile-modal-time">' + escapeHtml(formatTime(event.start))
+    if (event.end && event.end !== event.start) {
+      html += ' – ' + escapeHtml(formatTime(event.end))
+    }
+    html += '</p>'
+    html += '<h2 id="chrisvf-mobile-modal-title" class="chrisvf-mobile-modal-title">' +
+      escapeHtml(event.summary) + '</h2>'
+    html += '<div class="chrisvf-mobile-modal-badges">'
+    if (badge === 'now') {
+      html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-now">Now</span>'
+    } else if (badge === 'next') {
+      html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-next">Up next</span>'
+    }
+    if (event.free) {
+      html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-free">FREE</span>'
+    }
+    html += '</div>'
+    html += '<p class="chrisvf-mobile-modal-meta"><strong>' + escapeHtml(event.location) + '</strong>'
+    if (event.categories) {
+      html += '<br>' + escapeHtml(event.categories)
+    }
+    html += '</p>'
+    if (event.description) {
+      html += '<p class="chrisvf-mobile-modal-desc">' + escapeHtml(event.description) + '</p>'
+    }
+    html += '</div>'
+    html += '<footer class="chrisvf-mobile-modal-actions">'
+    if (event.ticketUrl) {
+      html += '<a class="chrisvf-mobile-btn chrisvf-mobile-btn-ticket" href="' +
+        escapeHtml(event.ticketUrl) + '" target="_blank" rel="noopener">Tickets</a>'
+    }
+    if (event.siteUrl) {
+      html += '<a class="chrisvf-mobile-btn chrisvf-mobile-btn-site" href="' +
+        escapeHtml(event.siteUrl) + '">Event page</a>'
+    }
+    html += '</footer></div></div>'
+    return html
+  }
+
+  /**
    * Bind UI event handlers after render.
    */
   function bindEvents () {
     root.querySelectorAll('[data-day]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         state.selectedDay = btn.getAttribute('data-day')
-        state.expandedUid = null
+        state.selectedUid = null
         saveSession()
-        render()
+        render({ resetScroll: true })
       })
     })
 
@@ -305,7 +387,7 @@
       btn.addEventListener('click', function () {
         state.filter = btn.getAttribute('data-filter')
         saveSession()
-        render()
+        render({ resetScroll: true })
       })
     })
 
@@ -327,7 +409,7 @@
         debounceTimer = setTimeout(function () {
           state.search = searchInput.value
           saveSession()
-          render()
+          render({ resetScroll: true })
           var newInput = root.querySelector('.chrisvf-mobile-search')
           if (newInput) {
             newInput.focus()
@@ -337,21 +419,49 @@
       })
     }
 
-    root.querySelectorAll('.chrisvf-mobile-expand').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var li = btn.closest('.chrisvf-mobile-event')
-        var uid = li.getAttribute('data-event-uid')
-        state.expandedUid = state.expandedUid === uid ? null : uid
-        render()
+    root.querySelectorAll('.chrisvf-mobile-event-row').forEach(function (row) {
+      row.addEventListener('click', function () {
+        openModal(row.closest('.chrisvf-mobile-event').getAttribute('data-event-uid'))
+      })
+      row.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' && e.key !== ' ') {
+          return
+        }
+        e.preventDefault()
+        openModal(row.closest('.chrisvf-mobile-event').getAttribute('data-event-uid'))
       })
     })
+
+    root.querySelectorAll('[data-modal-close]').forEach(function (btn) {
+      btn.addEventListener('click', closeModal)
+    })
+
+    var modal = root.querySelector('.chrisvf-mobile-modal')
+    if (modal) {
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) {
+          closeModal()
+        }
+      })
+      var closeBtn = modal.querySelector('.chrisvf-mobile-modal-close')
+      if (closeBtn) {
+        closeBtn.focus()
+      }
+    }
   }
 
   /**
    * Render the programme list for the selected day.
+   *
+   * @param {{resetScroll?: boolean}|undefined} options Render options.
    */
-  function render () {
-    root.className = 'chrisvf-mobile-root chrisvf-mobile-text-' + state.textSize
+  function render (options) {
+    options = options || {}
+    var previousMain = root.querySelector('.chrisvf-mobile-main')
+    var scrollTop = options.resetScroll ? 0 : (previousMain ? previousMain.scrollTop : 0)
+
+    root.className = 'chrisvf-mobile-root chrisvf-mobile-text-' + state.textSize +
+      (state.selectedUid ? ' has-modal' : '')
     var events = visibleEvents()
     var html = ''
 
@@ -404,10 +514,8 @@
       html += '<ul class="chrisvf-mobile-list">'
       events.forEach(function (event) {
         var badge = liveBadge(event)
-        var expanded = state.expandedUid === event.uid
-        html += '<li class="chrisvf-mobile-event' + (expanded ? ' is-expanded' : '') +
-          '" data-event-uid="' + escapeHtml(event.uid) + '">'
-        html += '<div class="chrisvf-mobile-event-row">'
+        html += '<li class="chrisvf-mobile-event" data-event-uid="' + escapeHtml(event.uid) + '">'
+        html += '<div class="chrisvf-mobile-event-row" role="button" tabindex="0" aria-haspopup="dialog">'
         html += '<span class="chrisvf-mobile-event-time">' + formatTime(event.start) + '</span>'
         html += '<div class="chrisvf-mobile-event-body">'
         html += '<div class="chrisvf-mobile-event-title-row">'
@@ -427,32 +535,8 @@
           html += ' · ' + escapeHtml(event.categories)
         }
         html += '</div></div>'
-        html += '<button type="button" class="chrisvf-mobile-expand" aria-expanded="' +
-          (expanded ? 'true' : 'false') + '" aria-label="' +
-          (expanded ? 'Collapse' : 'Expand') + ' details for ' + escapeHtml(event.summary) +
-          '">' + (expanded ? '▾' : '▸') + '</button>'
-        html += '</div>'
-
-        if (expanded) {
-          html += '<div class="chrisvf-mobile-event-detail">'
-          if (event.description) {
-            var desc = event.description.length > 400
-              ? event.description.substr(0, 400) + '…'
-              : event.description
-            html += '<p class="chrisvf-mobile-event-desc">' + escapeHtml(desc) + '</p>'
-          }
-          html += '<div class="chrisvf-mobile-event-actions">'
-          if (event.ticketUrl) {
-            html += '<a class="chrisvf-mobile-btn chrisvf-mobile-btn-ticket" href="' +
-              escapeHtml(event.ticketUrl) + '" target="_blank" rel="noopener">Tickets</a>'
-          }
-          if (event.siteUrl) {
-            html += '<a class="chrisvf-mobile-btn chrisvf-mobile-btn-site" href="' +
-              escapeHtml(event.siteUrl) + '">Event page</a>'
-          }
-          html += '</div></div>'
-        }
-        html += '</li>'
+        html += '<span class="chrisvf-mobile-open" aria-hidden="true">›</span>'
+        html += '</div></li>'
       })
       html += '</ul>'
     }
@@ -464,8 +548,17 @@
     html += '<a href="' + escapeHtml(config.fullMapUrl || '/vfringe/map') + '">Festival map</a>'
     html += '</footer>'
 
+    if (state.selectedUid) {
+      html += renderModalHtml()
+    }
+
     root.innerHTML = html
     bindEvents()
+
+    var main = root.querySelector('.chrisvf-mobile-main')
+    if (main) {
+      main.scrollTop = scrollTop
+    }
   }
 
   /**
@@ -494,6 +587,12 @@
         setInterval(function () {
           render()
         }, 60000)
+
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') {
+            closeModal()
+          }
+        })
       })
       .catch(function (err) {
         root.innerHTML = '<p class="chrisvf-mobile-error">Could not load programme. ' +

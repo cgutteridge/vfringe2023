@@ -374,7 +374,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-mobile',
         plugins_url('mobile.css', __FILE__),
         [],
-        '1.0.1'
+        '1.0.7'
     );
     wp_enqueue_style('chrisvf-mobile');
 
@@ -382,7 +382,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-mobile',
         plugins_url('mobile.js', __FILE__),
         [],
-        '1.0.1',
+        '1.0.7',
         true
     );
     wp_enqueue_script('chrisvf-mobile');
