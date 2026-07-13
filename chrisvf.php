@@ -21,6 +21,7 @@ require_once("now_and_next.php");
 require_once("montydump.php");
 require_once("search.php");
 require_once("byday.php");
+require_once("mobile.php");
 
 
 
