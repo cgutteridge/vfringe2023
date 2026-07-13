@@ -176,7 +176,8 @@ html {
   margin-bottom: 0.5rem;
 }
 
-.chrisvf-mobile-filter-close {
+.chrisvf-mobile-filter-close,
+.chrisvf-mobile-search-clear {
   flex: 0 0 44px;
   width: 44px;
   height: 44px;
@@ -193,9 +194,20 @@ html {
   box-sizing: border-box;
 }
 
-.chrisvf-mobile-filter-close:focus-visible {
+.chrisvf-mobile-search-clear {
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.chrisvf-mobile-filter-close:focus-visible,
+.chrisvf-mobile-search-clear:focus-visible {
   outline: 3px solid var(--vf-focus);
   outline-offset: 2px;
+}
+
+.chrisvf-mobile-search::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .chrisvf-mobile-search-label {

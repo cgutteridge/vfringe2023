@@ -188,6 +188,43 @@
   }
 
   /**
+   * English ordinal suffix for a day of month (1 → st, 2 → nd, …).
+   *
+   * @param {number} day Day of month (1–31).
+   * @returns {string}
+   */
+  function dayOrdinal (day) {
+    var mod100 = day % 100
+    if (mod100 >= 11 && mod100 <= 13) {
+      return 'th'
+    }
+    switch (day % 10) {
+      case 1:
+        return 'st'
+      case 2:
+        return 'nd'
+      case 3:
+        return 'rd'
+      default:
+        return 'th'
+    }
+  }
+
+  /**
+   * Full weekday + ordinal for the closed filter summary (e.g. Monday 12th).
+   *
+   * @param {string} dayKey Y-m-d date.
+   * @returns {string}
+   */
+  function daySummaryLabel (dayKey) {
+    var parts = dayKey.split('-')
+    var dt = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10))
+    var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    var dayNum = parseInt(parts[2], 10)
+    return days[dt.getDay()] + ' ' + dayNum + dayOrdinal(dayNum)
+  }
+
+  /**
    * Accessible long day label for the day picker.
    *
    * @param {string} dayKey Y-m-d date.
@@ -446,7 +483,10 @@
     } else if (state.filter === 'itinerary') {
       scope = 'All days'
     } else {
-      scope = state.selectedDay ? dayLabel(state.selectedDay) : 'Programme'
+      scope = state.selectedDay ? daySummaryLabel(state.selectedDay) : 'Programme'
+    }
+    if (state.filter === 'all') {
+      return scope
     }
     return scope + ' · ' + filterModeLabel()
   }
@@ -702,6 +742,15 @@
       })
     })
 
+    root.querySelectorAll('[data-search-clear]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        state.search = ''
+        state.filtersOpen = true
+        saveSession()
+        render({ focusSearch: true, resetScroll: true })
+      })
+    })
+
     root.querySelectorAll('[data-text-step]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         stepTextSize(parseInt(btn.getAttribute('data-text-step'), 10))
@@ -854,6 +903,9 @@
         html += '<input type="search" class="chrisvf-mobile-search" placeholder="Search…" value="' +
           escapeHtml(state.search) + '" autocomplete="off" enterkeyhint="search">'
         html += '</label>'
+        if (state.search.trim().length > 0) {
+          html += '<button type="button" class="chrisvf-mobile-search-clear" data-search-clear aria-label="Clear search">×</button>'
+        }
         html += '<button type="button" class="chrisvf-mobile-filter-close" data-filters-close aria-expanded="true" aria-controls="chrisvf-mobile-filter-panel" aria-label="Close filters">▴</button>'
         html += '</div>'
 
