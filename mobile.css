@@ -436,6 +436,16 @@ html {
   color: #fff;
 }
 
+.chrisvf-mobile-badge-soldout {
+  background: #c0392b;
+  color: #fff;
+}
+
+.chrisvf-mobile-badge-cancelled {
+  background: #7a1c14;
+  color: #fff;
+}
+
 .chrisvf-mobile-badge-saved {
   background: #0066cc;
   color: #fff;

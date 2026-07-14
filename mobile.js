@@ -658,6 +658,13 @@
     if (event.free) {
       html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-free">FREE</span>'
     }
+    if (event.cancelled) {
+      html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-cancelled">' +
+        (event.cancelledOtherDates ? 'CANCELLED (OTHER DATES)' : 'CANCELLED') + '</span>'
+    } else if (event.soldOut) {
+      html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-soldout">' +
+        (event.soldOutOtherDates ? 'SOLD OUT (OTHER DATES)' : 'SOLD OUT') + '</span>'
+    }
     if (saved) {
       html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-saved" aria-label="In your itinerary">★ Saved</span>'
     }
@@ -1026,6 +1033,13 @@
           }
           if (event.free) {
             html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-free">FREE</span>'
+          }
+          if (event.cancelled) {
+            html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-cancelled">' +
+              (event.cancelledOtherDates ? 'CANCELLED (OTHER DATES)' : 'CANCELLED') + '</span>'
+          } else if (event.soldOut) {
+            html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-soldout">' +
+              (event.soldOutOtherDates ? 'SOLD OUT (OTHER DATES)' : 'SOLD OUT') + '</span>'
           }
           if (saved) {
             html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-saved" aria-label="In your itinerary">★ Saved</span>'

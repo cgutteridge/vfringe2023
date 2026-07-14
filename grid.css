@@ -124,6 +124,14 @@ th.vf_grid_venue {
     text-align: center;
 }
 
+.vf_grid_cell_tag_soldout {
+    background-color: #c0392b;
+}
+
+.vf_grid_cell_tag_cancelled {
+    background-color: #7a1c14;
+}
+
 /* end of itinerary grid stuff */
 
 

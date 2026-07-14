@@ -112,6 +112,90 @@ function chrisvf_tsv_event_id($eventUrl)
     return '';
 }
 
+/**
+ * Whether a box-office title is marked cancelled via the `CANCELLED - ` prefix.
+ *
+ * @param string $title TSV `Title` / event `SUMMARY`.
+ * @return bool True when the title starts with the cancelled prefix.
+ */
+function chrisvf_title_is_cancelled($title)
+{
+    return strpos((string) $title, 'CANCELLED - ') === 0;
+}
+
+/**
+ * Strip a leading `CANCELLED - ` prefix from a title for display.
+ *
+ * @param string $title Raw title that may include the cancelled prefix.
+ * @return string Title without the cancelled prefix.
+ */
+function chrisvf_title_without_cancelled_prefix($title)
+{
+    $title = (string) $title;
+    if (chrisvf_title_is_cancelled($title)) {
+        return substr($title, strlen('CANCELLED - '));
+    }
+
+    return $title;
+}
+
+/**
+ * EventIds that still have at least one buyable, non-cancelled box-office performance.
+ *
+ * Used to distinguish "this slot sold out/cancelled" from "whole show gone" when
+ * tagging grid and mobile cells. Unconfirmed (`???`) rows are ignored.
+ *
+ * @return array<string, true> Lookup set keyed by Spektrix EventId.
+ */
+function chrisvf_boxoffice_availability()
+{
+    static $availability = null;
+
+    if ($availability !== null) {
+        return $availability;
+    }
+
+    $availability = [];
+    $path = __DIR__ . '/boxoffice-events.tsv';
+    if (!is_readable($path)) {
+        return $availability;
+    }
+
+    $csvRows = file($path);
+    if ($csvRows === false || count($csvRows) < 2) {
+        return $availability;
+    }
+
+    $heading_row = trim(array_shift($csvRows));
+    $headings = preg_split("/\t/", $heading_row);
+    $col = [];
+    foreach ($headings as $i => $heading) {
+        $col[$heading] = $i;
+    }
+
+    foreach ($csvRows as $row) {
+        $cells = preg_split("/\t/", $row);
+        $title = isset($col['Title']) ? trim($cells[$col['Title']]) : '';
+        if ($title === '' || preg_match('/\?\?\?/', $title)) {
+            continue;
+        }
+        if (chrisvf_title_is_cancelled($title)) {
+            continue;
+        }
+        $soldOut = isset($col['Is Sold Out']) ? trim($cells[$col['Is Sold Out']]) : '';
+        if ($soldOut === 'true') {
+            continue;
+        }
+        $eventUrl = isset($col['Event']) ? trim($cells[$col['Event']]) : '';
+        $eventId = chrisvf_tsv_event_id($eventUrl);
+        if ($eventId !== '') {
+            $availability[$eventId] = true;
+        }
+    }
+
+    return $availability;
+}
+
 function chrisvf_get_events()
 {
     $info = chrisvf_get_info();
@@ -325,6 +409,7 @@ function chrisvf_wp_events()
         "/extras.tsv"
     ];
     $hiddenEventIds = chrisvf_boxoffice_hidden_event_ids();
+    $availability = chrisvf_boxoffice_availability();
     foreach ($csvFiles as $csvFile) {
         $csvRows = file(__DIR__ . "/" . $csvFile);
 
@@ -361,6 +446,9 @@ function chrisvf_wp_events()
                 unset($ical[$uids[$UID]["UID"]]);
             }
             $endDateYmd = chrisvf_tsv_resolve_end_date($record["Date"], $record["Start"], $record["End"]);
+            $soldOut = (@$record['Is Sold Out'] === 'true');
+            $cancelled = chrisvf_title_is_cancelled($record['Title']);
+            $others = ($eventId !== '' && !empty($availability[$eventId]));
             $item = [
                 "UID" => $UID,
                 "DTSTART" => preg_replace("/-/", "", $record["Date"]) . "T" . preg_replace("/:/", "", $record["Start"]) . "00",
@@ -371,6 +459,10 @@ function chrisvf_wp_events()
                 "LOCATION" => $record["Venue"],
                 "SORTCODE" => chrisvf_location_sortcode($record["Venue"]),
                 "CATEGORIES" => $record["Tags"],
+                "SOLDOUT" => $soldOut,
+                "SOLDOUT_OTHER_DATES" => $soldOut && $others,
+                "CANCELLED" => $cancelled,
+                "CANCELLED_OTHER_DATES" => $cancelled && $others,
             ];
             $ical[$UID] = $item;
         }

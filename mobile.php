@@ -270,7 +270,7 @@ function chrisvf_mobile_json_payload()
             'uid' => $event['UID'],
             'start' => $start,
             'end' => $end,
-            'summary' => $event['SUMMARY'],
+            'summary' => chrisvf_title_without_cancelled_prefix($event['SUMMARY']),
             'description' => $description,
             'location' => $location,
             'categories' => $categories,
@@ -280,6 +280,10 @@ function chrisvf_mobile_json_payload()
             'ticketUrl' => $ticketUrl,
             'siteUrl' => $siteUrl,
             'free' => $free,
+            'soldOut' => !empty($event['SOLDOUT']),
+            'soldOutOtherDates' => !empty($event['SOLDOUT_OTHER_DATES']),
+            'cancelled' => !empty($event['CANCELLED']),
+            'cancelledOtherDates' => !empty($event['CANCELLED_OTHER_DATES']),
             'allDay' => false,
         ];
     }
@@ -394,7 +398,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-mobile',
         plugins_url('mobile.css', __FILE__),
         ['chrisvf-mobile-fonts'],
-        '1.0.34'
+        '1.0.35'
     );
     wp_enqueue_style('chrisvf-mobile');
 
@@ -402,7 +406,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-itinerary',
         plugins_url('itinerary.js', __FILE__),
         ['jquery'],
-        '1.0.34',
+        '1.0.35',
         true
     );
 
@@ -410,7 +414,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-mobile',
         plugins_url('mobile.js', __FILE__),
         ['chrisvf-itinerary'],
-        '1.0.34',
+        '1.0.35',
         true
     );
     wp_enqueue_script('chrisvf-mobile');

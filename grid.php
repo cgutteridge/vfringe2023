@@ -9,7 +9,7 @@ add_shortcode('chrisvf_grid', 'chrisvf_render_grid_day');
 add_action('wp_enqueue_scripts', 'chrisvf_add_grid_scripts');
 function chrisvf_add_grid_scripts()
 {
-    wp_register_style('chrisvf-grid-css', plugins_url('grid.css', __FILE__), [], "1.002");
+    wp_register_style('chrisvf-grid-css', plugins_url('grid.css', __FILE__), [], "1.003");
     wp_enqueue_style('chrisvf-grid-css');
     wp_register_script('chrisvf-grid-js', plugins_url('grid.js', __FILE__), array('jquery'), [], "1.001");
     wp_enqueue_script('chrisvf-grid-js');
@@ -392,10 +392,17 @@ function render_event($cell, $classes, $itinerary, $print = false)
     $h[] = "<div class='vf_grid_event_middle'>";
     $h[] = "<div class='vf_grid_inner'>";
 
-    $h[] = "<div class='vf_grid_cell_title'>" . $cell['event']["SUMMARY"] . "</div>";
+    $h[] = "<div class='vf_grid_cell_title'>" . chrisvf_title_without_cancelled_prefix($cell['event']["SUMMARY"]) . "</div>";
     $categories = explode(",", $cell['event']['CATEGORIES']);
     if (in_array('Free Fringe', $categories)) {
         $h[] = "<div class='vf_grid_cell_tag'>FREE</div>";
+    }
+    if (!empty($cell['event']['CANCELLED'])) {
+        $label = !empty($cell['event']['CANCELLED_OTHER_DATES']) ? 'CANCELLED (OTHER DATES)' : 'CANCELLED';
+        $h[] = "<div class='vf_grid_cell_tag vf_grid_cell_tag_cancelled'>$label</div>";
+    } elseif (!empty($cell['event']['SOLDOUT'])) {
+        $label = !empty($cell['event']['SOLDOUT_OTHER_DATES']) ? 'SOLD OUT (OTHER DATES)' : 'SOLD OUT';
+        $h[] = "<div class='vf_grid_cell_tag vf_grid_cell_tag_soldout'>$label</div>";
     }
     $h[] = "<div class='vf_grid_cell_desc' style='display:none'>" . $cell['event']["DESCRIPTION"] . "</div>";
 
