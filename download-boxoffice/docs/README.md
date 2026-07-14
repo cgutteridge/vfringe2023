@@ -1,23 +1,31 @@
 # Download Box Office Docs
 
-This repository is a small seasonal scraper used to export event data from Spektrix into a TSV file for festival use.
+This repository is a small seasonal utility used to reconcile Spektrix festival
+events into a local TSV that retains sold-out and cancelled performances.
 
-It is not currently a conventional WordPress plugin with PHP entry points, hooks, admin UI, or deployable plugin structure. The repository contains a Node.js script that fetches a Spektrix JSON feed, filters the festival listing, expands event instances into TSV rows, and writes a `boxoffice-events.tsv` file one directory above this repository.
+It is not currently a conventional WordPress plugin with PHP entry points, hooks, admin UI, or deployable plugin structure. The Node.js script fetches a Spektrix JSON feed, filters the festival listing, reconciles against the existing TSV, and writes `boxoffice-events.tsv` plus an append-only change log one directory above this folder.
 
 ## Current shape
 
 - Main script: `download.js`
+- Tests: `reconcile.test.js` (`node --test`)
 - Package metadata: `package.json`
 - Lockfile: `package-lock.json`
-- Output file: `../boxoffice-events.tsv`
+- Output files: `../boxoffice-events.tsv`, `../boxoffice-changes.log`
+- Venue overrides: `venue-mappings.json`
 
 ## What the script does
 
 1. Downloads `https://app.spektrix-link.com/clients/ventnorexchange/eventsView.json`.
 2. Filters to records where `attribute_WebsiteListing === "VFringe"`.
-3. Expands each event into one row per available instance date/time.
-4. Extracts venue text from `htmlDescription`.
-5. Writes a tab-separated export with these columns:
+3. Reads the existing `boxoffice-events.tsv` (the memory of every performance).
+4. Reconciles by `EventId + Date + Start`:
+   - new buyable instances → add
+   - missing buyable instances for a still-live event → sold out (keep row)
+   - event object absent from the feed → cancelled (keep row, `CANCELLED - ` title prefix)
+   - overlapping rows with different metadata → change metadata
+5. Appends transitions to `boxoffice-changes.log` and prints them.
+6. Writes a header-first, date/time-sorted TSV with these columns:
    - `Venue`
    - `Date`
    - `Start`

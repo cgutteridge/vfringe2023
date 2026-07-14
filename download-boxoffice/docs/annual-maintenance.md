@@ -18,10 +18,11 @@ If any of these fail, inspect the live payload and update parsing logic before c
 Decide:
 
 - which `attribute_WebsiteListing` values should be included
-- whether only available instances should be exported
+- whether sold-out / cancelled retention rules still match festival ops
 - whether one row per instance is still the right shape
 - whether output columns have changed
 - whether the output location is still `../boxoffice-events.tsv`
+- whether the change log location is still `../boxoffice-changes.log`
 
 ## 3. Check field assumptions
 
@@ -42,9 +43,10 @@ If any become optional or are renamed, update the export mapping and rerun a sam
 Before trusting a full export:
 
 1. download the JSON feed once
-2. inspect a few `VFringe` records
-3. inspect one generated TSV row manually
-4. confirm description and venue text have not broken the TSV structure
+2. inspect a few `VFringe` records (including a sold-out show with empty `availableInstanceDates`)
+3. run `node --test reconcile.test.js`
+4. run `node download.js` once and inspect `boxoffice-changes.log`
+5. confirm cancelled / sold-out rows were kept rather than deleted
 
 ## 5. Validate output shape
 

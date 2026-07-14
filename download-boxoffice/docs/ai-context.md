@@ -2,7 +2,8 @@
 
 ## Purpose
 
-Produce a TSV export of current festival events from the Ventnor Exchange Spektrix feed.
+Reconcile festival events from the Ventnor Exchange Spektrix feed into a local
+TSV that retains every performance ever seen (sold-out and cancelled included).
 
 ## Repository reality
 
@@ -12,23 +13,28 @@ Produce a TSV export of current festival events from the Ventnor Exchange Spektr
 
 ## Entry point
 
-- `download.js`
+- `download.js` — network fetch + reconcile + write
+- `reconcile.test.js` — `node --test` coverage of the pure reconcile logic
 - `venue-mappings.json`
 
 ## External dependency assumptions
 
 - The source feed lives at `https://app.spektrix-link.com/clients/ventnorexchange/eventsView.json`.
 - Festival events can be identified with `attribute_WebsiteListing === "VFringe"`.
-- Event dates are supplied in `availableInstanceDates`.
+- Buyable dates are supplied in `availableInstanceDates`.
+- `instanceDates` is only a human-readable range string and cannot reconstruct the schedule.
 - Venue text is embedded inside `htmlDescription`.
 
 If any of those assumptions change, the script will still run but may return partial or empty data.
 
 ## Output contract
 
-The script writes `../boxoffice-events.tsv` relative to this repository.
+The script writes:
 
-Current columns:
+- `../boxoffice-events.tsv` — reconciled performance list
+- `../boxoffice-changes.log` — appended change log (one line per real transition)
+
+Current TSV columns:
 
 - `Venue`
 - `Date`
@@ -42,6 +48,9 @@ Current columns:
 - `Is Sold Out`
 - `Description`
 
+Cancelled shows keep their rows and prefix `Title` with `CANCELLED - `.
+Sold-out performances keep their rows and set `Is Sold Out` to `true`.
+
 ## Main data flow
 
 ### 1. Feed download
@@ -52,32 +61,46 @@ The script downloads one JSON array from Spektrix.
 
 It keeps only records with `attribute_WebsiteListing === "VFringe"`.
 
-### 3. Instance expansion
+### 3. Read existing TSV
 
-Each event is expanded into one TSV row per `availableInstanceDates` entry.
+The local TSV is the memory of every performance. Rows are never deleted by
+reconcile.
 
-### 4. Venue normalization
+### 4. Reconcile (key = EventId + Date + Start)
+
+| Feed signal | Action |
+|-------------|--------|
+| Buyable instance not in TSV | **add** |
+| Existing instance still buyable, metadata differs | **change metadata** |
+| Event present, instance no longer buyable (or whole show `isSoldOut`) | **sold out** |
+| Event object absent from feed | **cancelled** (`CANCELLED - ` title prefix) |
+| Previously cancelled/sold-out instance back on sale | **reinstated** |
+
+A reschedule (old date leaves, new date appears) logs as **sold out** + **add**.
+If a vanished performance was actually a cancellation rather than a sell-out,
+edit the TSV manually.
+
+### 5. Venue normalization
 
 The raw venue text is extracted from `htmlDescription` and then normalized via
 `venue-mappings.json`.
 
-The mapping file supports:
+### 6. Change log
 
-- exact raw venue string replacements
-- event ID specific venue overrides
-- event ID plus date specific venue overrides for multi-venue listings
+Each genuine transition appends:
 
-### 5. TSV generation
+```text
+<ISO timestamp>	<add|sold out|cancelled|change metadata|reinstated>	<venue>	<date>	<start>	<name>
+```
 
-The script maps each event record into one tab-separated line and writes the file with `fs.writeFile`.
+The same lines are printed to the console. An idempotent rerun prints `No changes`.
 
 ## Known fragility points
 
 - The `VFringe` listing label is hard-coded.
 - Venue parsing depends on the text layout inside `htmlDescription`.
 - Venue normalization depends on `venue-mappings.json` staying aligned with the current Spektrix wording.
-- If `availableInstanceDates` disappears, fallback behavior is only to use `firstInstanceDateTime`.
-- The `Event` column currently uses the Spektrix event `id`, not a public URL.
+- A brand-new show that is already fully sold out can only seed from `firstInstanceDateTime` (one row), so run the downloader regularly before shows sell out.
 - Runtime fetching uses `curl`, so the host environment needs that binary available.
 
 ## Expected yearly edits
@@ -85,16 +108,12 @@ The script maps each event record into one tab-separated line and writes the fil
 - source feed URL
 - festival listing filter
 - location and format of venue text
-- whether each instance should still become its own row
 - TSV column list
 - fetch and retry behavior
 
-## Safe improvement direction
+## Tests
 
-If the script needs another year or two of use, the highest-value hardening would be:
-
-1. move configuration into constants at the top of the file
-2. deduplicate discovered URLs
-3. guard optional fields before dereferencing
-4. sanitize tabs and newlines before TSV export
-5. fail with a clear summary if zero events are scraped
+```bash
+cd download-boxoffice
+node --test reconcile.test.js
+```
