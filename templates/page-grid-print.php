@@ -18,7 +18,7 @@ $print_css = plugins_url('grid-print.css', $asset_ref);
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Ventnor Fringe — Grid — <?php echo htmlspecialchars($display_date, ENT_QUOTES, 'UTF-8'); ?></title>
     <link rel="stylesheet" href="<?php echo esc_url($grid_css); ?>?v=1.002">
-    <link rel="stylesheet" href="<?php echo esc_url($print_css); ?>?v=1.008">
+    <link rel="stylesheet" href="<?php echo esc_url($print_css); ?>?v=1.011">
 </head>
 <body class="chrisvf-grid-print">
 <header class="chrisvf-grid-print-header">

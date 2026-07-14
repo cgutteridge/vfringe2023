@@ -129,38 +129,40 @@ body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_freecel
 }
 
 /*
- * Freecell pattern tiles (100px). Transparent SVGs so odd/even background-color
- * can tint the artwork via multiply. Fixed attachment keeps tiles continuous
- * across adjacent columns in the same zone.
+ * Freecell zone backgrounds: faint monochrome seamless texture tiles.
+ * Fixed attachment keeps the tile continuous across adjacent columns in the
+ * same zone. The odd/even background-color is multiplied over the tile for
+ * subtle banding.
  */
 body.chrisvf-grid-print .vf_grid_freecell {
     background-repeat: repeat;
-    background-size: 300px 300px;
+    background-position: top left;
     background-attachment: fixed;
     background-origin: padding-box;
     background-clip: padding-box;
-    background-image: url(print-tiles/unzoned.svg?v=3);
+    background-image: url(print-bg/unzoned.jpg?v=2);
+    background-size: 130px 130px;
     background-blend-mode: multiply;
 }
 
 body.chrisvf-grid-print .vf_grid_zone_square.vf_grid_freecell {
-    background-image: url(print-tiles/square.svg?v=2);
-    background-size: 100px 100px;
+    background-image: url(print-bg/square.jpg?v=2);
+    background-size: 200px 200px;
 }
 
 body.chrisvf-grid-print .vf_grid_zone_ingrams.vf_grid_freecell {
-    background-image: url(print-tiles/ingrams.svg?v=2);
-    background-size: 100px 100px;
+    background-image: url(print-bg/ingrams.jpg?v=2);
+    background-size: 120px 120px;
 }
 
 body.chrisvf-grid-print .vf_grid_zone_flowersbrook.vf_grid_freecell {
-    background-image: url(print-tiles/flowersbrook.svg?v=2);
-    background-size: 100px 100px;
+    background-image: url(print-bg/flowersbrook.jpg?v=3);
+    background-size: 200px 106px;
 }
 
 body.chrisvf-grid-print .vf_grid_zone_park.vf_grid_freecell {
-    background-image: url(print-tiles/park.svg?v=2);
-    background-size: 100px 100px;
+    background-image: url(print-bg/park.jpg?v=2);
+    background-size: 150px 150px;
 }
 
 /* Beat coloured zone fills from grid.css with the shared greys above */
