@@ -111,7 +111,7 @@ body.chrisvf-grid-print a {
     text-decoration: none;
 }
 
-/* Default / unzoned freecells */
+/* Shared odd/even tint for all freecells (including zoned) — no zone colour wash */
 body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_freecell {
     background-color: #f6f6f6;
 }
@@ -128,72 +128,62 @@ body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_freecel
     background-color: #e2e2e2;
 }
 
-/* square — lightest zone tile */
-body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_zone_square.vf_grid_freecell {
-    background-color: #f4f4f4;
+/*
+ * Freecell pattern tiles (100px). Transparent SVGs so the odd/even tint shows through.
+ * background-attachment: fixed keeps the tile continuous across adjacent columns.
+ */
+body.chrisvf-grid-print .vf_grid_freecell {
+    background-repeat: repeat;
+    background-size: 100px 100px;
+    background-attachment: fixed;
+    background-origin: padding-box;
+    background-clip: padding-box;
+    background-image: url(print-tiles/unzoned.svg);
 }
 
-body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_zone_square.vf_grid_freecell {
-    background-color: #eaeaea;
+body.chrisvf-grid-print .vf_grid_zone_square.vf_grid_freecell {
+    background-image: url(print-tiles/square.svg);
 }
 
-body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_zone_square.vf_grid_freecell {
-    background-color: #eaeaea;
+body.chrisvf-grid-print .vf_grid_zone_ingrams.vf_grid_freecell {
+    background-image: url(print-tiles/ingrams.svg);
 }
 
-body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_zone_square.vf_grid_freecell {
-    background-color: #e0e0e0;
+body.chrisvf-grid-print .vf_grid_zone_flowersbrook.vf_grid_freecell {
+    background-image: url(print-tiles/flowersbrook.svg);
 }
 
-/* ingrams */
-body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_zone_ingrams.vf_grid_freecell {
-    background-color: #ebebeb;
+body.chrisvf-grid-print .vf_grid_zone_park.vf_grid_freecell {
+    background-image: url(print-tiles/park.svg);
 }
 
-body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_zone_ingrams.vf_grid_freecell {
-    background-color: #dfdfdf;
-}
-
-body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_zone_ingrams.vf_grid_freecell {
-    background-color: #dfdfdf;
-}
-
-body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_zone_ingrams.vf_grid_freecell {
-    background-color: #d4d4d4;
-}
-
-/* flowersbrook */
-body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_zone_flowersbrook.vf_grid_freecell {
-    background-color: #e4e4e4;
-}
-
-body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_zone_flowersbrook.vf_grid_freecell {
-    background-color: #d8d8d8;
-}
-
-body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_zone_flowersbrook.vf_grid_freecell {
-    background-color: #d8d8d8;
-}
-
-body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_zone_flowersbrook.vf_grid_freecell {
-    background-color: #cccccc;
-}
-
-/* park — darkest zone tile */
+/* Beat coloured zone fills from grid.css with the shared greys above */
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_zone_square.vf_grid_freecell,
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_zone_ingrams.vf_grid_freecell,
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_zone_flowersbrook.vf_grid_freecell,
 body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_zone_park.vf_grid_freecell {
-    background-color: #dadada;
+    background-color: #f6f6f6;
 }
 
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_zone_square.vf_grid_freecell,
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_zone_ingrams.vf_grid_freecell,
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_zone_flowersbrook.vf_grid_freecell,
 body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_zone_park.vf_grid_freecell {
-    background-color: #cecece;
+    background-color: #ececec;
 }
 
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_zone_square.vf_grid_freecell,
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_zone_ingrams.vf_grid_freecell,
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_zone_flowersbrook.vf_grid_freecell,
 body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_zone_park.vf_grid_freecell {
-    background-color: #cecece;
+    background-color: #ececec;
 }
 
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_zone_square.vf_grid_freecell,
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_zone_ingrams.vf_grid_freecell,
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_zone_flowersbrook.vf_grid_freecell,
 body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_zone_park.vf_grid_freecell {
-    background-color: #c2c2c2;
+    background-color: #e2e2e2;
 }
 
 @media print {

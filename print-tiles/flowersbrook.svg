@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Seamless simple flowers; light grey on transparent -->
+  <g fill="none" stroke="#c8c8c8" stroke-width="1.2" stroke-linecap="round">
+    <!-- flower A -->
+    <g transform="translate(22 24)">
+      <circle cx="0" cy="-7" r="4.5" fill="#d0d0d0" stroke="none"/>
+      <circle cx="6.5" cy="-2" r="4.5" fill="#d0d0d0" stroke="none"/>
+      <circle cx="4" cy="6" r="4.5" fill="#d0d0d0" stroke="none"/>
+      <circle cx="-4" cy="6" r="4.5" fill="#d0d0d0" stroke="none"/>
+      <circle cx="-6.5" cy="-2" r="4.5" fill="#d0d0d0" stroke="none"/>
+      <circle cx="0" cy="0" r="3" fill="#b8b8b8" stroke="none"/>
+    </g>
+    <!-- flower B -->
+    <g transform="translate(72 38) scale(0.75)">
+      <circle cx="0" cy="-7" r="4.5" fill="#cccccc" stroke="none"/>
+      <circle cx="6.5" cy="-2" r="4.5" fill="#cccccc" stroke="none"/>
+      <circle cx="4" cy="6" r="4.5" fill="#cccccc" stroke="none"/>
+      <circle cx="-4" cy="6" r="4.5" fill="#cccccc" stroke="none"/>
+      <circle cx="-6.5" cy="-2" r="4.5" fill="#cccccc" stroke="none"/>
+      <circle cx="0" cy="0" r="3" fill="#b0b0b0" stroke="none"/>
+    </g>
+    <!-- flower C -->
+    <g transform="translate(48 78) scale(0.9)">
+      <circle cx="0" cy="-7" r="4.5" fill="#cfcfcf" stroke="none"/>
+      <circle cx="6.5" cy="-2" r="4.5" fill="#cfcfcf" stroke="none"/>
+      <circle cx="4" cy="6" r="4.5" fill="#cfcfcf" stroke="none"/>
+      <circle cx="-4" cy="6" r="4.5" fill="#cfcfcf" stroke="none"/>
+      <circle cx="-6.5" cy="-2" r="4.5" fill="#cfcfcf" stroke="none"/>
+      <circle cx="0" cy="0" r="3" fill="#b4b4b4" stroke="none"/>
+    </g>
+    <!-- flower D small -->
+    <g transform="translate(86 82) scale(0.55)">
+      <circle cx="0" cy="-7" r="4.5" fill="#c8c8c8" stroke="none"/>
+      <circle cx="6.5" cy="-2" r="4.5" fill="#c8c8c8" stroke="none"/>
+      <circle cx="4" cy="6" r="4.5" fill="#c8c8c8" stroke="none"/>
+      <circle cx="-4" cy="6" r="4.5" fill="#c8c8c8" stroke="none"/>
+      <circle cx="-6.5" cy="-2" r="4.5" fill="#c8c8c8" stroke="none"/>
+      <circle cx="0" cy="0" r="3" fill="#aeaeae" stroke="none"/>
+    </g>
+    <!-- wrap copy of flower A for seamless horizontal -->
+    <g transform="translate(122 24)">
+      <circle cx="0" cy="-7" r="4.5" fill="#d0d0d0" stroke="none"/>
+      <circle cx="6.5" cy="-2" r="4.5" fill="#d0d0d0" stroke="none"/>
+      <circle cx="4" cy="6" r="4.5" fill="#d0d0d0" stroke="none"/>
+      <circle cx="-4" cy="6" r="4.5" fill="#d0d0d0" stroke="none"/>
+      <circle cx="-6.5" cy="-2" r="4.5" fill="#d0d0d0" stroke="none"/>
+      <circle cx="0" cy="0" r="3" fill="#b8b8b8" stroke="none"/>
+    </g>
+  </g>
+</svg>
