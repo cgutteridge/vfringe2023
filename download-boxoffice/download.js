@@ -166,7 +166,7 @@ function buildRecords (events) {
 }
 
 async function writeTsv (records) {
-  const lines = [HEADER, ...records].map(row => row.join('\t'))
+  const lines = [HEADER, ...records].map(row => row.join('\t')).sort()
   await fs.writeFile(OUTPUT_PATH, `${lines.join('\n')}\n`, 'utf8')
 }
 
