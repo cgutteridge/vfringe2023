@@ -539,7 +539,7 @@ html {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
+  min-height: 2em;
 }
 
 .chrisvf-mobile-root.has-modal ~ .chrisvf-mobile-map-host {
@@ -626,6 +626,33 @@ html {
   margin: 0 0 1rem;
   font-size: 1em;
   color: #333;
+}
+
+.chrisvf-mobile-venue-lozenge {
+  display: inline-block;
+  margin: 0;
+  padding: 0.25em 0.7em;
+  border: 0;
+  border-radius: 999px;
+  background: var(--vf-focus);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  line-height: 1.3;
+  cursor: pointer;
+}
+
+.chrisvf-mobile-venue-lozenge::after {
+  content: " \25B8";
+}
+
+.chrisvf-mobile-venue-lozenge:hover {
+  background: #0053a6;
+}
+
+.chrisvf-mobile-venue-lozenge:focus-visible {
+  outline: 3px solid var(--vf-focus);
+  outline-offset: 2px;
 }
 
 .chrisvf-mobile-modal-desc {

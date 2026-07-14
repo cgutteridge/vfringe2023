@@ -27,7 +27,9 @@
     selectedUid: null,
     textSize: TEXT_SIZES[0],
     activeTab: 'programme',
-    filtersOpen: false
+    filtersOpen: false,
+    /** @type {{ lat: number, lng: number, zoom: number }|null} */
+    pendingMapFocus: null
   }
 
   /**
@@ -319,9 +321,75 @@
   }
 
   /**
+   * Resolve map coordinates for an event location name.
+   *
+   * Prefers places.json GEO (same pins as the Leaflet markers), then falls back
+   * to WordPress venue lat/lon from the JSON payload.
+   *
+   * @param {string} location Event location / venue name.
+   * @returns {[number, number]|null} `[lat, lng]` or null when unknown.
+   */
+  function venueLatLng (location) {
+    if (!location || !state.data) {
+      return null
+    }
+
+    var places = state.data.places || []
+    for (var i = 0; i < places.length; i++) {
+      var place = places[i]
+      var venues = place.VENUES || []
+      var matches = venues.some(function (venue) {
+        var name = typeof venue === 'string' ? venue : (venue && venue.name)
+        return name === location
+      })
+      if (matches && Array.isArray(place.GEO) && place.GEO.length >= 2) {
+        return [Number(place.GEO[0]), Number(place.GEO[1])]
+      }
+    }
+
+    var venue = state.data.venues ? state.data.venues[location] : null
+    if (venue && venue.lat != null && venue.lon != null) {
+      return [Number(venue.lat), Number(venue.lon)]
+    }
+
+    return null
+  }
+
+  /**
+   * Switch to the map tab, close the modal, and centre on the event venue.
+   *
+   * Does not open a marker popup.
+   *
+   * @param {string} uid Event UID.
+   */
+  function showEventVenueOnMap (uid) {
+    var event = state.eventsByUid[uid]
+    var latLng = event ? venueLatLng(event.location) : null
+    if (!latLng) {
+      return
+    }
+
+    state.pendingMapFocus = {
+      lat: latLng[0],
+      lng: latLng[1],
+      zoom: 18
+    }
+    state.activeTab = 'map'
+    state.selectedUid = null
+    saveSession()
+    render()
+
+    // Keep pending through the 50ms/250ms map-repair refreshes, then clear.
+    setTimeout(function () {
+      state.pendingMapFocus = null
+    }, 300)
+  }
+
+  /**
    * After the map host is visible, fix Leaflet size and re-fit if init ran while hidden.
    *
    * Leaflet fitBounds during a zero-size (hidden) container leaves the map at world zoom.
+   * When a venue focus is pending (from "View on map"), apply setView after any repair.
    */
   function refreshVisibleMap () {
     syncMapHostLayout()
@@ -337,6 +405,16 @@
     // Hidden init leaves zoom at ~0; re-fit once we have a real container size.
     if (typeof map.getZoom === 'function' && map.getZoom() < 10) {
       map.fitBounds(bounds, { padding: [24, 24], maxZoom: 17 })
+    }
+
+    if (state.pendingMapFocus) {
+      var focus = state.pendingMapFocus
+      if (typeof map.closePopup === 'function') {
+        map.closePopup()
+      }
+      if (typeof map.setView === 'function') {
+        map.setView([focus.lat, focus.lng], focus.zoom, { animate: true })
+      }
     }
   }
 
@@ -669,7 +747,14 @@
       html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-saved" aria-label="In your itinerary">★ Saved</span>'
     }
     html += '</div>'
-    html += '<p class="chrisvf-mobile-modal-meta"><strong>' + escapeHtml(event.location) + '</strong>'
+    html += '<p class="chrisvf-mobile-modal-meta">'
+    if (venueLatLng(event.location)) {
+      html += '<button type="button" class="chrisvf-mobile-venue-lozenge" data-view-map="' +
+        escapeHtml(event.uid) + '" aria-label="View ' + escapeHtml(event.location) + ' on map">' +
+        escapeHtml(event.location) + '</button>'
+    } else {
+      html += '<strong>' + escapeHtml(event.location) + '</strong>'
+    }
     if (event.categories) {
       html += '<br>' + escapeHtml(event.categories)
     }
@@ -836,6 +921,12 @@
 
     root.querySelectorAll('[data-modal-close]').forEach(function (btn) {
       btn.addEventListener('click', closeModal)
+    })
+
+    root.querySelectorAll('[data-view-map]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        showEventVenueOnMap(btn.getAttribute('data-view-map'))
+      })
     })
 
     root.querySelectorAll('[data-itin-add]').forEach(function (btn) {
