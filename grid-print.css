@@ -165,35 +165,6 @@ body.chrisvf-grid-print .vf_grid_zone_park.vf_grid_freecell {
     background-size: 150px 150px;
 }
 
-/* Beat coloured zone fills from grid.css with the shared greys above */
-body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_zone_square.vf_grid_freecell,
-body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_zone_ingrams.vf_grid_freecell,
-body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_zone_flowersbrook.vf_grid_freecell,
-body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_zone_park.vf_grid_freecell {
-    background-color: #f8f8f8;
-}
-
-body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_zone_square.vf_grid_freecell,
-body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_zone_ingrams.vf_grid_freecell,
-body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_zone_flowersbrook.vf_grid_freecell,
-body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_zone_park.vf_grid_freecell {
-    background-color: #eeeeee;
-}
-
-body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_zone_square.vf_grid_freecell,
-body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_zone_ingrams.vf_grid_freecell,
-body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_zone_flowersbrook.vf_grid_freecell,
-body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_zone_park.vf_grid_freecell {
-    background-color: #eeeeee;
-}
-
-body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_zone_square.vf_grid_freecell,
-body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_zone_ingrams.vf_grid_freecell,
-body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_zone_flowersbrook.vf_grid_freecell,
-body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_zone_park.vf_grid_freecell {
-    background-color: #e4e4e4;
-}
-
 @media print {
     body.chrisvf-grid-print {
         padding: 0;

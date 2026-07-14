@@ -123,7 +123,7 @@ function chrisvf_render_grid_day($attr)
 
     $itinerary = $print ? array() : chrisvf_get_itinerary();
 
-    $outer_class = $print ? "vf_grid_outer vf_grid_print" : "vf_grid_outer";
+    $outer_class = "vf_grid_outer";
 
     $h = array();
     $h[] = "<div class='$outer_class'>";
