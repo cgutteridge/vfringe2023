@@ -60,6 +60,58 @@ function chrisvf_tsv_resolve_end_date($dateYmd, $startTime, $endTime)
     return $dateYmd;
 }
 
+/**
+ * Load Spektrix EventIds that should stay in the boxoffice TSV but not appear on the site.
+ *
+ * Reads `boxoffice-hidden.json` next to this plugin. Missing or invalid files fail open
+ * (empty set), so all TSV rows still load.
+ *
+ * @return array<string, true> Lookup set keyed by numeric EventId string.
+ */
+function chrisvf_boxoffice_hidden_event_ids()
+{
+    static $hidden = null;
+
+    if ($hidden !== null) {
+        return $hidden;
+    }
+
+    $hidden = [];
+    $path = __DIR__ . '/boxoffice-hidden.json';
+    if (!is_readable($path)) {
+        return $hidden;
+    }
+
+    $decoded = json_decode(file_get_contents($path), true);
+    if (!is_array($decoded) || empty($decoded['eventIds']) || !is_array($decoded['eventIds'])) {
+        return $hidden;
+    }
+
+    foreach ($decoded['eventIds'] as $eventId) {
+        $eventId = trim((string) $eventId);
+        if ($eventId !== '') {
+            $hidden[$eventId] = true;
+        }
+    }
+
+    return $hidden;
+}
+
+/**
+ * Extract the numeric Spektrix EventId from a ticket URL / Event column value.
+ *
+ * @param string $eventUrl Value from the TSV `Event` column.
+ * @return string Numeric EventId, or empty string when not found.
+ */
+function chrisvf_tsv_event_id($eventUrl)
+{
+    if (preg_match('/EventId=(\d+)/', (string) $eventUrl, $match)) {
+        return $match[1];
+    }
+
+    return '';
+}
+
 function chrisvf_get_events()
 {
     $info = chrisvf_get_info();
@@ -272,6 +324,7 @@ function chrisvf_wp_events()
         "/boxoffice-events.tsv",
         "/extras.tsv"
     ];
+    $hiddenEventIds = chrisvf_boxoffice_hidden_event_ids();
     foreach ($csvFiles as $csvFile) {
         $csvRows = file(__DIR__ . "/" . $csvFile);
 
@@ -288,6 +341,12 @@ function chrisvf_wp_events()
 
             # skip records with ??? in to indicate unconfirmed ones
             if (preg_match("/\?\?\?/", $record["Title"])) {
+                continue;
+            }
+
+            # skip box-office-only catalogue rows configured in boxoffice-hidden.json
+            $eventId = chrisvf_tsv_event_id(@$record["Event"]);
+            if ($eventId !== '' && isset($hiddenEventIds[$eventId])) {
                 continue;
             }
             $UID = sprintf("%s:%s:%s", $record["Venue"], $record["Date"], $record["Start"]);

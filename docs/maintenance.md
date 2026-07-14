@@ -93,7 +93,7 @@ Change only one layer at a time unless the task clearly spans layers:
 - itinerary: `itinerary.php`, `itinerary.js`, `itinerary.css`
 - mobile programme: `mobile.php`, `mobile.js`, `mobile.css`, `templates/page-mobile.php` (map via `map.php` with `layout`/`mobile` attrs)
 - schedule/grid: `grid.php`, `grid.js`, `grid.css`, `byday.php`, `byday.css`
-- curated data: `boxoffice-events.tsv`, `boxoffice-changes.log`, `extras.tsv`, `places.json`, `outlines.json`, `lines.json`
+- curated data: `boxoffice-events.tsv`, `boxoffice-changes.log`, `boxoffice-hidden.json`, `extras.tsv`, `places.json`, `outlines.json`, `lines.json`
 - downloader: `download-boxoffice/`
 
 ## Files an AI should inspect before editing
