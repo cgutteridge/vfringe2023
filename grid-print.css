@@ -1,0 +1,180 @@
+/**
+ * Print / B&W overrides for the standalone /grid-print/ day grid.
+ */
+
+@page {
+    size: landscape;
+    margin: 8mm;
+}
+
+body.chrisvf-grid-print {
+    margin: 0;
+    padding: 0.5rem;
+    background: #fff;
+    color: #000;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+.chrisvf-grid-print-header {
+    margin: 0 0 0.4rem 0;
+    text-align: left;
+}
+
+.chrisvf-grid-print-header h1 {
+    margin: 0;
+    font-family: "Work Sans", sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #000;
+}
+
+.chrisvf-grid-print-date {
+    margin: 0.1rem 0 0 0;
+    font-family: "Work Sans", sans-serif;
+    font-size: 0.85rem;
+    color: #222;
+}
+
+body.chrisvf-grid-print table.vf_grid {
+    page-break-after: auto;
+    color: #000;
+    font-size: 45%;
+}
+
+body.chrisvf-grid-print table.vf_grid th {
+    background-color: #e8e8e8;
+    color: #000;
+    border: solid 1px #000 !important;
+    padding: 0.15em 0.1em 0.4em 0.1em;
+}
+
+body.chrisvf-grid-print .vf_grid_event {
+    background-color: #fff !important;
+    background-image: none !important;
+    border: solid 1.5px #000 !important;
+    color: #000;
+    vertical-align: middle;
+}
+
+body.chrisvf-grid-print .vf_grid_event_noend {
+    background: #fff !important;
+    padding-bottom: 0.3em !important;
+}
+
+body.chrisvf-grid-print .vf_grid_it {
+    background-color: #fff !important;
+}
+
+body.chrisvf-grid-print th.vf_grid_timeslot {
+    vertical-align: top;
+}
+
+body.chrisvf-grid-print .vf_grid_event_middle {
+    padding: 0 0.2em;
+}
+
+body.chrisvf-grid-print .vf_grid_inner {
+    padding: 0.15em;
+}
+
+body.chrisvf-grid-print .vf_grid_cell_title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+body.chrisvf-grid-print .vf_grid_cell_tag {
+    background-color: transparent;
+    color: #000;
+    border: none;
+    border-radius: 0;
+    font-size: 65%;
+    font-style: italic;
+    margin-top: 0.15em;
+    padding: 0;
+}
+
+body.chrisvf-grid-print .vf_grid_it_control,
+body.chrisvf-grid-print .vf_grid_cell_desc,
+body.chrisvf-grid-print .vf_grid_infobox,
+body.chrisvf-grid-print .vf_it_control {
+    display: none !important;
+}
+
+body.chrisvf-grid-print a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Shared odd/even tint — multiplied into the tile artwork (not a separate zone wash) */
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_freecell {
+    background-color: #f8f8f8;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_freecell {
+    background-color: #eeeeee;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_freecell {
+    background-color: #eeeeee;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_freecell {
+    background-color: #e4e4e4;
+}
+
+/*
+ * Freecell zone backgrounds: faint monochrome seamless texture tiles.
+ * Fixed attachment keeps the tile continuous across adjacent columns in the
+ * same zone. The odd/even background-color is multiplied over the tile for
+ * subtle banding.
+ */
+body.chrisvf-grid-print .vf_grid_freecell {
+    background-repeat: repeat;
+    background-position: top left;
+    background-attachment: fixed;
+    background-origin: padding-box;
+    background-clip: padding-box;
+    background-image: url(print-bg/unzoned.jpg?v=2);
+    background-size: 130px 130px;
+    background-blend-mode: multiply;
+}
+
+body.chrisvf-grid-print .vf_grid_zone_square.vf_grid_freecell {
+    background-image: url(print-bg/square.jpg?v=2);
+    background-size: 200px 200px;
+}
+
+body.chrisvf-grid-print .vf_grid_zone_ingrams.vf_grid_freecell {
+    background-image: url(print-bg/ingrams.jpg?v=2);
+    background-size: 120px 120px;
+}
+
+body.chrisvf-grid-print .vf_grid_zone_flowersbrook.vf_grid_freecell {
+    background-image: url(print-bg/flowersbrook.jpg?v=3);
+    background-size: 200px 106px;
+}
+
+body.chrisvf-grid-print .vf_grid_zone_park.vf_grid_freecell {
+    background-image: url(print-bg/park.jpg?v=2);
+    background-size: 150px 150px;
+}
+
+@media print {
+    body.chrisvf-grid-print {
+        padding: 0;
+    }
+
+    .chrisvf-grid-print-header h1 {
+        font-size: 10pt;
+    }
+
+    .chrisvf-grid-print-date {
+        font-size: 8pt;
+    }
+}
