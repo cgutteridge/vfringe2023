@@ -1,0 +1,206 @@
+/**
+ * Print / B&W overrides for the standalone /grid-print/ day grid.
+ */
+
+@page {
+    size: landscape;
+    margin: 8mm;
+}
+
+body.chrisvf-grid-print {
+    margin: 0;
+    padding: 0.5rem;
+    background: #fff;
+    color: #000;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+.chrisvf-grid-print-header {
+    margin: 0 0 0.4rem 0;
+    text-align: left;
+}
+
+.chrisvf-grid-print-header h1 {
+    margin: 0;
+    font-family: "Work Sans", sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #000;
+}
+
+.chrisvf-grid-print-date {
+    margin: 0.1rem 0 0 0;
+    font-family: "Work Sans", sans-serif;
+    font-size: 0.85rem;
+    color: #222;
+}
+
+body.chrisvf-grid-print table.vf_grid {
+    page-break-after: auto;
+    color: #000;
+    font-size: 45%;
+}
+
+body.chrisvf-grid-print table.vf_grid th {
+    background-color: #e8e8e8;
+    color: #000;
+    border: solid 1px #000 !important;
+    padding: 0.15em 0.1em 0.4em 0.1em;
+}
+
+body.chrisvf-grid-print .vf_grid_event {
+    background-color: #fff !important;
+    background-image: none !important;
+    border: solid 1.5px #000 !important;
+    color: #000;
+    vertical-align: top;
+}
+
+body.chrisvf-grid-print .vf_grid_event_noend {
+    background: #fff !important;
+    padding-bottom: 0.3em !important;
+}
+
+body.chrisvf-grid-print .vf_grid_it {
+    background-color: #fff !important;
+}
+
+body.chrisvf-grid-print .vf_grid_event_middle {
+    padding: 0 0.2em 0.2em 0.2em;
+}
+
+body.chrisvf-grid-print .vf_grid_inner {
+    padding: 0.15em;
+}
+
+body.chrisvf-grid-print .vf_grid_cell_title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+body.chrisvf-grid-print .vf_grid_cell_tag {
+    background-color: transparent;
+    color: #000;
+    border: solid 1px #000;
+    border-radius: 0;
+    font-size: 65%;
+    margin-top: 0.15em;
+    padding: 0.1em 0.2em;
+}
+
+body.chrisvf-grid-print .vf_grid_it_control,
+body.chrisvf-grid-print .vf_grid_cell_desc,
+body.chrisvf-grid-print .vf_grid_infobox,
+body.chrisvf-grid-print .vf_it_control {
+    display: none !important;
+}
+
+body.chrisvf-grid-print a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Default / unzoned freecells */
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_freecell {
+    background-color: #f6f6f6;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_freecell {
+    background-color: #ececec;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_freecell {
+    background-color: #ececec;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_freecell {
+    background-color: #e2e2e2;
+}
+
+/* square — lightest zone tile */
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_zone_square.vf_grid_freecell {
+    background-color: #f4f4f4;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_zone_square.vf_grid_freecell {
+    background-color: #eaeaea;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_zone_square.vf_grid_freecell {
+    background-color: #eaeaea;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_zone_square.vf_grid_freecell {
+    background-color: #e0e0e0;
+}
+
+/* ingrams */
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_zone_ingrams.vf_grid_freecell {
+    background-color: #ebebeb;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_zone_ingrams.vf_grid_freecell {
+    background-color: #dfdfdf;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_zone_ingrams.vf_grid_freecell {
+    background-color: #dfdfdf;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_zone_ingrams.vf_grid_freecell {
+    background-color: #d4d4d4;
+}
+
+/* flowersbrook */
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_zone_flowersbrook.vf_grid_freecell {
+    background-color: #e4e4e4;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_zone_flowersbrook.vf_grid_freecell {
+    background-color: #d8d8d8;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_zone_flowersbrook.vf_grid_freecell {
+    background-color: #d8d8d8;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_zone_flowersbrook.vf_grid_freecell {
+    background-color: #cccccc;
+}
+
+/* park — darkest zone tile */
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_odd.vf_grid_zone_park.vf_grid_freecell {
+    background-color: #dadada;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_odd .vf_grid_col_even.vf_grid_zone_park.vf_grid_freecell {
+    background-color: #cecece;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_odd.vf_grid_zone_park.vf_grid_freecell {
+    background-color: #cecece;
+}
+
+body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_zone_park.vf_grid_freecell {
+    background-color: #c2c2c2;
+}
+
+@media print {
+    body.chrisvf-grid-print {
+        padding: 0;
+    }
+
+    .chrisvf-grid-print-header h1 {
+        font-size: 10pt;
+    }
+
+    .chrisvf-grid-print-date {
+        font-size: 8pt;
+    }
+}

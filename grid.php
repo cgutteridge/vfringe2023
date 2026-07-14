@@ -41,12 +41,21 @@ function chrisvf_event_time($event, $min_t = null, $max_t = null)
     return $times;
 }
 
+/**
+ * Render one festival day's venue × timeslot grid as an HTML table.
+ *
+ * @param array<string, string> $attr Shortcode attributes. Recognises `date` (Y-m-d or "today")
+ *                                    and optional `print` (truthy → print-friendly markup).
+ * @return string HTML for the day grid, or a short notice when no events exist.
+ */
 function chrisvf_render_grid_day($attr)
 {
     $date = $attr["date"];
     if( $date == "today") {
         $date = date('Y-m-d');
     }
+
+    $print = !empty($attr['print']);
 
     $day_start = "08:00:00 BST";
     $day_end = "02:00:00 BST";
@@ -112,10 +121,12 @@ function chrisvf_render_grid_day($attr)
     // see if we can expand any events to fill the space available.
     $grid = seeIfWeCanExpandAnyEventsToFillTheSpaceAvailable($venues, $grid);
 
-    $itinerary = chrisvf_get_itinerary();
+    $itinerary = $print ? array() : chrisvf_get_itinerary();
+
+    $outer_class = $print ? "vf_grid_outer vf_grid_print" : "vf_grid_outer";
 
     $h = array();
-    $h[] = "<div class='vf_grid_outer'>";
+    $h[] = "<div class='$outer_class'>";
     $h[] = "<table class='vf_grid'>";
 
     // Venue headings
@@ -128,7 +139,7 @@ function chrisvf_render_grid_day($attr)
             "vf_grid_row_hour_" . ($hour % 2 ? "odd" : "even");
         $odd_row = !$odd_row;
 
-        $h [] = renderGridRow($row_classes, $slot, $venues, $grid, $timeslotId, $itinerary);
+        $h [] = renderGridRow($row_classes, $slot, $venues, $grid, $timeslotId, $itinerary, $print);
     }
 
     // Venue headings
@@ -262,15 +273,18 @@ function seeIfWeCanExpandAnyEventsToFillTheSpaceAvailable(array $venues, array $
 }
 
 /**
- * @param $row_classes
- * @param $slot
- * @param array $venues
- * @param array $grid
- * @param $timeslotId
- * @param array $itinerary
- * @return string
+ * Render one timeslot row of venue columns for the day grid.
+ *
+ * @param string               $row_classes Odd/even hour row class string.
+ * @param array<string, int>   $slot        Timeslot with `start` and `end` unix timestamps.
+ * @param array<string, string> $venues     Sortcode → venue name map.
+ * @param array                $grid        Venue → columns → cells structure.
+ * @param int                  $timeslotId  Index into each column's cell list.
+ * @param array                $itinerary   Favourite itinerary data (empty when printing).
+ * @param bool                 $print       When true, omit interactive favourites markup.
+ * @return string HTML table row.
  */
-function renderGridRow($row_classes, $slot, array $venues, array $grid, $timeslotId, array $itinerary)
+function renderGridRow($row_classes, $slot, array $venues, array $grid, $timeslotId, array $itinerary, $print = false)
 {
     // same date format as used in ICAL
     $start = date('Ymd\THis', $slot["start"]);
@@ -298,7 +312,7 @@ function renderGridRow($row_classes, $slot, array $venues, array $grid, $timeslo
             }
 
             if (@$cell['event']) {
-                $h [] = render_event($cell, $classes, $itinerary);
+                $h [] = render_event($cell, $classes, $itinerary, $print);
             } elseif ($cell["used"]) {
                 $h [] = "";
             } else {
@@ -333,7 +347,16 @@ function renderVenueHeadings(array $venues, array $grid)
     return join('', $h);
 }
 
-function render_event($cell, $classes, $itinerary)
+/**
+ * Render a single event cell (with rowspan/colspan) for the day grid.
+ *
+ * @param array  $cell       Grid cell with event, start_i, end_i, width, est, code.
+ * @param string $classes    CSS classes already built for zone/column parity.
+ * @param array  $itinerary  Favourite itinerary data (unused when $print is true).
+ * @param bool   $print      When true, omit FAVOURITE/FORGET controls and itinerary class.
+ * @return string HTML table cell.
+ */
+function render_event($cell, $classes, $itinerary, $print = false)
 {
     $h = [];
 
@@ -345,7 +368,7 @@ function render_event($cell, $classes, $itinerary)
 
     $classes .= ' vf_grid_event';
 
-    if (@$itinerary['events'][$cell['code']]) {
+    if (!$print && @$itinerary['events'][$cell['code']]) {
         $classes .= " vf_grid_it";
     }
 
@@ -355,10 +378,12 @@ function render_event($cell, $classes, $itinerary)
     $id = "g" . preg_replace('/-/', '_', $cell['event']['UID']);
     $h[] = "<td id='$id' data-code='" . $cell['event']['UID'] . "' class='$classes' colspan='" . $cell['width'] . "' rowspan='$height' " . (empty($url) ? "" : "data-url='" . $url . "'") . "  data-start='$start' data-end='$end'>";
 
-    $h[] = "<div class='vf_grid_it_control'>";
-    $h[] = "<div class='vf_grid_it_toggle vf_grid_it_add'>FAVOURITE</div>";
-    $h[] = "<div class='vf_grid_it_toggle vf_grid_it_remove'>FORGET</div>";
-    $h[] = "</div>";
+    if (!$print) {
+        $h[] = "<div class='vf_grid_it_control'>";
+        $h[] = "<div class='vf_grid_it_toggle vf_grid_it_add'>FAVOURITE</div>";
+        $h[] = "<div class='vf_grid_it_toggle vf_grid_it_remove'>FORGET</div>";
+        $h[] = "</div>";
+    }
 
     if (!empty($url)) {
         $h[] = "<a href='$url'>";
