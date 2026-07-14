@@ -293,9 +293,9 @@ function chrisvf_wp_events()
             // skip if it has the same UID and title. Warn if it has the same UID and a different title.
             if ($overwrite && array_key_exists($UID, $uids)) {
                 if ($uids[$UID]["SUMMARY"] == $record["Title"]) {
-                    print "<!-- WARNING: {$csvFile}:{$UID} '" . $record["Title"] . "' will replace existing event '" . $uids[$UID]["URL"] . "' -->\n";
+                    #print "<!-- WARNING: {$csvFile}:{$UID} '" . $record["Title"] . "' will replace existing event '" . $uids[$UID]["URL"] . "' -->\n";
                 } else {
-                    print "<!-- WARNING: {$csvFile}:{$UID} '" . $record["Title"] . "' will replace existing event '" . $uids[$UID]["URL"] . "' with title '" . $uids[$UID]["SUMMARY"] . "'-->\n";
+                    #print "<!-- WARNING: {$csvFile}:{$UID} '" . $record["Title"] . "' will replace existing event '" . $uids[$UID]["URL"] . "' with title '" . $uids[$UID]["SUMMARY"] . "'-->\n";
                 }
                 // remove it using it' real UID
                 unset($ical[$uids[$UID]["UID"]]);
