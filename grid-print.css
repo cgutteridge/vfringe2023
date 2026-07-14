@@ -54,7 +54,7 @@ body.chrisvf-grid-print .vf_grid_event {
     background-image: none !important;
     border: solid 1.5px #000 !important;
     color: #000;
-    vertical-align: top;
+    vertical-align: middle;
 }
 
 body.chrisvf-grid-print .vf_grid_event_noend {
@@ -66,8 +66,12 @@ body.chrisvf-grid-print .vf_grid_it {
     background-color: #fff !important;
 }
 
+body.chrisvf-grid-print th.vf_grid_timeslot {
+    vertical-align: top;
+}
+
 body.chrisvf-grid-print .vf_grid_event_middle {
-    padding: 0 0.2em 0.2em 0.2em;
+    padding: 0 0.2em;
 }
 
 body.chrisvf-grid-print .vf_grid_inner {
@@ -87,11 +91,12 @@ body.chrisvf-grid-print .vf_grid_cell_title {
 body.chrisvf-grid-print .vf_grid_cell_tag {
     background-color: transparent;
     color: #000;
-    border: solid 1px #000;
+    border: none;
     border-radius: 0;
     font-size: 65%;
+    font-style: italic;
     margin-top: 0.15em;
-    padding: 0.1em 0.2em;
+    padding: 0;
 }
 
 body.chrisvf-grid-print .vf_grid_it_control,
