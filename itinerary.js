@@ -385,9 +385,30 @@ function vfItineraryIcsUrl (ids) {
 }
 
 /**
+ * Events still present in the itinerary cookie (desktop page payload is static).
+ *
+ * @param {object[]} events Normalized export events (may include uid).
+ * @returns {object[]}
+ */
+function vfItineraryLiveExportEvents (events) {
+  var saved = vfGetItinerary()
+  var savedSet = {}
+  for (var i = 0; i < saved.length; i++) {
+    savedSet[saved[i]] = true
+  }
+  return (events || []).filter(function (event) {
+    if (!event || !event.uid) {
+      return false
+    }
+    return !!savedSet[event.uid]
+  })
+}
+
+/**
  * Bind desktop itinerary export buttons (email / copy / calendar).
  *
  * Expects `#vf-itinerary-export-data` JSON and `.vf_itinerary_export [data-itin-export]`.
+ * Filters against the live cookie so removals on this page are reflected without reload.
  */
 function vfItineraryExportInit () {
   var dataEl = document.getElementById('vf-itinerary-export-data')
@@ -414,13 +435,18 @@ function vfItineraryExportInit () {
     if (!btn || !root.contains(btn)) {
       return
     }
+    var live = vfItineraryLiveExportEvents(events)
+    if (!live.length) {
+      vfNotify('No events in your itinerary')
+      return
+    }
     var action = btn.getAttribute('data-itin-export')
     if (action === 'email') {
-      window.location.href = vfItineraryMailtoHref(vfItineraryFormatPlain(events))
+      window.location.href = vfItineraryMailtoHref(vfItineraryFormatPlain(live))
       return
     }
     if (action === 'copy') {
-      vfItineraryCopy(vfItineraryFormatPlain(events), vfItineraryFormatHtml(events)).then(function (ok) {
+      vfItineraryCopy(vfItineraryFormatPlain(live), vfItineraryFormatHtml(live)).then(function (ok) {
         if (ok) {
           vfNotify('Copied to clipboard')
         } else {

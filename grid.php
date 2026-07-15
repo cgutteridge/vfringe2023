@@ -406,7 +406,7 @@ function render_event($cell, $classes, $itinerary, $print = false)
     }
     $h[] = "<div class='vf_grid_cell_desc' style='display:none'>" . $cell['event']["DESCRIPTION"] . "</div>";
 
-    if ($cell['est']) {
+    if ($cell['est'] && empty($cell['event']['CANCELLED'])) {
         $h[] = "<div>[End time not yet known]</div>";
     }
     $h[] = "</div>"; # event inner

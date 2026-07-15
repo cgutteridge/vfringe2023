@@ -15,7 +15,7 @@ function chrisvf_add_itinerary_scripts()
     wp_register_style('chrisvf-itinerary', plugins_url('itinerary.css', __FILE__));
     wp_enqueue_style('chrisvf-itinerary');
 
-    wp_register_script('chrisvf-itinerary', plugins_url('itinerary.js', __FILE__), array('jquery'), '1.0.39');
+    wp_register_script('chrisvf-itinerary', plugins_url('itinerary.js', __FILE__), array('jquery'), '1.0.40');
     wp_enqueue_script('chrisvf-itinerary');
     wp_localize_script('chrisvf-itinerary', 'chrisvfItineraryConfig', array(
         // Query-string form always reaches WordPress (no rewrite flush; no .ics extension block).
@@ -103,8 +103,11 @@ function chrisvf_get_itinerary($ids = null)
 /**
  * Build a chronologically sorted normalized export payload for itinerary JS.
  *
+ * Includes `uid` so client export can filter against the live cookie after
+ * in-page removals without a reload.
+ *
  * @param array $itinerary Itinerary from chrisvf_get_itinerary() (codes + events).
- * @return array<int, array{start: string, end: string, summary: string, location: string, url: string}>
+ * @return array<int, array{uid: string, start: string, end: string, summary: string, location: string, url: string}>
  */
 function chrisvf_itinerary_export_events(array $itinerary)
 {
@@ -121,14 +124,19 @@ function chrisvf_itinerary_export_events(array $itinerary)
         if (!isset($byStart[$timeT]) || !is_array($byStart[$timeT])) {
             $byStart[$timeT] = array();
         }
-        $byStart[$timeT][] = $event;
+        $byStart[$timeT][] = array(
+            'code' => (string) $code,
+            'event' => $event,
+        );
     }
     ksort($byStart);
 
     $normalized = array();
     foreach ($byStart as $eventsAtTime) {
-        foreach ($eventsAtTime as $event) {
+        foreach ($eventsAtTime as $row) {
+            $event = $row['event'];
             $normalized[] = array(
+                'uid' => $row['code'],
                 'start' => (string) $event['DTSTART'],
                 'end' => !empty($event['DTEND']) ? (string) $event['DTEND'] : '',
                 'summary' => !empty($event['SUMMARY']) ? (string) $event['SUMMARY'] : '',
