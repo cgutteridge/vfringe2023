@@ -23,6 +23,7 @@ require_once("search.php");
 require_once("byday.php");
 require_once("mobile.php");
 require_once("grid-print.php");
+require_once("itinerary-ics.php");
 
 
 

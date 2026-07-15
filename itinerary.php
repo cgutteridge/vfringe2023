@@ -15,26 +15,29 @@ function chrisvf_add_itinerary_scripts()
     wp_register_style('chrisvf-itinerary', plugins_url('itinerary.css', __FILE__));
     wp_enqueue_style('chrisvf-itinerary');
 
-    wp_register_script('chrisvf-itinerary', plugins_url('itinerary.js', __FILE__), array('jquery'), '1.0.10');
+    wp_register_script('chrisvf-itinerary', plugins_url('itinerary.js', __FILE__), array('jquery'), '1.0.39');
     wp_enqueue_script('chrisvf-itinerary');
+    wp_localize_script('chrisvf-itinerary', 'chrisvfItineraryConfig', array(
+        // Query-string form always reaches WordPress (no rewrite flush; no .ics extension block).
+        'icsUrl' => home_url('/?chrisvf_itinerary_ics=1'),
+    ));
 }
 
 add_action('wp_enqueue_scripts', 'chrisvf_add_itinerary_scripts');
 
+/**
+ * Print add/remove itinerary controls after single-event content.
+ *
+ * @param array       $atts    Unused shortcode-style attrs.
+ * @param string|null $content Unused.
+ * @return void
+ */
 function chrisvf_print_itinerary_add($atts = [], $content = null)
 {
     global $wp_query;
     $code = $wp_query->post->ID . "-" . tribe_get_start_date($wp_query->post->ID, false, 'U');
     print "<div class='vf_itinerary_toggle' data-code='$code'></div>";
     print "<a href='/itinerary' class='vf_itinerary_button'>View itinerary</a>";
-
-    $link = get_permalink($ep_query->post->ID);
-    $title = $wp_query->post->post_title;
-    $dayofweek = tribe_get_start_date($wp_query->post->ID, false, 'l');
-
-    $msg = "This $dayofweek, I'm going to see $title at #VFringe2025 $link";
-    #print "<a href='https://twitter.com/intent/tweet?text=" . urlencode($msg) . "' class='vf_itinerary_button'>Tweet this</a>";
-    print "<a href='https://www.facebook.com/sharer/sharer.php?u=" . urlencode($link) . "' class='vf_itinerary_button'>Share on Facebook</a>";
     print "<script>jQuery(document).ready(vfItineraryInit);</script>";
 }
 
@@ -97,13 +100,59 @@ function chrisvf_get_itinerary($ids = null)
     return $chrisvf_itinerary;
 }
 
+/**
+ * Build a chronologically sorted normalized export payload for itinerary JS.
+ *
+ * @param array $itinerary Itinerary from chrisvf_get_itinerary() (codes + events).
+ * @return array<int, array{start: string, end: string, summary: string, location: string, url: string}>
+ */
+function chrisvf_itinerary_export_events(array $itinerary)
+{
+    $byStart = array();
+    foreach ($itinerary['codes'] as $code) {
+        $event = @$itinerary['events'][$code];
+        if (!$event || empty($event['DTSTART'])) {
+            continue;
+        }
+        $timeT = strtotime($event['DTSTART']);
+        if ($timeT === false) {
+            $timeT = 0;
+        }
+        if (!isset($byStart[$timeT]) || !is_array($byStart[$timeT])) {
+            $byStart[$timeT] = array();
+        }
+        $byStart[$timeT][] = $event;
+    }
+    ksort($byStart);
+
+    $normalized = array();
+    foreach ($byStart as $eventsAtTime) {
+        foreach ($eventsAtTime as $event) {
+            $normalized[] = array(
+                'start' => (string) $event['DTSTART'],
+                'end' => !empty($event['DTEND']) ? (string) $event['DTEND'] : '',
+                'summary' => !empty($event['SUMMARY']) ? (string) $event['SUMMARY'] : '',
+                'location' => !empty($event['LOCATION']) ? (string) $event['LOCATION'] : '',
+                'url' => !empty($event['URL']) ? (string) $event['URL'] : '',
+            );
+        }
+    }
+
+    return $normalized;
+}
+
+/**
+ * Render the desktop itinerary shortcode: table plus email/copy export actions.
+ *
+ * @param array       $atts    Unused.
+ * @param string|null $content Unused.
+ * @return string
+ */
 function chrisvf_render_itinerary($atts = [], $content = null)
 {
     $itinerary = chrisvf_get_itinerary();
 
     $h = array();
-    $list = array();
-    $script = array();
     #$h []= "<h1>Your Ventnor Fringe and Festival Itinerary</h1>";
     $h [] = "<p>This list is saved on your browser using a cookie.</p>";
     if (count($itinerary['codes'])) {
@@ -115,57 +164,16 @@ function chrisvf_render_itinerary($atts = [], $content = null)
     if (count($itinerary['codes'])) {
         $h [] = chrisvf_render_itinerary_table($itinerary);
 
-
-        /* prepare email */
-        $body = "\r\nYour Ventnor Fringe Itinerary\r\n";
-        $body = "\r\n";
-
-        foreach ($itinerary['codes'] as $code) {
-            $event = @$itinerary['events'][$code];
-            if (!$event) {
-                $time_t = 0;
-            } else {
-                $time_t = strtotime($event["DTSTART"]);
-            }
-            if (@!is_array($list[$time_t])) {
-                $list[$time_t][] = $code;
-            }
-        }
-        ksort($list);
-        global $vf_js_id;
-        $lastday = "NULL";
-        foreach ($list as $start_time => $codes) {
-            foreach ($codes as $code) {
-                $event = @$itinerary['events'][$code];
-                if (!$event) {
-                    continue;
-                }
-                $thisday = date("l jS", $start_time);
-                if ($thisday != $lastday) {
-                    $body .= "\r\n$thisday\r\n";
-                    $lastday = $thisday;
-                }
-                $body .= "" . date("H:i", $start_time);
-                if (@$event["DTEND"]) {
-                    $end_t = strtotime($event["DTEND"]);
-                    $body .= "-" . date("H:i", $end_t);
-                }
-                $body .= ' : ' . $event["SUMMARY"];
-                $body .= ' @ ' . $event["LOCATION"];
-
-                if (!empty($event["URL"])) {
-                    $body .= ' - ' . $event["URL"];
-                }
-                $body .= "\r\n";
-            }
-        }
-        $link = "https://vfringe.co.uk/saved-itinerary?ids=" . urlencode($_COOKIE["itinerary2025"]);
-        $msg = "My #VFringe25 plan: $link";
-        $h [] = "<div>";
-        $h [] = "<a href='mailto:?subject=Your%20Ventnor%20Fringe%20Itinerary&body=" . preg_replace('/\+/', '%20', urlencode($body)) . "' class='vf_itinerary_button'>Send by Email</a>";
-        #$h [] = "<a target='_blank' ref='https://twitter.com/intent/tweet?text=" . urlencode($msg) . "' class='vf_itinerary_button'>Tweet my Itinerary</a>";
-        $h [] = "<a target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=" . urlencode($link) . "' class='vf_itinerary_button'>Post to Facebook</a>";
-        $h [] = "</div>";
+        $exportEvents = chrisvf_itinerary_export_events($itinerary);
+        $h [] = '<script type="application/json" id="vf-itinerary-export-data">'
+            . wp_json_encode($exportEvents, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)
+            . '</script>';
+        $h [] = '<div class="vf_itinerary_export">';
+        $h [] = '<button type="button" class="vf_itinerary_button" data-itin-export="email">Send by Email</button>';
+        $h [] = '<button type="button" class="vf_itinerary_button" data-itin-export="copy">Copy</button>';
+        $h [] = '<button type="button" class="vf_itinerary_button" data-itin-export="calendar">Download calendar</button>';
+        $h [] = '</div>';
+        $h [] = '<script>jQuery(document).ready(vfItineraryExportInit);</script>';
     }
     return join("", $h);
 }

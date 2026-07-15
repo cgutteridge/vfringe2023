@@ -347,6 +347,35 @@ html {
   padding: 0;
 }
 
+.chrisvf-mobile-export {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid #ccc;
+  background: var(--vf-paper-deep);
+}
+
+.chrisvf-mobile-export-btn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.35rem 0.7rem;
+  border: 2px solid #555;
+  background: #fff;
+  font-size: 0.9em;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: var(--vf-radius);
+  flex-shrink: 0;
+  color: inherit;
+  font-family: inherit;
+}
+
+.chrisvf-mobile-export-btn:focus-visible {
+  outline: 3px solid var(--vf-focus);
+  outline-offset: 2px;
+}
+
 .chrisvf-mobile-event {
   border-bottom: 1px solid #ccc;
 }

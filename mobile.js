@@ -535,6 +535,24 @@
   }
 
   /**
+   * Map /m programme events into the shared itinerary export shape.
+   *
+   * @param {object[]} events Visible programme events.
+   * @returns {object[]}
+   */
+  function exportEventsFromMobile (events) {
+    return (events || []).map(function (event) {
+      return {
+        start: event.start || '',
+        end: event.end || '',
+        summary: event.summary || '',
+        location: event.location || '',
+        url: event.ticketUrl || event.siteUrl || ''
+      }
+    })
+  }
+
+  /**
    * Label for the active quick filter.
    *
    * @returns {string}
@@ -943,6 +961,36 @@
       })
     })
 
+    root.querySelectorAll('[data-itin-export]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var action = btn.getAttribute('data-itin-export')
+        var exportEvents = exportEventsFromMobile(visibleEvents())
+        if (!exportEvents.length) {
+          return
+        }
+        if (action === 'email') {
+          window.location.href = vfItineraryMailtoHref(vfItineraryFormatPlain(exportEvents))
+          return
+        }
+        if (action === 'copy') {
+          vfItineraryCopy(
+            vfItineraryFormatPlain(exportEvents),
+            vfItineraryFormatHtml(exportEvents)
+          ).then(function (ok) {
+            if (ok) {
+              showMobileToast('Copied to clipboard')
+            } else {
+              showMobileToast('Could not copy')
+            }
+          })
+          return
+        }
+        if (action === 'calendar') {
+          window.location.href = vfItineraryIcsUrl()
+        }
+      })
+    })
+
     var modal = root.querySelector('.chrisvf-mobile-modal')
     if (modal) {
       var chrome = root.querySelectorAll('.chrisvf-mobile-header, .chrisvf-mobile-main, .chrisvf-mobile-footer')
@@ -1100,6 +1148,13 @@
               : 'No events match your filters.')) +
           '</p>'
       } else {
+        if (state.filter === 'itinerary') {
+          html += '<div class="chrisvf-mobile-export" role="group" aria-label="Export itinerary">'
+          html += '<button type="button" class="chrisvf-mobile-export-btn" data-itin-export="email">Email</button>'
+          html += '<button type="button" class="chrisvf-mobile-export-btn" data-itin-export="copy">Copy</button>'
+          html += '<button type="button" class="chrisvf-mobile-export-btn" data-itin-export="calendar">Download calendar</button>'
+          html += '</div>'
+        }
         html += '<ul class="chrisvf-mobile-list">'
         events.forEach(function (event) {
           var badge = liveBadge(event)

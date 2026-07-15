@@ -13,7 +13,7 @@
     color: #888888 !important;
     border-color: #888888;
     background: transparent;
-    display: block;
+    display: inline-block;
     cursor: pointer;
     font-size: 20px;
     line-height: 16px;
@@ -23,7 +23,11 @@
     border-radius: 100px;
     font-weight: 700;
     transition: 1s all;
+    font-family: inherit;
+}
 
+.vf_itinerary_export {
+    margin-top: 1em;
 }
 
 

@@ -4,6 +4,16 @@
 
 This repository root is the real WordPress plugin. Do not confuse it with `download-boxoffice/`, which is only a helper utility for producing `boxoffice-events.tsv`.
 
+## Git workflow
+
+This is a one-person project. There is no peer review and no pull-request process.
+
+- New features and non-trivial fixes go on a branch.
+- Test on the branch until the change is good enough to ship.
+- Merge to `main`, then push `main` to the remote.
+
+Do not assume a second reviewer, approval gates, or open PRs waiting for merge.
+
 ## First places to read
 
 1. `README.md`

@@ -6,6 +6,10 @@ This directory is a WordPress plugin used to power Ventnor Fringe festival pages
 
 It is not only a downloader. The `download-boxoffice/` subdirectory is a separate Node-based helper that produces one input file for the plugin.
 
+## Git workflow
+
+One maintainer; no peer review or pull requests. New work goes on a branch, is tested there, then merges to `main` and is pushed.
+
 ## Main runtime flow
 
 ### 1. Bootstrap
@@ -22,6 +26,8 @@ It is not only a downloader. The `download-boxoffice/` subdirectory is a separat
 - `search.php`
 - `byday.php`
 - `mobile.php`
+- `grid-print.php`
+- `itinerary-ics.php`
 
 ### 2. Shared event build
 
@@ -52,6 +58,10 @@ Each shortcode file renders from the shared event array:
 
 - `/m` — standalone mobile programme shell
 - `/m/json` — normalized JSON for that shell
+
+`itinerary-ics.php` exposes:
+
+- `/itinerary-ics?ids=` — downloadable multi-event calendar file for a saved itinerary
 
 ## External dependencies and assumptions
 

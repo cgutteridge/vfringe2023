@@ -1,14 +1,22 @@
 # Maintenance Guide
 
+## Git workflow
+
+This is a one-person project. There is no peer review and no pull-request process.
+
+- New features and non-trivial fixes go on a branch.
+- Test on the branch until the change is good enough to ship.
+- Merge to `main`, then push `main` to the remote.
+
 ## Typical update tasks
 
 ### Seasonal rollover
 
 - Search for hard-coded year strings such as `2025`.
 - Check cookie names in `itinerary.php` (and keep `/m` on the same cookie via `itinerary.js`).
-- Check social/share text and saved itinerary URLs.
-- Verify absolute paths such as `/vfringe/map`, `/vfringe/planner`, `/itinerary`, `/m`, and `/quick-search/`.
-- After deploy, flush permalinks once if `/m` or `/m/json` 404s.
+- Check saved itinerary URLs and itinerary export helpers (email / copy / `/itinerary-ics`).
+- Verify absolute paths such as `/vfringe/map`, `/vfringe/planner`, `/itinerary`, `/m`, `/itinerary-ics`, and `/quick-search/`.
+- After deploy, flush permalinks once if `/m`, `/m/json`, or `/itinerary-ics` 404s.
 
 ### Box office import refresh
 
@@ -42,6 +50,12 @@
 - Keep routes and templates in sync: `mobile.php`, `mobile.js`, `mobile.css`, `templates/page-mobile.php`.
 - Map tab behaviour is owned by `map.php` (`layout=embedded`, `mobile=1`); do not fork a second map for `/m`.
 - After deploy, flush permalinks once if `/m` or `/m/json` 404s.
+
+### Itinerary export
+
+- Shared formatters live in `itinerary.js` (`vfItineraryFormatPlain`, `vfItineraryFormatHtml`, `vfItineraryMailtoHref`, `vfItineraryCopy`, `vfItineraryIcsUrl`).
+- Desktop actions are on the `chrisvf_itinerary` shortcode page; `/m` shows the same actions when the itinerary filter is active.
+- `/itinerary-ics?ids=` is owned by `itinerary-ics.php`. Buttons use `/?chrisvf_itinerary_ics=1&ids=` so downloads work without a rewrite flush and without a `.ics` path (which Apache often 404s before PHP). Pretty `/itinerary-ics` still works once rewrites are flushed.
 
 ### Rolling back 2026 `/m` style branding
 
@@ -90,7 +104,7 @@ Change only one layer at a time unless the task clearly spans layers:
 
 - shared event contract: `chrisvf.php`
 - map: `map.php` plus JSON/icon assets
-- itinerary: `itinerary.php`, `itinerary.js`, `itinerary.css`
+- itinerary: `itinerary.php`, `itinerary.js`, `itinerary.css`, `itinerary-ics.php`
 - mobile programme: `mobile.php`, `mobile.js`, `mobile.css`, `templates/page-mobile.php` (map via `map.php` with `layout`/`mobile` attrs)
 - schedule/grid: `grid.php`, `grid.js`, `grid.css`, `byday.php`, `byday.css`
 - curated data: `boxoffice-events.tsv`, `boxoffice-changes.log`, `boxoffice-hidden.json`, `extras.tsv`, `places.json`, `outlines.json`, `lines.json`
