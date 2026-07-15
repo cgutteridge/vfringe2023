@@ -791,6 +791,10 @@
           escapeHtml(event.uid) + '">Add to itinerary</button>'
       }
     }
+    if (event.uid && typeof vfItineraryIcsUrl === 'function') {
+      html += '<button type="button" class="chrisvf-mobile-btn chrisvf-mobile-btn-calendar" data-calendar-add="' +
+        escapeHtml(event.uid) + '">Save to phone calendar</button>'
+    }
     if (event.ticketUrl) {
       html += '<a class="chrisvf-mobile-btn chrisvf-mobile-btn-ticket" href="' +
         escapeHtml(event.ticketUrl) + '" target="_blank" rel="noopener">Tickets</a>'
@@ -958,6 +962,16 @@
       btn.addEventListener('click', function () {
         vfItineraryRemove(btn.getAttribute('data-itin-remove'))
         render()
+      })
+    })
+
+    root.querySelectorAll('[data-calendar-add]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var uid = btn.getAttribute('data-calendar-add')
+        if (!uid || typeof vfItineraryIcsUrl !== 'function') {
+          return
+        }
+        window.location.href = vfItineraryIcsUrl([uid])
       })
     })
 
