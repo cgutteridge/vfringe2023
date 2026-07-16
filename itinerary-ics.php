@@ -248,7 +248,8 @@ function chrisvf_itinerary_ics_maybe_serve()
 
     status_header(200);
     header('Content-Type: text/calendar; charset=utf-8');
-    header('Content-Disposition: attachment; filename="vfringe-itinerary.ics"');
+    $filename = 'vfringe-itinerary-' . gmdate('Ymd-His') . '.ics';
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Cache-Control: private, no-cache');
     echo $body;
     exit;
