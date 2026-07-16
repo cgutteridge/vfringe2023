@@ -36,6 +36,30 @@ body.chrisvf-grid-print {
     color: #222;
 }
 
+.chrisvf-grid-print-index {
+    list-style: none;
+    margin: 1rem 0 0 0;
+    padding: 0;
+    font-family: "Work Sans", sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.chrisvf-grid-print-index li {
+    margin: 0;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.chrisvf-grid-print-index a {
+    color: #000;
+    text-decoration: underline;
+}
+
+.chrisvf-grid-print-index-empty {
+    font-family: "Work Sans", sans-serif;
+}
+
 body.chrisvf-grid-print table.vf_grid {
     page-break-after: auto;
     color: #000;

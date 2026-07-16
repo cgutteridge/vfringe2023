@@ -3,6 +3,9 @@
 /**
  * Standalone print-friendly day grid at /grid-print/.
  *
+ * `/grid-print/` with no date lists festival days; `?date=YYYY-MM-DD` (or `today`)
+ * renders that day's print grid.
+ *
  * @package ChrisVF
  */
 
@@ -105,9 +108,43 @@ function chrisvf_grid_print_parse_request($wp)
 add_action('parse_request', 'chrisvf_grid_print_parse_request', 0);
 
 /**
+ * Collect festival day keys (Y-m-d) that have timed programme events.
+ *
+ * @return string[] Sorted unique dates.
+ */
+function chrisvf_grid_print_festival_days()
+{
+    $daySet = [];
+    foreach (chrisvf_get_events() as $event) {
+        if (!empty($event['ALLDAY']) || empty($event['DTSTART'])) {
+            continue;
+        }
+        $startT = strtotime($event['DTSTART']);
+        if ($startT === false) {
+            continue;
+        }
+        $daySet[date('Y-m-d', $startT)] = true;
+    }
+    $days = array_keys($daySet);
+    sort($days);
+    return $days;
+}
+
+/**
+ * Whether the request includes an explicit date CGI parameter.
+ *
+ * @return bool
+ */
+function chrisvf_grid_print_has_date_param()
+{
+    return isset($_GET['date']) && trim(wp_unslash((string) $_GET['date'])) !== '';
+}
+
+/**
  * Resolve the calendar date for the print page from the request.
  *
- * Accepts ?date=YYYY-MM-DD; falls back to today when missing or invalid.
+ * Accepts ?date=YYYY-MM-DD or ?date=today. Invalid values fall back to today.
+ * Callers that want the index page should check chrisvf_grid_print_has_date_param() first.
  *
  * @return string Date in Y-m-d form.
  */
@@ -129,7 +166,33 @@ function chrisvf_grid_print_resolve_date()
 }
 
 /**
+ * Build a simple HTML index of links to each festival day's print grid.
+ *
+ * @param string[] $days Festival day keys (Y-m-d).
+ * @return string
+ */
+function chrisvf_grid_print_index_html(array $days)
+{
+    if (!$days) {
+        return '<p class="chrisvf-grid-print-index-empty">No festival days found.</p>';
+    }
+
+    $h = [];
+    $h[] = '<ul class="chrisvf-grid-print-index">';
+    foreach ($days as $day) {
+        $label = date('l j F Y', strtotime($day . ' 12:00:00'));
+        $url = home_url('/grid-print/?date=' . rawurlencode($day));
+        $h[] = '<li><a href="' . esc_url($url) . '">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</a></li>';
+    }
+    $h[] = '</ul>';
+    return implode("\n", $h);
+}
+
+/**
  * Serve the standalone print grid shell at /grid-print/.
+ *
+ * With no ?date= parameter, lists links to each festival day's print grid.
+ * With ?date=YYYY-MM-DD or ?date=today, renders that day's print grid.
  *
  * @return void
  */
@@ -139,12 +202,19 @@ function chrisvf_grid_print_maybe_serve()
         return;
     }
 
-    $date = chrisvf_grid_print_resolve_date();
-    $GLOBALS['chrisvf_grid_print_date'] = $date;
-    $GLOBALS['chrisvf_grid_print_html'] = chrisvf_render_grid_day([
-        'date' => $date,
-        'print' => '1',
-    ]);
+    if (!chrisvf_grid_print_has_date_param()) {
+        $GLOBALS['chrisvf_grid_print_mode'] = 'index';
+        $GLOBALS['chrisvf_grid_print_date'] = '';
+        $GLOBALS['chrisvf_grid_print_html'] = chrisvf_grid_print_index_html(chrisvf_grid_print_festival_days());
+    } else {
+        $date = chrisvf_grid_print_resolve_date();
+        $GLOBALS['chrisvf_grid_print_mode'] = 'day';
+        $GLOBALS['chrisvf_grid_print_date'] = $date;
+        $GLOBALS['chrisvf_grid_print_html'] = chrisvf_render_grid_day([
+            'date' => $date,
+            'print' => '1',
+        ]);
+    }
 
     $template = __DIR__ . '/templates/page-grid-print.php';
     if (!file_exists($template)) {
