@@ -32,6 +32,13 @@ This is a one-person project. There is no peer review and no pull-request proces
 - Check for venue labels that no longer match WordPress taxonomy terms or `places.json`.
 - Review overwrite warnings produced when TSV rows replace WordPress events.
 
+### Hiding events from the programme
+
+- Spektrix / boxoffice rows: add the numeric `EventId` to `eventIds` in `hidden-events.json`.
+- WordPress EventON posts: add the post slug (e.g. `slow-ponies-tnt` from `/events/slow-ponies-tnt/`) to `wpSlugs` in the same file.
+- Hidden events stay in WP / the TSV but are omitted from grid, `/m`, map, itinerary resolve, etc.
+- After editing, hard-refresh; clear the plugin `/tmp` programme cache if a view still looks stale.
+
 ### Map updates
 
 - Keep `places.json` venue labels aligned with event `LOCATION` values.
@@ -107,7 +114,7 @@ Change only one layer at a time unless the task clearly spans layers:
 - itinerary: `itinerary.php`, `itinerary.js`, `itinerary.css`, `itinerary-ics.php`
 - mobile programme: `mobile.php`, `mobile.js`, `mobile.css`, `templates/page-mobile.php` (map via `map.php` with `layout`/`mobile` attrs)
 - schedule/grid: `grid.php`, `grid.js`, `grid.css`, `byday.php`, `byday.css`
-- curated data: `boxoffice-events.tsv`, `boxoffice-changes.log`, `boxoffice-hidden.json`, `extras.tsv`, `places.json`, `outlines.json`, `lines.json`
+- curated data: `boxoffice-events.tsv`, `boxoffice-changes.log`, `hidden-events.json`, `extras.tsv`, `places.json`, `outlines.json`, `lines.json`
 - downloader: `download-boxoffice/`
 
 ## Files an AI should inspect before editing

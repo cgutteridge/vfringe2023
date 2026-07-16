@@ -64,7 +64,7 @@ function chrisvf_tsv_resolve_end_date($dateYmd, $startTime, $endTime)
 /**
  * Load Spektrix EventIds that should stay in the boxoffice TSV but not appear on the site.
  *
- * Reads `boxoffice-hidden.json` next to this plugin. Missing or invalid files fail open
+ * Reads `hidden-events.json` next to this plugin. Missing or invalid files fail open
  * (empty set), so all TSV rows still load.
  *
  * @return array<string, true> Lookup set keyed by numeric EventId string.
@@ -78,7 +78,7 @@ function chrisvf_boxoffice_hidden_event_ids()
     }
 
     $hidden = [];
-    $path = __DIR__ . '/boxoffice-hidden.json';
+    $path = __DIR__ . '/hidden-events.json';
     if (!is_readable($path)) {
         return $hidden;
     }
@@ -92,6 +92,43 @@ function chrisvf_boxoffice_hidden_event_ids()
         $eventId = trim((string) $eventId);
         if ($eventId !== '') {
             $hidden[$eventId] = true;
+        }
+    }
+
+    return $hidden;
+}
+
+/**
+ * Load WordPress event post slugs that should not appear in programme views.
+ *
+ * Reads `wpSlugs` from `hidden-events.json` (same file as Spektrix hides). Missing
+ * or invalid files fail open (empty set).
+ *
+ * @return array<string, true> Lookup set keyed by post_name slug.
+ */
+function chrisvf_wp_hidden_slugs()
+{
+    static $hidden = null;
+
+    if ($hidden !== null) {
+        return $hidden;
+    }
+
+    $hidden = [];
+    $path = __DIR__ . '/hidden-events.json';
+    if (!is_readable($path)) {
+        return $hidden;
+    }
+
+    $decoded = json_decode(file_get_contents($path), true);
+    if (!is_array($decoded) || empty($decoded['wpSlugs']) || !is_array($decoded['wpSlugs'])) {
+        return $hidden;
+    }
+
+    foreach ($decoded['wpSlugs'] as $slug) {
+        $slug = trim((string) $slug);
+        if ($slug !== '') {
+            $hidden[$slug] = true;
         }
     }
 
@@ -333,7 +370,11 @@ function chrisvf_wp_events()
 
     $ical = [];
     $uids = [];
+    $hiddenWpSlugs = chrisvf_wp_hidden_slugs();
     foreach ($events as $event_post) {
+        if (!empty($event_post->post_name) && isset($hiddenWpSlugs[$event_post->post_name])) {
+            continue;
+        }
         $times = [[$event_post->meta["evcal_srow"], $event_post->meta["evcal_erow"]]];
         if ($event_post->meta["evcal_repeat"] == "yes" && !empty($event_post->meta["repeat_intervals"])) {
             $times = $event_post->meta["repeat_intervals"];
@@ -430,7 +471,7 @@ function chrisvf_wp_events()
                 continue;
             }
 
-            # skip box-office-only catalogue rows configured in boxoffice-hidden.json
+            # skip box-office-only catalogue rows configured in hidden-events.json
             $eventId = chrisvf_tsv_event_id(@$record["Event"]);
             if ($eventId !== '' && isset($hiddenEventIds[$eventId])) {
                 continue;
