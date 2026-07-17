@@ -416,7 +416,7 @@
     state.pendingMapFocus = {
       lat: latLng[0],
       lng: latLng[1],
-      zoom: 18
+      zoom: 19
     }
     state.activeTab = 'map'
     state.selectedUid = null
@@ -471,7 +471,7 @@
     if (!map || !userLocation.latlng || typeof map.setView !== 'function') {
       return
     }
-    var zoom = 16
+    var zoom = 18
     if (typeof map.getZoom === 'function') {
       var currentZoom = map.getZoom()
       if (typeof currentZoom === 'number' && isFinite(currentZoom)) {
@@ -506,7 +506,8 @@
     }
     var icon = leaflet.divIcon({
       className: 'chrisvf-mobile-user-location',
-      html: '<span class="chrisvf-mobile-user-location-dot" aria-hidden="true"></span>',
+      html: '<span class="chrisvf-mobile-user-location-halo" aria-hidden="true"></span>' +
+        '<span class="chrisvf-mobile-user-location-dot" aria-hidden="true"></span>',
       iconSize: [40, 40],
       iconAnchor: [20, 20]
     })

@@ -604,35 +604,51 @@ html {
   border: 0;
 }
 
+.chrisvf-mobile-user-location-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border-radius: 50%;
+  background: rgba(80, 80, 80, 0.35);
+  pointer-events: none;
+}
+
 .chrisvf-mobile-user-location-dot {
   position: absolute;
   top: 50%;
   left: 50%;
   width: 14px;
   height: 14px;
+  margin: -7px 0 0 -7px;
   border-radius: 50%;
   background: #fff;
   border: 3px solid #0066cc;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.35);
   box-sizing: border-box;
-  transform: translate(-50%, -50%);
   pointer-events: none;
-  /* 1s pulse, then 4s rest (5s total cycle). */
+  /*
+   * Animate width/height (not transform): Leaflet positions markers with
+   * translate3d, and Android Chrome often drops child transform animations.
+   * 1s pulse, then 4s rest (5s total cycle).
+   */
   animation: chrisvf-mobile-user-pulse 5s ease-in-out infinite;
 }
 
 @keyframes chrisvf-mobile-user-pulse {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
+  0%,
+  20%,
+  100% {
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
   }
   10% {
-    transform: translate(-50%, -50%) scale(1.45);
-  }
-  20% {
-    transform: translate(-50%, -50%) scale(1);
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
   }
 }
 
