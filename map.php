@@ -11,6 +11,13 @@ function chrisvf_add_map_scripts()
     wp_register_style('chrisvf-leaflet', plugins_url('leaflet.css', __FILE__));
     wp_register_script('chrisvf-leaflet-label', plugins_url('leaflet.label.js', __FILE__), ['chrisvf-leaflet'], null, false);
     wp_register_style('chrisvf-leaflet-label', plugins_url('leaflet.label.css', __FILE__), ['chrisvf-leaflet']);
+    wp_register_script(
+        'chrisvf-map-live',
+        plugins_url('map-live.js', __FILE__),
+        ['chrisvf-leaflet'],
+        '1.0.1',
+        true
+    );
 }
 
 /*********************************************************************************
@@ -29,6 +36,10 @@ function chrisvf_add_map_scripts()
  */
 function chrisvf_render_map($atts = [])
 {
+    // Ensure map scripts are registered even when rendered before wp_enqueue_scripts
+    // (e.g. /m template_redirect path).
+    chrisvf_add_map_scripts();
+
     if (!is_array($atts)) {
         $atts = [];
     }
@@ -98,6 +109,14 @@ function chrisvf_render_map($atts = [])
         @$places[$poi]["events"][$date]['label'] = $dateLabel;
         @$places[$poi]["events"][$date]['times'][$time][] = $event;
 
+        // Structured data for client-side live tooltip refresh (map-live.js).
+        $places[$poi]["liveEvents"][] = [
+            'start' => $event['DTSTART'],
+            'end' => !empty($event['DTEND']) ? $event['DTEND'] : $event['DTSTART'],
+            'summary' => $event['SUMMARY'],
+            'free' => $free,
+        ];
+
         if ($time_t > chrisvf_time() && $time_t < chrisvf_time() + 90 * 60) {
             #starts in the next 90 minutes
             $timetext = date("ga", $time_t);
@@ -115,8 +134,17 @@ function chrisvf_render_map($atts = [])
 
     wp_enqueue_script('chrisvf-leaflet');
     wp_enqueue_script('chrisvf-leaflet-label');
+    wp_enqueue_script('chrisvf-map-live');
     wp_enqueue_style('chrisvf-leaflet');
     wp_enqueue_style('chrisvf-leaflet-label');
+
+    $timeShift = isset($_GET['TIMESHIFT']) ? (int) $_GET['TIMESHIFT'] : 0;
+    wp_add_inline_script(
+        'chrisvf-map-live',
+        'window.chrisvfMapTimeShift = ' . wp_json_encode($timeShift) . ';' .
+        'window.chrisvfMapLiveLabelEntries = window.chrisvfMapLiveLabelEntries || [];',
+        'before'
+    );
 
 
     global $mapid;
@@ -137,6 +165,8 @@ function chrisvf_render_map($atts = [])
     $js = "";
     $js .= "
 jQuery( document ).ready( function() {
+  window.chrisvfMapTimeShift = " . wp_json_encode($timeShift) . ";
+  window.chrisvfMapLiveLabelEntries = window.chrisvfMapLiveLabelEntries || [];
 
   let map;
   let bounds = L.latLngBounds([]);
@@ -250,6 +280,13 @@ jQuery( document ).ready( function() {
         } else {
             $nowText = 'false';
         }
+        $liveEventsJson = wp_json_encode(
+            !empty($place['liveEvents']) ? array_values($place['liveEvents']) : [],
+            JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+        );
+        if ($liveEventsJson === false) {
+            $liveEventsJson = '[]';
+        }
         $ldir = "left";
         $tipOffset = -16;
         if (@$place["LDIR"] == "right") {
@@ -257,7 +294,7 @@ jQuery( document ).ready( function() {
             $tipOffset = 16;
         }
         $js .= "
-  (function(lat_long,icon_url,icon_size,icon_anchor, name, popupText,nowText){
+  (function(lat_long,icon_url,icon_size,icon_anchor, name, popupText,nowText,liveEvents){
     icon = L.icon( { iconUrl: icon_url, iconSize: icon_size, iconAnchor: icon_anchor, labelAnchor: [16, -18], popupAnchor: [ 0,-40 ] } );
     let label = \"<strong>\"+name+\"</strong>\";
     let markerOpts = { icon:icon };
@@ -265,12 +302,16 @@ jQuery( document ).ready( function() {
     let popup = L.popup();
     popup.setContent( '<div style=\"max-height: 300px; overflow:auto\">'+popupText+'</div>' );
     let marker = L.marker(lat_long, markerOpts ).bindPopup(popup).addTo(map);
+    let tipOpts = { offset: [ $tipOffset, -20], permanent: true, direction: '$ldir' };
     if( nowText ) {
-      marker.bindTooltip(nowText, { offset: [ $tipOffset, -20], permanent: true, direction: '$ldir' } );
+      marker.bindTooltip(nowText, tipOpts );
+    }
+    if (window.chrisvfMapLiveLabelEntries) {
+      window.chrisvfMapLiveLabelEntries.push({ marker: marker, events: liveEvents || [], tipOpts: tipOpts });
     }
 
     bounds.extend( lat_long );
-}([$lat_long],'$icon_url',[$icon_size],[$icon_anchor],'" . htmlspecialchars($place["NAME"], ENT_QUOTES) . "','" . preg_replace("/'/", "\\'", $popup) . "',$nowText));\n";
+}([$lat_long],'$icon_url',[$icon_size],[$icon_anchor],'" . htmlspecialchars($place["NAME"], ENT_QUOTES) . "','" . preg_replace("/'/", "\\'", $popup) . "',$nowText,$liveEventsJson));\n";
     }
     $js .= "map.fitBounds( bounds );\n";
     if ($embedded) {
@@ -300,9 +341,13 @@ jQuery( document ).ready( function() {
         $url = plugins_url("art/".$overlay["img"], __FILE__);
         $bounds = json_encode( $overlay["bounds"] );
         $js .= "L.imageOverlay( '$url' , $bounds, { opacity: 0.5 }).addTo(map)\n";
-    } 
+    }
 
-    $js .= "});\n";
+    $js .= "
+  if (typeof window.chrisvfScheduleMapLiveLabelRefresh === 'function') {
+    window.chrisvfScheduleMapLiveLabelRefresh();
+  }
+});\n";
 
 
 
