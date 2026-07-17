@@ -25,7 +25,7 @@ $print_css = plugins_url('grid-print.css', $asset_ref);
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php echo htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8'); ?></title>
     <link rel="stylesheet" href="<?php echo esc_url($grid_css); ?>?v=1.002">
-    <link rel="stylesheet" href="<?php echo esc_url($print_css); ?>?v=1.013">
+    <link rel="stylesheet" href="<?php echo esc_url($print_css); ?>?v=1.014">
 </head>
 <body class="chrisvf-grid-print<?php echo $is_index ? ' chrisvf-grid-print-index-page' : ''; ?>">
 <header class="chrisvf-grid-print-header">

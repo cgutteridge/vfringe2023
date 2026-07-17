@@ -154,10 +154,8 @@ body.chrisvf-grid-print .vf_grid_row_hour_even .vf_grid_col_even.vf_grid_freecel
 
 /*
  * Freecell zone backgrounds: faint monochrome seamless texture tiles.
- * Fixed attachment keeps the tile continuous across adjacent columns in the
- * same zone. The odd/even background-color is multiplied over the tile for
- * subtle banding.
- */
+ * Temporarily commented out so print grids stay clear / ink-light.
+ *
 body.chrisvf-grid-print .vf_grid_freecell {
     background-repeat: repeat;
     background-position: top left;
@@ -188,6 +186,7 @@ body.chrisvf-grid-print .vf_grid_zone_park.vf_grid_freecell {
     background-image: url(print-bg/park.jpg?v=2);
     background-size: 150px 150px;
 }
+ */
 
 @media print {
     body.chrisvf-grid-print {
