@@ -32,6 +32,16 @@
     pendingMapFocus: null
   }
 
+  var userLocation = {
+    /** @type {number|null} */
+    watchId: null,
+    /** @type {{lat: number, lng: number}|null} */
+    latlng: null,
+    marker: null,
+    control: null,
+    pendingRecentre: false
+  }
+
   /**
    * Parse compact ISO datetime (20260718T193000).
    *
@@ -431,6 +441,7 @@
     if (!map || typeof map.invalidateSize !== 'function') {
       return
     }
+    ensureUserLocationControl()
     map.invalidateSize()
     var bounds = window.chrisvfMobileLeafletBounds
     if (!bounds || typeof map.fitBounds !== 'function') {
@@ -450,6 +461,181 @@
         map.setView([focus.lat, focus.lng], focus.zoom, { animate: true })
       }
     }
+  }
+
+  /**
+   * Centre the mobile map on the latest user location.
+   */
+  function centreOnUserLocation () {
+    var map = window.chrisvfMobileLeafletMap
+    if (!map || !userLocation.latlng || typeof map.setView !== 'function') {
+      return
+    }
+    var zoom = 16
+    if (typeof map.getZoom === 'function') {
+      var currentZoom = map.getZoom()
+      if (typeof currentZoom === 'number' && isFinite(currentZoom)) {
+        zoom = Math.max(currentZoom, zoom)
+      }
+    }
+    if (typeof map.closePopup === 'function') {
+      map.closePopup()
+    }
+    map.setView(
+      [userLocation.latlng.lat, userLocation.latlng.lng],
+      zoom,
+      { animate: true }
+    )
+  }
+
+  /**
+   * Create or move the user-location marker on the mobile map.
+   *
+   * @param {{lat: number, lng: number}} latlng User coordinates.
+   */
+  function upsertUserLocationMarker (latlng) {
+    var map = window.chrisvfMobileLeafletMap
+    var leaflet = window.L
+    if (!map || !leaflet || typeof leaflet.circleMarker !== 'function') {
+      return
+    }
+    var point = [latlng.lat, latlng.lng]
+    if (userLocation.marker && typeof userLocation.marker.setLatLng === 'function') {
+      userLocation.marker.setLatLng(point)
+      return
+    }
+    userLocation.marker = leaflet.circleMarker(point, {
+      radius: 9,
+      color: '#fff',
+      weight: 3,
+      fillColor: '#0066cc',
+      fillOpacity: 1,
+      interactive: false
+    }).addTo(map)
+  }
+
+  /**
+   * Report a geolocation error and stop the failed watch.
+   *
+   * @param {GeolocationPositionError|Error} error Browser location error.
+   */
+  function handleUserLocationError (error) {
+    if (userLocation.watchId !== null && navigator.geolocation) {
+      navigator.geolocation.clearWatch(userLocation.watchId)
+    }
+    userLocation.watchId = null
+    userLocation.pendingRecentre = false
+
+    if (error && error.code === 1) {
+      showMobileToast('Location access was not allowed')
+    } else if (error && error.code === 3) {
+      showMobileToast('Location request timed out')
+    } else {
+      showMobileToast('Could not find your location')
+    }
+  }
+
+  /**
+   * Start watching the user's location for this page load.
+   */
+  function startUserLocationWatch () {
+    if (userLocation.watchId !== null) {
+      return
+    }
+    if (!navigator.geolocation ||
+        typeof navigator.geolocation.watchPosition !== 'function') {
+      userLocation.pendingRecentre = false
+      showMobileToast('Location is not available on this device')
+      return
+    }
+    try {
+      userLocation.watchId = navigator.geolocation.watchPosition(
+        function (position) {
+          userLocation.latlng = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          }
+          upsertUserLocationMarker(userLocation.latlng)
+          if (userLocation.pendingRecentre) {
+            userLocation.pendingRecentre = false
+            centreOnUserLocation()
+          }
+        },
+        handleUserLocationError,
+        {
+          enableHighAccuracy: true,
+          maximumAge: 5000,
+          timeout: 15000
+        }
+      )
+    } catch (error) {
+      handleUserLocationError(error)
+    }
+  }
+
+  /**
+   * Start location tracking if needed and centre on the latest fix.
+   */
+  function onLocateButtonClick () {
+    state.pendingMapFocus = null
+    if (userLocation.latlng) {
+      centreOnUserLocation()
+      startUserLocationWatch()
+      return
+    }
+    userLocation.pendingRecentre = true
+    startUserLocationWatch()
+  }
+
+  /**
+   * Add the locate button beneath Leaflet's zoom control.
+   */
+  function ensureUserLocationControl () {
+    if (userLocation.control) {
+      return
+    }
+    var map = window.chrisvfMobileLeafletMap
+    var leaflet = window.L
+    if (!map || !leaflet || !leaflet.Control || !leaflet.DomUtil || !leaflet.DomEvent) {
+      return
+    }
+
+    var UserLocationControl = leaflet.Control.extend({
+      options: { position: 'topleft' },
+      /**
+       * Build the Leaflet control element.
+       *
+       * @returns {HTMLElement}
+       */
+      onAdd: function () {
+        var container = leaflet.DomUtil.create(
+          'div',
+          'leaflet-bar chrisvf-mobile-locate-control'
+        )
+        var button = leaflet.DomUtil.create(
+          'button',
+          'chrisvf-mobile-locate',
+          container
+        )
+        button.type = 'button'
+        button.setAttribute('aria-label', 'Centre map on my location')
+        button.setAttribute('title', 'Locate me')
+        button.innerHTML =
+          '<span class="chrisvf-mobile-locate-icon" aria-hidden="true"></span>' +
+          '<span class="screen-reader-text">Locate me</span>'
+        button.addEventListener('click', function (event) {
+          event.preventDefault()
+          event.stopPropagation()
+          onLocateButtonClick()
+        })
+        leaflet.DomEvent.disableClickPropagation(container)
+        leaflet.DomEvent.disableScrollPropagation(container)
+        return container
+      }
+    })
+
+    userLocation.control = new UserLocationControl()
+    userLocation.control.addTo(map)
   }
 
   /**
