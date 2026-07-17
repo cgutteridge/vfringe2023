@@ -76,20 +76,54 @@
   }
 
   /**
-   * Current time as compact ISO in BST (matches grid.js behaviour).
+   * Current Europe/London wall-clock parts (handles GMT/BST via Intl).
+   *
+   * The old getTimezoneOffset()+3600000 trick is an hour behind on machines
+   * already in British Summer Time, which made past 2pm events look "Up next".
+   *
+   * @returns {{y: number, m: number, d: number, h: number, min: number, sec: number, ms: number}}
+   */
+  function getLondonNowParts () {
+    var parts = {}
+    var dtf = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/London',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hourCycle: 'h23'
+    })
+    dtf.formatToParts(new Date()).forEach(function (part) {
+      if (part.type !== 'literal') {
+        parts[part.type] = part.value
+      }
+    })
+    return {
+      y: parseInt(parts.year, 10),
+      m: parseInt(parts.month, 10),
+      d: parseInt(parts.day, 10),
+      h: parseInt(parts.hour, 10),
+      min: parseInt(parts.minute, 10),
+      sec: parseInt(parts.second, 10),
+      ms: new Date().getMilliseconds()
+    }
+  }
+
+  /**
+   * Current time as compact ISO in Europe/London (festival wall-clock).
    *
    * @returns {string}
    */
   function getCurrentBstCompact () {
-    var now = new Date()
-    var utcTime = now.getTime() + (now.getTimezoneOffset() * 60 * 1000)
-    var bstTime = new Date(utcTime + (3600000))
-    var y = bstTime.getUTCFullYear()
-    var m = String(bstTime.getUTCMonth() + 1).padStart(2, '0')
-    var d = String(bstTime.getUTCDate()).padStart(2, '0')
-    var h = String(bstTime.getUTCHours()).padStart(2, '0')
-    var min = String(bstTime.getUTCMinutes()).padStart(2, '0')
-    var sec = String(bstTime.getUTCSeconds()).padStart(2, '0')
+    var t = getLondonNowParts()
+    var y = String(t.y)
+    var m = String(t.m).padStart(2, '0')
+    var d = String(t.d).padStart(2, '0')
+    var h = String(t.h).padStart(2, '0')
+    var min = String(t.min).padStart(2, '0')
+    var sec = String(t.sec).padStart(2, '0')
     return '' + y + m + d + 'T' + h + min + sec
   }
 
@@ -535,6 +569,68 @@
   }
 
   /**
+   * HTML for the live Now / Up next badge, if any.
+   *
+   * @param {object} event Event record.
+   * @returns {string}
+   */
+  function liveBadgeHtml (event) {
+    var badge = liveBadge(event)
+    if (badge === 'now') {
+      return '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-now">Now</span>'
+    }
+    if (badge === 'next') {
+      return '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-next">Up next</span>'
+    }
+    return ''
+  }
+
+  /** @type {number|null} */
+  var liveBadgeRefreshTimeout = null
+
+  /**
+   * Milliseconds until the next five-minute London boundary (:00, :05, …), plus a small buffer.
+   *
+   * @returns {number}
+   */
+  function msUntilNextFiveMinuteBoundary () {
+    var t = getLondonNowParts()
+    var totalMsInHour = (t.h * 3600 + t.min * 60 + t.sec) * 1000 + t.ms
+    var blockMs = 5 * 60 * 1000
+    var remainderMs = totalMsInHour % blockMs
+    var bufferMs = 100
+    if (remainderMs === 0) {
+      return bufferMs
+    }
+    return blockMs - remainderMs + bufferMs
+  }
+
+  /**
+   * Re-render programme list and/or open modal so Now / Up next badges reflect current time.
+   */
+  function refreshLiveBadges () {
+    if (!state.data) {
+      return
+    }
+    if (state.activeTab === 'programme' || state.selectedUid) {
+      render()
+    }
+  }
+
+  /**
+   * Schedule the next live-badge refresh at the upcoming five-minute BST boundary.
+   */
+  function scheduleLiveBadgeRefresh () {
+    if (liveBadgeRefreshTimeout !== null) {
+      clearTimeout(liveBadgeRefreshTimeout)
+    }
+    liveBadgeRefreshTimeout = setTimeout(function () {
+      refreshLiveBadges()
+      scheduleLiveBadgeRefresh()
+    }, msUntilNextFiveMinuteBoundary())
+  }
+
+  /**
    * Map /m programme events into the shared itinerary export shape.
    *
    * @param {object[]} events Visible programme events.
@@ -729,7 +825,6 @@
       return ''
     }
 
-    var badge = liveBadge(event)
     var saved = isInItinerary(event.uid)
     var html = ''
     html += '<div class="chrisvf-mobile-modal" role="dialog" aria-modal="true" aria-labelledby="chrisvf-mobile-modal-title">'
@@ -746,11 +841,7 @@
     html += '<h2 id="chrisvf-mobile-modal-title" class="chrisvf-mobile-modal-title">' +
       escapeHtml(event.summary) + '</h2>'
     html += '<div class="chrisvf-mobile-modal-badges">'
-    if (badge === 'now') {
-      html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-now">Now</span>'
-    } else if (badge === 'next') {
-      html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-next">Up next</span>'
-    }
+    html += liveBadgeHtml(event)
     if (event.free) {
       html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-free">FREE</span>'
     }
@@ -1171,7 +1262,6 @@
         }
         html += '<ul class="chrisvf-mobile-list">'
         events.forEach(function (event) {
-          var badge = liveBadge(event)
           var saved = isInItinerary(event.uid)
           var dayKey = allDays ? eventDayKey(event) : ''
           html += '<li class="chrisvf-mobile-event' + (saved ? ' is-saved' : '') +
@@ -1186,11 +1276,7 @@
           html += '<div class="chrisvf-mobile-event-body">'
           html += '<div class="chrisvf-mobile-event-title-row">'
           html += '<span class="chrisvf-mobile-event-title">' + escapeHtml(event.summary) + '</span>'
-          if (badge === 'now') {
-            html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-now">Now</span>'
-          } else if (badge === 'next') {
-            html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-next">Up next</span>'
-          }
+          html += liveBadgeHtml(event)
           if (event.free) {
             html += '<span class="chrisvf-mobile-badge chrisvf-mobile-badge-free">FREE</span>'
           }
@@ -1284,16 +1370,12 @@
         }
         state.filtersOpen = false
         render()
+        scheduleLiveBadgeRefresh()
         window.addEventListener('resize', function () {
           if (state.activeTab === 'map') {
             refreshVisibleMap()
           }
         })
-        setInterval(function () {
-          if (state.activeTab === 'programme') {
-            render()
-          }
-        }, 60000)
 
         document.addEventListener('keydown', function (e) {
           if (e.key === 'Escape') {
