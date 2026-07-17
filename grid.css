@@ -54,6 +54,7 @@ th.vf_grid_venue {
     font-size: 80%;
     padding-top: 2px;
     color: #808080;
+    text-align: center;
 }
 
 .vf_grid_event .vf_grid_now {
