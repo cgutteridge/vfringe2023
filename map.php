@@ -156,7 +156,19 @@ function chrisvf_render_map($atts = [])
     if (@$_GET['debug']) {
         $h .= "<pre>" . htmlspecialchars(print_r($places, true)) . "</pre>";
     }
-    $h .= "<style>.leaflet-tooltip { font-size: 70%; opacity: 0.7; }</style>";
+    $h .= "<style>"
+        . ".leaflet-tooltip { font-size: 70%; opacity: 0.7; }"
+        // Theme link underlines leak onto Leaflet zoom +/- on shortcode pages;
+        // /m is a clean shell so it does not need this, but the override is harmless there.
+        . ".leaflet-container .leaflet-bar a,"
+        . ".leaflet-container .leaflet-bar a:link,"
+        . ".leaflet-container .leaflet-bar a:visited,"
+        . ".leaflet-container .leaflet-bar a:hover,"
+        . ".leaflet-container .leaflet-bar a:focus,"
+        . ".leaflet-container .leaflet-bar a:active {"
+        . " text-decoration: none !important;"
+        . "}"
+        . "</style>";
     if ($embedded) {
         $h .= "<div id='$id' class='chrisvf-map chrisvf-map-embedded' style='height:100%;width:100%;position:absolute;inset:0;'>";
     } else {
