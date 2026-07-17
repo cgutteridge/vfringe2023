@@ -496,7 +496,7 @@
   function upsertUserLocationMarker (latlng) {
     var map = window.chrisvfMobileLeafletMap
     var leaflet = window.L
-    if (!map || !leaflet || typeof leaflet.circleMarker !== 'function') {
+    if (!map || !leaflet || typeof leaflet.marker !== 'function' || typeof leaflet.divIcon !== 'function') {
       return
     }
     var point = [latlng.lat, latlng.lng]
@@ -504,13 +504,17 @@
       userLocation.marker.setLatLng(point)
       return
     }
-    userLocation.marker = leaflet.circleMarker(point, {
-      radius: 9,
-      color: '#fff',
-      weight: 3,
-      fillColor: '#0066cc',
-      fillOpacity: 1,
-      interactive: false
+    var icon = leaflet.divIcon({
+      className: 'chrisvf-mobile-user-location',
+      html: '<span class="chrisvf-mobile-user-location-dot" aria-hidden="true"></span>',
+      iconSize: [40, 40],
+      iconAnchor: [20, 20]
+    })
+    userLocation.marker = leaflet.marker(point, {
+      icon: icon,
+      interactive: false,
+      keyboard: false,
+      zIndexOffset: 1000
     }).addTo(map)
   }
 

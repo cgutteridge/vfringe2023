@@ -596,6 +596,46 @@ html {
   outline-offset: 2px;
 }
 
+.chrisvf-mobile-user-location {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: 0;
+}
+
+.chrisvf-mobile-user-location-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #0066cc;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  /* 1s pulse, then 4s rest (5s total cycle). */
+  animation: chrisvf-mobile-user-pulse 5s ease-in-out infinite;
+}
+
+@keyframes chrisvf-mobile-user-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  10% {
+    transform: translate(-50%, -50%) scale(1.45);
+  }
+  20% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
 .chrisvf-mobile-map-host .chrisvf-map-embedded {
   height: 100% !important;
   width: 100% !important;
