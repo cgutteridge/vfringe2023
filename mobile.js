@@ -760,6 +760,18 @@
   }
 
   /**
+   * Whether an event has finished relative to Europe/London wall-clock.
+   *
+   * @param {object} event Event record.
+   * @returns {boolean}
+   */
+  function eventHasEnded (event) {
+    var now = getCurrentBstCompact()
+    var end = event.end || event.start
+    return !!(end && end <= now)
+  }
+
+  /**
    * HTML for the live Now / Up next badge, if any.
    *
    * @param {object} event Event record.
@@ -1455,7 +1467,10 @@
         events.forEach(function (event) {
           var saved = isInItinerary(event.uid)
           var dayKey = allDays ? eventDayKey(event) : ''
-          html += '<li class="chrisvf-mobile-event' + (saved ? ' is-saved' : '') +
+          var ended = eventHasEnded(event)
+          html += '<li class="chrisvf-mobile-event' +
+            (saved ? ' is-saved' : '') +
+            (ended ? ' is-ended' : '') +
             '" data-event-uid="' + escapeHtml(event.uid) + '">'
           html += '<div class="chrisvf-mobile-event-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open details for ' +
             escapeHtml(event.summary) + '">'

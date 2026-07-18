@@ -384,6 +384,15 @@ html {
   background: var(--vf-saved);
 }
 
+.chrisvf-mobile-event.is-ended,
+.chrisvf-mobile-event.is-ended .chrisvf-mobile-event-time,
+.chrisvf-mobile-event.is-ended .chrisvf-mobile-event-day,
+.chrisvf-mobile-event.is-ended .chrisvf-mobile-event-title,
+.chrisvf-mobile-event.is-ended .chrisvf-mobile-event-meta,
+.chrisvf-mobile-event.is-ended .chrisvf-mobile-open {
+  color: #888;
+}
+
 .chrisvf-mobile-event-row {
   display: flex;
   align-items: center;
