@@ -353,6 +353,52 @@ function chrisvf_wp_venues()
     return $venues;
 }
 
+/**
+ * Collect EventON category term names for an event post.
+ *
+ * Merges ticketed genres (`event_type`) with Free Fringe Categories
+ * (`event_type_2`), so a Free Fringe term lands in CATEGORIES and downstream
+ * views treat the event as free.
+ *
+ * @param int $post_id Event post ID.
+ * @return string[] Category names, possibly empty.
+ */
+function chrisvf_event_category_names($post_id)
+{
+    $names = [];
+    foreach (['event_type', 'event_type_2'] as $taxonomy) {
+        $terms = wp_get_post_terms($post_id, $taxonomy, ['fields' => 'names']);
+        if (is_wp_error($terms) || empty($terms)) {
+            continue;
+        }
+        foreach ($terms as $name) {
+            if ($name !== '' && !in_array($name, $names, true)) {
+                $names[] = $name;
+            }
+        }
+    }
+    return $names;
+}
+
+/**
+ * Ensure an event item's CATEGORIES string includes the Free Fringe marker.
+ *
+ * @param array $item Event item passed by reference; CATEGORIES may be set or appended.
+ * @return void
+ */
+function chrisvf_ensure_free_fringe_category(&$item)
+{
+    $categories = [];
+    if (!empty($item['CATEGORIES'])) {
+        $categories = array_map('trim', explode(',', $item['CATEGORIES']));
+    }
+    if (in_array('Free Fringe', $categories, true)) {
+        return;
+    }
+    $categories[] = 'Free Fringe';
+    $item['CATEGORIES'] = join(',', $categories);
+}
+
 function chrisvf_wp_events()
 {
     $meta_fields = [
@@ -378,7 +424,8 @@ function chrisvf_wp_events()
             $event->meta[$meta_field] = get_post_meta($event->ID, $meta_field, true);
         }
         $event->locations = wp_get_post_terms($event->ID, 'event_location', ['fields' => 'names']);
-        $event->categories = wp_get_post_terms($event->ID, 'event_type', ['fields' => 'names']);
+        // event_type = ticketed genres; event_type_2 = "Free Fringe Categories" (includes Free Fringe term)
+        $event->categories = chrisvf_event_category_names($event->ID);
         if (has_post_thumbnail($event->ID)) {
             $event->image = get_post_thumbnail_id($event->ID);
         }
@@ -441,12 +488,10 @@ function chrisvf_wp_events()
             }
 
 
-            # hi future chris. Sorry about this bit. Previous years had a free fringe category but
-            # this year (2022) has a tag. So the quick and dirty solution was to add the category
-            # back in if the tag was set
+            // Free Fringe is primarily marked via event_type_2 ("Free Fringe Categories").
+            // Keep the legacy "free" tag as a fallback for older posts.
             $tags = get_the_tags($event_post->ID);
             $freetag = false;
-            // add tags if available
             if (!empty($tags)) {
                 $slugs = [];
                 foreach ($tags as $tag) {
@@ -458,11 +503,7 @@ function chrisvf_wp_events()
                 $item['TAGS'] = join(',', $slugs);
             }
             if ($freetag) {
-                if (empty($item['CATEGORIES'])) {
-                    $item['CATEGORIES'] = "Free Fringe";
-                } else {
-                    $item['CATEGORIES'] .= ",Free Fringe";
-                }
+                chrisvf_ensure_free_fringe_category($item);
             }
 
             if (!empty($event_post->image)) {
