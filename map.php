@@ -60,12 +60,13 @@ function chrisvf_render_map($atts = [])
 
     $places = chrisvf_places();
 
-    $outlines_raw = file_get_contents(dirname(__FILE__) . "/outlines.json");
-    $outlines = json_decode($outlines_raw, true);
+    $outlines_raw = @file_get_contents(dirname(__FILE__) . "/outlines.json");
+    $outlines = is_string($outlines_raw) ? json_decode($outlines_raw, true) : null;
+    if (!is_array($outlines)) {
+        $outlines = [];
+    }
 
-    $lines_raw = file_get_contents(dirname(__FILE__) . "/lines.json");
     # disabled lines as we don't need them currently
-    # $lines = json_decode($lines_raw, true);
     $lines = [];
 
     $venueToPOI = [];

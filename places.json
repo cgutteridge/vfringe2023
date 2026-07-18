@@ -7,7 +7,7 @@
 { "name":"The Fringe Square", "sortcode":"002", "zone":"square" }, { "name":"The Book Bus", "sortcode":"005", "zone":"square" }
  ]},
  { "GEO":[ 50.59543,-1.20549 ], "ICON":"number_4.png", "NAME":"Ventnor Arts Club", "VENUES":[ { "name":"Ventnor Arts Club" } ]},
- { "GEO":[ 50.59441,-1.204 ] , "ICON":"number_5.png", "NAME":"Ingrams Yard", "VENUES":[ { "name":"Ingrams Yard", "sortcode":"017", "zone":"ingrams" } ]},
+ { "GEO":[ 50.59441,-1.204 ] , "ICON":"number_5.png", "NAME":"Ingrams Yard", "VENUES":[ { "name":"Ingrams Yard", "sortcode":"017", "zone":"ingrams"  } ], "LDIR":"right"},
  { "GEO":[ 50.59438,-1.20412], "ICON":"number_6.png", "NAME":"The Garage",  "VENUES":[  { "name":"The Garage", "sortcode":"018", "zone":"ingrams" } ]},
 
  { "GEO":[ 50.59536,-1.20419 ] , "ICON":"number_7.png", "NAME":"Gallery 44", "VENUES":[ { "name":"Gallery 44" } ]},

@@ -265,14 +265,24 @@ function chrisvf_get_info()
         && file_exists($cache_file)
         && (filemtime($cache_file) > (chrisvf_time() - $cache_timeout))) {
         #print "\n<!-- ...USE CACHE FILE -->\n";
-        $chrisvf_cache = json_decode(file_get_contents($cache_file), true);
-    } else {
-        #print "\n<!-- ...BUILD CACHE FILE -->\n";
-        $chrisvf_cache["events"] = chrisvf_wp_events();
-        $chrisvf_cache["venues"] = chrisvf_wp_venues();
-
-        file_put_contents($cache_file, json_encode($chrisvf_cache), LOCK_EX);
+        $decoded = json_decode(file_get_contents($cache_file), true);
+        if (is_array($decoded) && isset($decoded['events']) && is_array($decoded['events'])) {
+            $chrisvf_cache = $decoded;
+            if (!isset($chrisvf_cache['venues']) || !is_array($chrisvf_cache['venues'])) {
+                $chrisvf_cache['venues'] = [];
+            }
+            return $chrisvf_cache;
+        }
+        // Fall through and rebuild if the cache file is corrupt.
     }
+
+    #print "\n<!-- ...BUILD CACHE FILE -->\n";
+    $chrisvf_cache = [
+        "events" => chrisvf_wp_events(),
+        "venues" => chrisvf_wp_venues(),
+    ];
+
+    file_put_contents($cache_file, json_encode($chrisvf_cache), LOCK_EX);
 
     return $chrisvf_cache;
 }
@@ -295,22 +305,47 @@ function chrisvf_places()
     return $places;
 }
 
-// return a list of venues. This does not include additional map locations like ATMs 
+/**
+ * Build the venue list from EventON location terms.
+ *
+ * Does not include additional map-only POIs (ATMs, etc.). Missing or partial
+ * `evo_tax_meta` is treated as empty lat/lon data — never fatal under PHP 8+.
+ *
+ * @return array<string, array<string, mixed>> Venues keyed by location name.
+ */
 function chrisvf_wp_venues()
 {
     $tax_meta = get_option("evo_tax_meta");
-    $locations = get_terms("event_location");
+    $location_meta = [];
+    if (is_array($tax_meta) && !empty($tax_meta["event_location"]) && is_array($tax_meta["event_location"])) {
+        $location_meta = $tax_meta["event_location"];
+    }
+
+    $locations = get_terms([
+        "taxonomy" => "event_location",
+        "hide_empty" => false,
+    ]);
+    if (is_wp_error($locations) || !is_array($locations)) {
+        return [];
+    }
+
     $venues = [];
     foreach ($locations as $location) {
+        if (!is_object($location) || !isset($location->name)) {
+            continue;
+        }
         $venue = [
             "name" => $location->name,
             "slug" => $location->slug,
             "sortcode" => $location->name
         ];
-        if (array_key_exists($location->term_id, $tax_meta["event_location"])) {
-            $extras = $tax_meta["event_location"][$location->term_id];
-            $venue["lat"] = $extras["location_lat"];
-            $venue["lon"] = $extras["location_lon"];
+        $term_id = isset($location->term_id) ? $location->term_id : null;
+        if ($term_id !== null && array_key_exists($term_id, $location_meta)) {
+            $extras = $location_meta[$term_id];
+            if (is_array($extras)) {
+                $venue["lat"] = isset($extras["location_lat"]) ? $extras["location_lat"] : null;
+                $venue["lon"] = isset($extras["location_lon"]) ? $extras["location_lon"] : null;
+            }
         }
         $venues[$venue["name"]] = $venue;
     }
