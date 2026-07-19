@@ -398,7 +398,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-mobile',
         plugins_url('mobile.css', __FILE__),
         ['chrisvf-mobile-fonts'],
-        '1.0.49'
+        '1.0.51'
     );
     wp_enqueue_style('chrisvf-mobile');
 
@@ -414,7 +414,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-mobile',
         plugins_url('mobile.js', __FILE__),
         ['chrisvf-itinerary'],
-        '1.0.49',
+        '1.0.51',
         true
     );
     wp_enqueue_script('chrisvf-mobile');

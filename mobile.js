@@ -693,6 +693,7 @@
    * Events for the current view after filters applied.
    *
    * Search text and the itinerary filter both span all festival days (day picker ignored).
+   * Display order is ended-first, then start time (see compareProgrammeEvents).
    *
    * @returns {object[]}
    */
@@ -719,7 +720,7 @@
         event.description
       ].join(' ').toLowerCase()
       return haystack.indexOf(q) !== -1
-    })
+    }).slice().sort(compareProgrammeEvents)
   }
 
   /**
@@ -772,6 +773,45 @@
   }
 
   /**
+   * Programme list order: ended events first, then by start time ascending.
+   *
+   * @param {object} a Event record.
+   * @param {object} b Event record.
+   * @returns {number} Sort comparator result.
+   */
+  function compareProgrammeEvents (a, b) {
+    var aEnded = eventHasEnded(a)
+    var bEnded = eventHasEnded(b)
+    if (aEnded !== bEnded) {
+      return aEnded ? -1 : 1
+    }
+    return a.start < b.start ? -1 : a.start > b.start ? 1 : 0
+  }
+
+  /**
+   * Scroll the programme main pane so the first non-ended event is at the top.
+   *
+   * Falls back to the top of the list when every visible event has ended
+   * (or the list is empty).
+   *
+   * @param {Element|null} main Programme main scroll container.
+   * @returns {void}
+   */
+  function scrollMainToFirstNonEnded (main) {
+    if (!main) {
+      return
+    }
+    var target = main.querySelector('.chrisvf-mobile-event:not(.is-ended)')
+    if (!target) {
+      main.scrollTop = 0
+      return
+    }
+    var mainRect = main.getBoundingClientRect()
+    var targetRect = target.getBoundingClientRect()
+    main.scrollTop += targetRect.top - mainRect.top
+  }
+
+  /**
    * HTML for the live Now / Up next badge, if any.
    *
    * @param {object} event Event record.
@@ -810,13 +850,16 @@
 
   /**
    * Re-render programme list and/or open modal so Now / Up next badges reflect current time.
+   *
+   * On the programme tab, re-scrolls to the first non-ended event so the live
+   * boundary shift stays aligned with "what's on now".
    */
   function refreshLiveBadges () {
     if (!state.data) {
       return
     }
     if (state.activeTab === 'programme' || state.selectedUid) {
-      render()
+      render({ resetScroll: state.activeTab === 'programme' })
     }
   }
 
@@ -1068,7 +1111,7 @@
       html += '<strong>' + escapeHtml(event.location) + '</strong>'
     }
     if (event.categories) {
-      html += '<br>' + escapeHtml(event.categories)
+      html += '<br>' + escapeHtml(event.categories.split(/,/).join(', '))
     }
     html += '</p>'
     if (event.description) {
@@ -1212,7 +1255,7 @@
           state.search = searchInput.value
           state.filtersOpen = true
           saveSession()
-          render({ focusSearch: true })
+          render({ focusSearch: true, resetScroll: true })
           var newInput = root.querySelector('.chrisvf-mobile-search')
           if (newInput) {
             newInput.focus()
@@ -1341,6 +1384,7 @@
    * Render the programme list for the selected day.
    *
    * @param {{resetScroll?: boolean, focusSearch?: boolean, focusSummary?: boolean, keepFiltersOpen?: boolean}|undefined} options Render options.
+   *        `resetScroll` scrolls to the first non-ended event (or top if none).
    */
   function render (options) {
     options = options || {}
@@ -1526,7 +1570,13 @@
 
     var main = root.querySelector('.chrisvf-mobile-main')
     if (main && state.activeTab === 'programme') {
-      main.scrollTop = scrollTop
+      if (options.resetScroll) {
+        requestAnimationFrame(function () {
+          scrollMainToFirstNonEnded(main)
+        })
+      } else {
+        main.scrollTop = scrollTop
+      }
     }
 
     if (options.focusSearch) {
@@ -1575,7 +1625,7 @@
           state.selectedDay = defaultDay(data.festivalDays)
         }
         state.filtersOpen = false
-        render()
+        render({ resetScroll: true })
         scheduleLiveBadgeRefresh()
         window.addEventListener('resize', function () {
           if (state.activeTab === 'map') {
