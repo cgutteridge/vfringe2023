@@ -21,8 +21,9 @@ It is not currently a conventional WordPress plugin with PHP entry points, hooks
 3. Reads the existing `boxoffice-events.tsv` (the memory of every performance).
 4. Reconciles by `EventId + Date + Start`:
    - new buyable instances → add
-   - missing buyable instances for a still-live event → sold out (keep row)
-   - event object absent from the feed → cancelled (keep row, `CANCELLED - ` title prefix)
+   - missing buyable instances for a still-live future event → sold out (keep row)
+   - event object absent from the feed before performance start → cancelled (keep row, `CANCELLED - ` title prefix)
+   - rows that disappear after their performance has started → ignored (Spektrix drops past slots)
    - overlapping rows with different metadata → change metadata
 5. Appends transitions to `boxoffice-changes.log` and prints them.
 6. Writes a header-first, date/time-sorted TSV with these columns:

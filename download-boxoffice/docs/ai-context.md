@@ -72,8 +72,9 @@ reconcile.
 |-------------|--------|
 | Buyable instance not in TSV | **add** |
 | Existing instance still buyable, metadata differs | **change metadata** |
-| Event present, instance no longer buyable (or whole show `isSoldOut`) | **sold out** |
-| Event object absent from feed | **cancelled** (`CANCELLED - ` title prefix) |
+| Event present, future instance no longer buyable (or whole show `isSoldOut`) | **sold out** |
+| Future event object absent from feed | **cancelled** (`CANCELLED - ` title prefix) |
+| Row disappears after its performance start time | **ignore**; Spektrix drops past slots |
 | Previously cancelled/sold-out instance back on sale | **reinstated** |
 
 A reschedule (old date leaves, new date appears) logs as **sold out** + **add**.

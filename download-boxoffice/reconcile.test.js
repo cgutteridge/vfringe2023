@@ -150,7 +150,7 @@ describe('reconcile', () => {
         availableInstanceDates: ['2026-07-19T19:00:00']
       })
     ]
-    const result = reconcile(existing, feed)
+    const result = reconcile(existing, feed, { runStartedAt: '2026-07-18T18:00:00' })
 
     assert.equal(result.rows.length, 2)
     assert.deepEqual(changeTypes(result), ['sold out'])
@@ -182,7 +182,7 @@ describe('reconcile', () => {
         firstInstanceDateTime: '2026-07-17T19:00:00'
       })
     ]
-    const result = reconcile(existing, feed)
+    const result = reconcile(existing, feed, { runStartedAt: '2026-07-17T18:00:00' })
 
     assert.equal(result.rows.length, 1)
     assert.equal(result.rows[0][COL.IsSoldOut], 'true')
@@ -200,7 +200,7 @@ describe('reconcile', () => {
         start: '18:15'
       })
     ]
-    const result = reconcile(existing, [])
+    const result = reconcile(existing, [], { runStartedAt: '2026-07-18T17:00:00' })
 
     assert.equal(result.rows.length, 1)
     assert.equal(result.rows[0][COL.Title], `${CANCELLED_PREFIX}Lawrence Dodd: This Can't Be It`)
@@ -238,7 +238,7 @@ describe('reconcile', () => {
         availableInstanceDates: ['2026-07-18T19:00:00']
       })
     ]
-    const result = reconcile(existing, feed)
+    const result = reconcile(existing, feed, { runStartedAt: '2026-07-21T20:00:00' })
 
     assert.equal(result.rows[0][COL.Venue], 'New Venue')
     assert.equal(result.rows[0][COL.Description], 'New description')
@@ -264,7 +264,7 @@ describe('reconcile', () => {
         availableInstanceDates: ['2026-07-25T19:00:00']
       })
     ]
-    const result = reconcile(existing, feed)
+    const result = reconcile(existing, feed, { runStartedAt: '2026-07-21T17:00:00' })
 
     assert.equal(result.rows.length, 2)
     assert.deepEqual(changeTypes(result).sort(), ['add', 'sold out'])
@@ -415,5 +415,45 @@ describe('reconcile', () => {
     assert.equal(result.rows[0][COL.Title], 'Circus Trail')
     assert.equal(result.rows[0][COL.IsSoldOut], 'false')
     assert.deepEqual(changeTypes(result), ['reinstated'])
+  })
+
+  it('ignores a disappeared performance when the script runs after it started', () => {
+    const existing = [
+      makeRow({ date: '2026-07-18', start: '19:00' }),
+      makeRow({ date: '2026-07-19', start: '19:00' })
+    ]
+    const feed = [
+      makeEvent({
+        id: '10001',
+        availableInstanceDates: ['2026-07-19T19:00:00']
+      })
+    ]
+    const result = reconcile(existing, feed, { runStartedAt: '2026-07-18T19:01:00' })
+
+    const pastSlot = result.rows.find(row => row[COL.Date] === '2026-07-18')
+    const futureSlot = result.rows.find(row => row[COL.Date] === '2026-07-19')
+
+    assert.equal(pastSlot[COL.IsSoldOut], 'false')
+    assert.equal(pastSlot[COL.Title], 'Test Show')
+    assert.equal(futureSlot[COL.IsSoldOut], 'false')
+    assert.deepEqual(changeTypes(result), [])
+  })
+
+  it('does not mark a whole event cancelled when it disappears after performance start', () => {
+    const existing = [
+      makeRow({
+        title: 'Late Show',
+        event: 'https://purchase.vfringe.co.uk/EventAvailability?EventId=40201',
+        venue: 'Bijou',
+        date: '2026-07-18',
+        start: '18:15'
+      })
+    ]
+    const result = reconcile(existing, [], { runStartedAt: '2026-07-18T18:16:00' })
+
+    assert.equal(result.rows.length, 1)
+    assert.equal(result.rows[0][COL.Title], 'Late Show')
+    assert.equal(result.rows[0][COL.IsSoldOut], 'false')
+    assert.deepEqual(changeTypes(result), [])
   })
 })

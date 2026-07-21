@@ -260,6 +260,28 @@ function performanceKeyFromInstance (eventId, instanceDateTime) {
 }
 
 /**
+ * Parses a TSV row's local performance start into a Date.
+ *
+ * @param {string[]} row TSV row cells.
+ * @returns {Date|null} Local Date, or null when parsing fails.
+ */
+function rowStartDateTime (row) {
+  return parseLocalDateTime(`${row[COL.Date]}T${row[COL.Start]}:00`)
+}
+
+/**
+ * Returns whether a script run happened after a TSV row's performance started.
+ *
+ * @param {string[]} row TSV row cells.
+ * @param {Date} runStartedAt Script run timestamp.
+ * @returns {boolean} True when the row has started by the run timestamp.
+ */
+function performanceStartedByRun (row, runStartedAt) {
+  const start = rowStartDateTime(row)
+  return Boolean(start && runStartedAt >= start)
+}
+
+/**
  * Strips a leading cancelled title prefix if present.
  *
  * @param {string} title Event title from the TSV.
@@ -539,8 +561,10 @@ function seedInstanceForNewSoldOutEvent (event) {
  * Reconciles existing TSV rows against the live Spektrix feed without deleting rows.
  *
  * Classification rules:
- * - event absent from feed → cancelled (prefix title, keep row)
- * - event present but instance not buyable → sold out (keep row, Is Sold Out=true)
+ * - event absent from feed before performance start → cancelled (prefix title, keep row)
+ * - event absent from feed after performance start → ignore (Spektrix drops past slots)
+ * - event present but instance not buyable before performance start → sold out (keep row, Is Sold Out=true)
+ * - event present but instance not buyable after performance start → ignore (Spektrix drops past slots)
  * - existing row already marked CANCELLED stays cancelled even if the event remains
  *   in the feed (manual single-performance cancellation); reinstate only if buyable again
  * - buyable instance not in TSV → add
@@ -549,9 +573,13 @@ function seedInstanceForNewSoldOutEvent (event) {
  *
  * @param {string[][]} existingRows Current TSV data rows.
  * @param {Array<object>} feedEvents Raw Spektrix event list.
+ * @param {{ runStartedAt?: Date|string }} [options] Reconcile options.
  * @returns {{ rows: string[][], changes: Array<{ changeType: string, venue: string, date: string, start: string, name: string }> }}
  */
-function reconcile (existingRows, feedEvents) {
+function reconcile (existingRows, feedEvents, options = {}) {
+  const runStartedAt = options.runStartedAt instanceof Date
+    ? options.runStartedAt
+    : new Date(options.runStartedAt || Date.now())
   const { eventsById, buyableByKey } = indexFeed(feedEvents)
   const changes = []
   const nextRows = []
@@ -570,8 +598,14 @@ function reconcile (existingRows, feedEvents) {
 
     seenKeys.add(key)
     const feedEvent = eventsById.get(eventId)
+    const startedByRun = performanceStartedByRun(existingRow, runStartedAt)
 
     if (!feedEvent) {
+      if (startedByRun) {
+        nextRows.push(cloneRow(existingRow))
+        continue
+      }
+
       const next = cloneRow(existingRow)
       next[COL.Title] = applyCancelledPrefix(baseTitle || existingRow[COL.Title])
 
@@ -586,6 +620,11 @@ function reconcile (existingRows, feedEvents) {
     const buyable = buyableByKey.get(key)
 
     if (!buyable) {
+      if (startedByRun) {
+        nextRows.push(cloneRow(existingRow))
+        continue
+      }
+
       const next = cloneRow(existingRow)
       // Preserve a manual CANCELLED prefix (single-performance cancellations).
       // Otherwise treat a vanished buyable slot as sold out.
@@ -722,9 +761,10 @@ async function readExistingRows (tsvPath = OUTPUT_PATH) {
  * @returns {Promise<void>}
  */
 async function main () {
+  const runStartedAt = new Date()
   const events = fetchEvents()
   const existingRows = await readExistingRows()
-  const { rows, changes } = reconcile(existingRows, events)
+  const { rows, changes } = reconcile(existingRows, events, { runStartedAt })
 
   if (rows.length === 0) {
     throw new Error(`No rows generated for website listing "${WEBSITE_LISTING}"`)
