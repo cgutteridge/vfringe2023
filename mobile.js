@@ -16,6 +16,8 @@
   var STORAGE_SESSION = 'chrisvf_mobile_session'
   var TEXT_SIZES = ['normal', 'large', 'xlarge']
   var mapHost = document.getElementById('chrisvf-mobile-map-host')
+  var restoringHash = false
+  var hasPushedHash = false
 
   var state = {
     data: null,
@@ -421,6 +423,7 @@
     state.activeTab = 'map'
     state.selectedUid = null
     saveSession()
+    updateHash(false)
     render()
 
     // Keep pending through the 50ms/250ms map-repair refreshes, then clear.
@@ -944,6 +947,138 @@
   }
 
   /**
+   * Validate a programme tab name.
+   *
+   * @param {string|null} tab Candidate tab.
+   * @returns {boolean}
+   */
+  function isValidTab (tab) {
+    return tab === 'programme' || tab === 'map'
+  }
+
+  /**
+   * Validate a quick filter name.
+   *
+   * @param {string|null} filter Candidate filter.
+   * @returns {boolean}
+   */
+  function isValidFilter (filter) {
+    return filter === 'all' || filter === 'free' || filter === 'itinerary'
+  }
+
+  /**
+   * Build a URL hash for the current mobile app view.
+   *
+   * @returns {string}
+   */
+  function viewHash () {
+    var params = new URLSearchParams()
+    params.set('tab', state.activeTab)
+    if (state.selectedDay) {
+      params.set('day', state.selectedDay)
+    }
+    if (state.filter !== 'all') {
+      params.set('filter', state.filter)
+    }
+    if (state.search.trim()) {
+      params.set('q', state.search.trim())
+    }
+    if (state.filtersOpen && state.activeTab === 'programme') {
+      params.set('filters', '1')
+    }
+    if (state.selectedUid) {
+      params.set('event', state.selectedUid)
+    }
+    return '#' + params.toString()
+  }
+
+  /**
+   * Read the mobile app view from the current URL hash.
+   *
+   * @returns {{activeTab: string, selectedDay: string|null, filter: string, search: string, filtersOpen: boolean, selectedUid: string|null}|null}
+   */
+  function viewFromHash () {
+    var raw = window.location.hash ? window.location.hash.slice(1) : ''
+    if (!raw) {
+      return null
+    }
+
+    var params = new URLSearchParams(raw)
+    var tab = params.get('tab')
+    var day = params.get('day')
+    var filter = params.get('filter') || 'all'
+    var eventUid = params.get('event')
+
+    if (!isValidTab(tab)) {
+      return null
+    }
+    if (day && state.data.festivalDays.indexOf(day) === -1) {
+      day = null
+    }
+    if (!isValidFilter(filter)) {
+      filter = 'all'
+    }
+    if (eventUid && !state.eventsByUid[eventUid]) {
+      eventUid = null
+    }
+
+    return {
+      activeTab: tab,
+      selectedDay: day,
+      filter: filter,
+      search: params.get('q') || '',
+      filtersOpen: tab === 'programme' && params.get('filters') === '1',
+      selectedUid: eventUid
+    }
+  }
+
+  /**
+   * Push or replace the browser hash with the current mobile view.
+   *
+   * @param {boolean} replace Whether to replace instead of pushing a history entry.
+   */
+  function updateHash (replace) {
+    if (!window.history || restoringHash) {
+      return
+    }
+    var hash = viewHash()
+    if (window.location.hash === hash) {
+      return
+    }
+    var url = window.location.pathname + window.location.search + hash
+    if (replace) {
+      window.history.replaceState({ chrisvfMobile: true }, '', url)
+    } else {
+      window.history.pushState({ chrisvfMobile: true }, '', url)
+      hasPushedHash = true
+    }
+  }
+
+  /**
+   * Apply URL hash state after browser Back/Forward.
+   */
+  function restoreHashView () {
+    if (!state.data) {
+      return
+    }
+    var view = viewFromHash()
+    if (!view) {
+      return
+    }
+
+    restoringHash = true
+    state.activeTab = view.activeTab
+    state.selectedDay = view.selectedDay || defaultDay(state.data.festivalDays)
+    state.filter = view.filter
+    state.search = view.search
+    state.filtersOpen = view.filtersOpen
+    state.selectedUid = view.selectedUid
+    saveSession()
+    render({ resetScroll: state.activeTab === 'programme' })
+    restoringHash = false
+  }
+
+  /**
    * Restore session UI state.
    */
   function loadSession () {
@@ -1020,7 +1155,15 @@
     if (!state.selectedUid) {
       return
     }
+    if (!restoringHash && hasPushedHash) {
+      var currentView = viewFromHash()
+      if (currentView && currentView.selectedUid === state.selectedUid) {
+        window.history.back()
+        return
+      }
+    }
     state.selectedUid = null
+    updateHash(true)
     render()
   }
 
@@ -1038,6 +1181,7 @@
         typeof window.chrisvfMobileLeafletMap.closePopup === 'function') {
       window.chrisvfMobileLeafletMap.closePopup()
     }
+    updateHash(false)
     render()
   }
 
@@ -1072,6 +1216,7 @@
     }
 
     var saved = isInItinerary(event.uid)
+    var modalDay = eventDayKey(event)
     var html = ''
     html += '<div class="chrisvf-mobile-modal" role="dialog" aria-modal="true" aria-labelledby="chrisvf-mobile-modal-title">'
     html += '<div class="chrisvf-mobile-modal-panel">'
@@ -1079,7 +1224,11 @@
     html += '<button type="button" class="chrisvf-mobile-modal-close" data-modal-close aria-label="Close">Close</button>'
     html += '</header>'
     html += '<div class="chrisvf-mobile-modal-body">'
-    html += '<p class="chrisvf-mobile-modal-time">' + escapeHtml(formatTime(event.start))
+    html += '<p class="chrisvf-mobile-modal-time">'
+    if (modalDay) {
+      html += escapeHtml(daySummaryLabel(modalDay)) + ' · '
+    }
+    html += escapeHtml(formatTime(event.start))
     if (event.end && event.end !== event.start) {
       html += ' – ' + escapeHtml(formatTime(event.end))
     }
@@ -1191,6 +1340,7 @@
         state.selectedDay = btn.getAttribute('data-day')
         state.selectedUid = null
         saveSession()
+        updateHash(false)
         render({ resetScroll: true })
       })
     })
@@ -1199,6 +1349,7 @@
       btn.addEventListener('click', function () {
         state.filter = btn.getAttribute('data-filter')
         saveSession()
+        updateHash(false)
         render({ resetScroll: true })
       })
     })
@@ -1211,6 +1362,7 @@
           state.filtersOpen = false
         }
         saveSession()
+        updateHash(false)
         render({ resetScroll: state.activeTab === 'programme' })
       })
     })
@@ -1219,6 +1371,7 @@
       btn.addEventListener('click', function () {
         state.filtersOpen = true
         saveSession()
+        updateHash(false)
         render({ focusSearch: true })
       })
     })
@@ -1227,6 +1380,7 @@
       btn.addEventListener('click', function () {
         state.filtersOpen = false
         saveSession()
+        updateHash(false)
         render({ focusSummary: true })
       })
     })
@@ -1236,6 +1390,7 @@
         state.search = ''
         state.filtersOpen = true
         saveSession()
+        updateHash(true)
         render({ focusSearch: true, resetScroll: true })
       })
     })
@@ -1255,6 +1410,7 @@
           state.search = searchInput.value
           state.filtersOpen = true
           saveSession()
+          updateHash(true)
           render({ focusSearch: true, resetScroll: true })
           var newInput = root.querySelector('.chrisvf-mobile-search')
           if (newInput) {
@@ -1625,6 +1781,17 @@
           state.selectedDay = defaultDay(data.festivalDays)
         }
         state.filtersOpen = false
+        var initialHashView = viewFromHash()
+        if (initialHashView) {
+          state.activeTab = initialHashView.activeTab
+          state.selectedDay = initialHashView.selectedDay || defaultDay(data.festivalDays)
+          state.filter = initialHashView.filter
+          state.search = initialHashView.search
+          state.filtersOpen = initialHashView.filtersOpen
+          state.selectedUid = initialHashView.selectedUid
+        } else {
+          updateHash(true)
+        }
         render({ resetScroll: true })
         scheduleLiveBadgeRefresh()
         window.addEventListener('resize', function () {
@@ -1632,6 +1799,8 @@
             refreshVisibleMap()
           }
         })
+        window.addEventListener('popstate', restoreHashView)
+        window.addEventListener('hashchange', restoreHashView)
 
         document.addEventListener('keydown', function (e) {
           if (e.key === 'Escape') {

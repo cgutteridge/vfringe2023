@@ -11,6 +11,37 @@ define('CHRISVF_MOBILE_APP_VAR', 'chrisvf_mobile_app');
 define('CHRISVF_MOBILE_REWRITE_VERSION', '3');
 define('CHRISVF_MOBILE_TEMPLATE', 'chrisvf-mobile-programme.php');
 
+if (!function_exists('chrisvf_mobile_normalise_request_path')) {
+    /**
+     * Normalise a URL or request path to a site-relative slug (e.g. "m/json").
+     *
+     * @param string|null $url Full URL or path; uses current request when null.
+     * @return string
+     */
+    function chrisvf_mobile_normalise_request_path($url = null)
+    {
+        if ($url === null) {
+            $url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+        }
+
+        $path = parse_url($url, PHP_URL_PATH);
+        if (!is_string($path)) {
+            return '';
+        }
+
+        $path = trim($path, '/');
+        $homePath = trim((string) parse_url(home_url('/'), PHP_URL_PATH), '/');
+
+        if ($homePath !== '' && strpos($path, $homePath . '/') === 0) {
+            $path = substr($path, strlen($homePath) + 1);
+        } elseif ($path === $homePath) {
+            $path = '';
+        }
+
+        return trim($path, '/');
+    }
+}
+
 /**
  * Register rewrite rules and query vars for the mobile app and JSON endpoint.
  */
@@ -65,35 +96,6 @@ function chrisvf_mobile_activate()
 }
 
 register_activation_hook(__DIR__ . '/chrisvf.php', 'chrisvf_mobile_activate');
-
-/**
- * Normalise a URL or request path to a site-relative slug (e.g. "m/json").
- *
- * @param string|null $url Full URL or path; uses current request when null.
- * @return string
- */
-function chrisvf_mobile_normalise_request_path($url = null)
-{
-    if ($url === null) {
-        $url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-    }
-
-    $path = parse_url($url, PHP_URL_PATH);
-    if (!is_string($path)) {
-        return '';
-    }
-
-    $path = trim($path, '/');
-    $homePath = trim((string) parse_url(home_url('/'), PHP_URL_PATH), '/');
-
-    if ($homePath !== '' && strpos($path, $homePath . '/') === 0) {
-        $path = substr($path, strlen($homePath) + 1);
-    } elseif ($path === $homePath) {
-        $path = '';
-    }
-
-    return trim($path, '/');
-}
 
 /**
  * Whether the current request targets the mobile JSON endpoint.
@@ -414,7 +416,7 @@ function chrisvf_mobile_do_enqueue_assets()
         'chrisvf-mobile',
         plugins_url('mobile.js', __FILE__),
         ['chrisvf-itinerary'],
-        '1.0.51',
+        '1.0.52',
         true
     );
     wp_enqueue_script('chrisvf-mobile');

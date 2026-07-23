@@ -45,7 +45,7 @@ A plugin-owned standalone app for phones. No theme header/nav.
 - Itinerary uses the shared cookie helpers in `itinerary.js` (`itinerary2025` today — keep in sync with the grid when rolling the year).
 - Desktop `/itinerary` and `/m` itinerary filter share export helpers in `itinerary.js` (email, copy plain+HTML, download calendar via `/itinerary-ics`).
 - Map tab embeds `chrisvf_render_map(['layout' => 'embedded', 'mobile' => '1'])`. Popup event links open the same `/m` modal; the normal `/vfringe/map` slug still navigates to event pages.
-- Text size preference is stored in `localStorage`; day/search/filter/tab in `sessionStorage`.
+- Text size preference is stored in `localStorage`; mobile view state persists in `sessionStorage` and is mirrored to the URL hash for in-app Back/Forward navigation.
 - 2026 style branding is deliberately light (Work Sans / Suez One, warm paper, gold active chrome). How to roll it back without removing `/m`: see **Rolling back 2026 `/m` style branding** in [`docs/maintenance.md`](docs/maintenance.md).
 
 ### Acceptance checklist
@@ -93,4 +93,3 @@ One maintainer; no peer review. Branch for new features, test on the branch, mer
 - [docs/ai-context.md](docs/ai-context.md)
 - [docs/maintenance.md](docs/maintenance.md)
 - [download-boxoffice/docs/README.md](download-boxoffice/docs/README.md)
-
